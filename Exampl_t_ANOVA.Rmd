@@ -62,7 +62,8 @@ df$Var<-as.factor(df$Var)
 df%>%ggplot(aes(x=Value, fill=Var))+geom_density(alpha=0.5)
 ```
 # The ANOVA
-The ANOVA model and some examples
+The ANOVA model and some examples. The null hypothesis in ANOVA is that there is no difference between means and the alternative is that the means are not all equal. This means that when we are dealing with many groups, we cannot compare them pairwise. We can simply answer if the means between groups can be considered as equal or not.
+
 ```{r}
 # ANOVA
 model1<-lm(Value~Var, data=df)
@@ -70,6 +71,8 @@ anova(model1)
 ```
 
 # Tukey multiple comparisons
+What about if we want to compare all the groups pairwise? In this case, we can apply the Tukey’s HSD which is a single-step multiple comparison procedure and statistical test, Tukey's Honest Significant Difference (Tukey's HSD). It can be used to find means that are significantly different from each other.
+
 ```{r}
 summary(glht(model1, mcp(Var="Tukey")))
 ```
