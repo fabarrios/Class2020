@@ -19,10 +19,11 @@ The examples for chapter 3 using data from the heart and estrogen/progestin stud
 t-Test example presented in Tabel 3.1 of the t-Test of difference in average glucose by exercise for the women that are not diabetic. These eamples are to revisit som t-test R estimations 
 
 ```{r}
-setwd("~/Dropbox/Fdo/ClaseStats/RegresionClass/RegresionR_code")
+# setwd("~/Dropbox/Fdo/ClaseStats/RegresionClass/RegresionR_code")
 # To set the working directory at the user dir
 library(tidyverse)
-hers <- read_csv("DataRegressBook/Chap3/hersdata.csv")
+library(multcomp)
+hers <- read_csv("~/Dropbox/Fdo/ClaseStats/RegresionClass/RegresionR_code/DataRegressBook/Chap3/hersdata.csv")
 # Loading the HERS database in hers varible
 summary(hers)
 boxplot(glucose ~ diabetes, data=hers)
@@ -44,9 +45,6 @@ Note that the `echo = FALSE` parameter was added to the code chunk to prevent pr
 
 # Example from R-bloggers
 ```{r}
-library(multcomp)
-library(tidyverse)
-
 # Create the four groups
 set.seed(10) 
 df1 <- data.frame(Var="a", Value=rnorm(100,10,5))
