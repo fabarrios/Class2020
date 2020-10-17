@@ -23,7 +23,7 @@ t-Test example presented in Tabel 3.1 of the t-Test of difference in average glu
 # To set the working directory at the user dir
 library(tidyverse)
 library(multcomp)
-hers <- read_csv("~/Dropbox/Fdo/ClaseStats/RegresionClass/RegresionR_code/DataRegressBook/Chap3/hersdata.csv")
+hers <- read_csv("~/Dropbox/Fdo/ClaseStats/RegressionClass/RegressionR_code/DataRegressBook/Chap3/hersdata.csv")
 # Loading the HERS database in hers varible
 summary(hers)
 boxplot(glucose ~ diabetes, data=hers)
@@ -36,9 +36,7 @@ t.test(glucose[hers$diabetes == "no"] ~ exercise[hers$diabetes == "no"], data=he
 
 ```{r}
 summary(hers$diabetes)
-ggplot(data = hers, mapping = aes(x = exercise, y = glucose)) 
-    + geom_boxplot() 
-    + facet_grid( . ~ diabetes)
+ggplot(data = hers, mapping = aes(x = exercise, y = glucose)) + geom_boxplot() + facet_grid( . ~ diabetes)
 ```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
