@@ -25,6 +25,8 @@ t-Test example presented in Tabel 3.1 of the t-Test of difference in average glu
 # To set the working directory at the user dir
 library(tidyverse)
 library(multcomp)
+library(car)
+
 hers <- read_csv("~/Dropbox/Fdo/ClaseStats/RegressionClass/RegressionR_code/DataRegressBook/Chap3/hersdata.csv")
 # Loading the HERS database in hers varible
 summary(hers)
@@ -32,6 +34,23 @@ boxplot(glucose ~ diabetes, data=hers)
 # For the 
 boxplot(glucose[hers$diabetes == "no"] ~ exercise[hers$diabetes == "no"], alternative="two.sided", data=hers)
 t.test(glucose[hers$diabetes == "no"] ~ exercise[hers$diabetes == "no"], data=hers, alternative="two.sided", mu=0, paired=FALSE, var.equal=TRUE)
+```
+
+How it looks in current code
+```{r}
+#  Example of the HERS data for diabetic participants
+hers_yesdi <- filter(hers, diabetes == "yes")
+hers_yesdi <- mutate(hers_yesdi, physact = factor(physact, levels=c("much less active","somewhat less active","about as active","somewhat more active","much more active")))
+
+#  Example of ANOVA with HERS data for diabetic participants
+#
+ggplot(data = hers_yesdi, mapping = aes(x = physact, y = glucose)) + geom_boxplot(na.rm = TRUE)
+glucose_yesdi_act <- lm(glucose ~ physact, data = hers_yesdi)
+Anova(glucose_yesdi_act, type="II")
+#
+S(glucose_yesdi_act)
+glucose_emmeans <- emmeans(glucose_yesdi_act, "physact")
+contrast(glucose_emmeans, Contrasts_glu, adjust="sidak")
 ```
 
 ## Including Plots
