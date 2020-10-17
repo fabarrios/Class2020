@@ -1,0 +1,44 @@
+---
+title: "Exampl_t_ANOVA.Rmd"
+author: "F.A. Barrios"
+date: "10/10/2020"
+output: html_document
+---
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Examples Chap03 
+
+The examples for chapter 3 using data from the heart and estrogen/progestin study (HERS), a clinical trial of hormone therapy (HT) for prevention of recurent heart attacks and death among 2,763 post-menopausal women with existing voronary heart disease (CHD)
+
+## Introduction
+t-Test example presented in Tabel 3.1 of the t-Test of difference in average glucose by exercise for the women that are not diabetic. These eamples are to revisit som t-test R estimations 
+
+```{r loading, echo=FALSE}
+setwd("~/Dropbox/Fdo/ClaseStats/RegresionClass/RegresionR_code")
+# To set the working directory at the user dir
+library(tidyverse)
+hers <- read_csv("DataRegressBook/Chap3/hersdata.csv")
+# Loading the HERS database in hers varible
+summary(hers)
+boxplot(glucose ~ diabetes, data=hers)
+# For the 
+boxplot(glucose[hers$diabetes == "no"] ~ exercise[hers$diabetes == "no"], alternative="two.sided", data=hers)
+t.test(glucose[hers$diabetes == "no"] ~ exercise[hers$diabetes == "no"], data=hers, alternative="two.sided", mu=0, paired=FALSE, var.equal=TRUE)
+```
+
+## Including Plots
+
+```{r sytolic, echo=FALSE}
+summary(hers$diabetes)
+ggplot(data = hers, mapping = aes(x = exercise, y = glucose)) 
+    + geom_boxplot() 
+    + facet_grid( . ~ diabetes)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
