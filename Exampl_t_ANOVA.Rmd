@@ -67,7 +67,6 @@ The ANOVA model and some examples
 # ANOVA
 model1<-lm(Value~Var, data=df)
 anova(model1)
-
 ```
 
 # Tukey multiple comparisons
