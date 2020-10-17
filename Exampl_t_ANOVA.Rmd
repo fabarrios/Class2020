@@ -12,17 +12,14 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # Examples Chap03 
-
 The examples for chapter 3 using data from the heart and estrogen/progestin study (HERS), a clinical trial of hormone therapy (HT) for prevention of recurent heart attacks and death among 2,763 post-menopausal women with existing voronary heart disease (CHD)
 
 ## Introduction
-t-Test example presented in Tabel 3.1 of the t-Test of difference in average glucose by exercise for the women that are not diabetic. These eamples are to revisit som t-test R estimations 
-
+t-Test example presented in Tabel 3.1 of the t-Test of difference in average glucose by exercise for the women that are not diabetic. These eamples are to revisit som t-test R estimations
 ```{r}
-setwd("~/Dropbox/Fdo/ClaseStats/RegresionClass/RegresionR_code")
 # To set the working directory at the user dir
 library(tidyverse)
-hers <- read_csv("DataRegressBook/Chap3/hersdata.csv")
+hers <- read_csv("~/Dropbox/Fdo/ClaseStats/RegresionClass/RegresionR_codeDataRegressBook/Chap3/hersdata.csv")
 # Loading the HERS database in hers varible
 summary(hers)
 boxplot(glucose ~ diabetes, data=hers)
@@ -46,7 +43,6 @@ Note that the `echo = FALSE` parameter was added to the code chunk to prevent pr
 ```{r}
 library(multcomp)
 library(tidyverse)
-
 # Create the four groups
 set.seed(10) 
 df1 <- data.frame(Var="a", Value=rnorm(100,10,5))
