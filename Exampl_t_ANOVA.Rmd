@@ -18,7 +18,7 @@ The examples for chapter 3 using data from the heart and estrogen/progestin stud
 ## Introduction
 t-Test example presented in Tabel 3.1 of the t-Test of difference in average glucose by exercise for the women that are not diabetic. These eamples are to revisit som t-test R estimations 
 
-```{r loading, echo=FALSE}
+```{r}
 setwd("~/Dropbox/Fdo/ClaseStats/RegresionClass/RegresionR_code")
 # To set the working directory at the user dir
 library(tidyverse)
@@ -33,7 +33,7 @@ t.test(glucose[hers$diabetes == "no"] ~ exercise[hers$diabetes == "no"], data=he
 
 ## Including Plots
 
-```{r sytolic, echo=FALSE}
+```{r}
 summary(hers$diabetes)
 ggplot(data = hers, mapping = aes(x = exercise, y = glucose)) 
     + geom_boxplot() 
@@ -42,3 +42,35 @@ ggplot(data = hers, mapping = aes(x = exercise, y = glucose))
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
 
+# Example from R-bloggers
+```{r}
+library(multcomp)
+library(tidyverse)
+
+# Create the four groups
+set.seed(10) 
+df1 <- data.frame(Var="a", Value=rnorm(100,10,5))
+df2 <- data.frame(Var="b", Value=rnorm(100,10,5))
+df3 <- data.frame(Var="c", Value=rnorm(100,11,6))
+df4 <- data.frame(Var="d", Value=rnorm(100,11,6))
+
+# merge them in one data frame
+df<-rbind(df1,df2,df3,df4)
+
+# convert Var to a factor
+df$Var<-as.factor(df$Var)
+df%>%ggplot(aes(x=Value, fill=Var))+geom_density(alpha=0.5)
+```
+# The ANOVA
+The ANOVA model and some examples
+```{r}
+# ANOVA
+model1<-lm(Value~Var, data=df)
+anova(model1)
+
+```
+
+# Tukey multiple comparisons
+```{r}
+summary(glht(model1, mcp(Var="Tukey")))
+```
