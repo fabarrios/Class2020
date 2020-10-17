@@ -44,6 +44,8 @@ ggplot(data = hers, mapping = aes(x = exercise, y = glucose)) + geom_boxplot() +
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
 
 # Example from R-bloggers
+First we build four random variables with two different distributions.
+
 ```{r}
 # Create the four groups
 set.seed(10) 
@@ -59,8 +61,8 @@ df<-rbind(df1,df2,df3,df4)
 df$Var<-as.factor(df$Var)
 df%>%ggplot(aes(x=Value, fill=Var))+geom_density(alpha=0.5)
 ```
-# The ANOVA
-The ANOVA model and some examples. The null hypothesis in ANOVA is that there is no difference between means and the alternative is that the means are not all equal. This means that when we are dealing with many groups, we cannot compare them pairwise. We can simply answer if the means between groups can be considered as equal or not.
+# The ANOVA (taken from R-bloggers)
+ANOVA (ANalysis Of VAriance) is a statistical test used to compare two or more groups to see if they are significantly different. The ANOVA model and some examples. The null hypothesis in ANOVA is that there is no difference between means and the alternative is that the means are not all equal. This means that when we are dealing with many groups, we cannot compare them pairwise. We can simply answer if the means between groups can be considered as equal or not.
 
 ```{r}
 # ANOVA
