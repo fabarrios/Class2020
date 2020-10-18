@@ -51,7 +51,7 @@ Anova(glucose_yesdi_act, type="II")
 #
 S(glucose_yesdi_act)
 glucose_emmeans <- emmeans(glucose_yesdi_act, "physact")
-contrast(glucose_emmeans, Contrasts_glu, adjust="sidak")
+contrast(glucose_emmeans, adjust="sidak")
 ```
 
 ## Including Plots
