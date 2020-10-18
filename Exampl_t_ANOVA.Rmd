@@ -1,38 +1,49 @@
 ---
 title: "Exampl_t_ANOVA.Rmd"
-author: "F.A. Barrios"
-date: "10/10/2020"
+author: "F.A. Barrios<br><small>Instituto de Neurobiologia<br></small>"
+date: "<small>`r Sys.Date()`</small>"
 output:
+  html_document:
+    toc: yes
+    toc_depth: 3
+    number_sections: true
+    toc_float:
+      collapsed: false
+    cod_folding: hide
+    theme: cerulean
   pdf_document: default
-  html_document: default
----
+description: "to prepare Class2020 presentations"
 
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+---
+```{r setup, echo=FALSE}
+require(Hmisc)
+knitrSet(lang='markdown', fig.path='png/', fig.align='left', w=6.5, h=4.5, cache=TRUE)
+# If using blogdown: knitrSet(lang='blogdown')
+# knitr::opts_chunk$set(echo = TRUE)
 ```
-
+`r hidingTOC(buttonLabel="Outline")`
 ## Examples Chap03 
 
-The examples for chapter 3 using data from the heart and estrogen/progestin study (HERS), a clinical trial of hormone therapy (HT) for prevention of recurent heart attacks and death among 2,763 post-menopausal women with existing voronary heart disease (CHD)
+The examples for chapter 3 using data from the heart and estrogen/progestin study (HERS), a clinical trial of hormone therapy (HT) for prevention of recurrent heart attacks and death among 2,763 post-menopausal women with existing coronary heart disease (CHD)
 
 ### Introduction
-t-Test example presented in Tabel 3.1 of the t-Test of difference in average glucose by exercise for the women that are not diabetic. These eamples are to revisit som t-test R estimations 
+t-Test example presented in Table 3.1 of the t-Test of difference in average glucose by exercise for the women that are not diabetic. These examples are to revisit some t-test R estimations 
 
 ```{r}
-# setwd("~/Dropbox/Fdo/ClaseStats/RegresionClass/RegresionR_code")
+setwd("~/Dropbox/Fdo/ClaseStats/RegressionClass/RegressionR_code")
 # To set the working directory at the user dir
 library(tidyverse)
 library(multcomp)
 library(car)
 library(emmeans)
 
-hers <- read_csv("~/Dropbox/Fdo/ClaseStats/RegressionClass/RegressionR_code/DataRegressBook/Chap3/hersdata.csv")
-# Loading the HERS database in hers varible
+hers <- read_csv("DataRegressBook/Chap3/hersdata.csv")
+# Loading the HERS database in hers variable
 summary(hers)
 boxplot(glucose ~ diabetes, data=hers)
-# For the 
+# Some graphical description of the glucose state
 boxplot(glucose[hers$diabetes == "no"] ~ exercise[hers$diabetes == "no"], alternative="two.sided", data=hers)
 t.test(glucose[hers$diabetes == "no"] ~ exercise[hers$diabetes == "no"], data=hers, alternative="two.sided", mu=0, paired=FALSE, var.equal=TRUE)
 ```
