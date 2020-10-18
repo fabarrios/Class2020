@@ -1,6 +1,6 @@
 ---
 title: "Exampl_t_ANOVA.Rmd"
-author: "F.A. Barrios<br><small>Instituto de Neurobiologia<br></small>"
+author: "F. A. Barrios<br><small>Instituto de Neurobiología UNAM<br></small>"
 date: "<small>`r Sys.Date()`</small>"
 output:
   html_document:
@@ -24,11 +24,11 @@ knitrSet(lang='markdown', fig.path='png/', fig.align='left', w=6.5, h=4.5, cache
 # knitr::opts_chunk$set(echo = TRUE)
 ```
 `r hidingTOC(buttonLabel="Outline")`
-## Examples Chap03 
+# Examples Chap03 
 
 The examples for chapter 3 using data from the heart and estrogen/progestin study (HERS), a clinical trial of hormone therapy (HT) for prevention of recurrent heart attacks and death among 2,763 post-menopausal women with existing coronary heart disease (CHD)
 
-### Introduction
+## Introduction
 t-Test example presented in Table 3.1 of the t-Test of difference in average glucose by exercise for the women that are not diabetic. These examples are to revisit some t-test R estimations 
 
 ```{r}
@@ -65,7 +65,7 @@ glucose_emmeans <- emmeans(glucose_yesdi_act, "physact")
 contrast(glucose_emmeans, adjust="sidak")
 ```
 
-### Including Plots
+## Including Plots
 
 ```{r}
 summary(hers$diabetes)
@@ -74,7 +74,7 @@ ggplot(data = hers, mapping = aes(x = exercise, y = glucose)) + geom_boxplot() +
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
 
-## Example from R-bloggers
+# Example from R-bloggers
 First we build four random variables with two different distributions.
 
 ```{r}

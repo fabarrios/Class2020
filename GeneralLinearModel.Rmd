@@ -1,0 +1,79 @@
+---
+title: "General Linear Model"
+author: "F. A. Barrios<br><small>Instituto de Neurobiología UNAM<br></small>"
+date: "<small>`r Sys.Date()`</small>"
+output:
+  html_document:
+    toc: yes
+    toc_depth: 3
+    number_sections: true
+    toc_float:
+      collapsed: false
+    cod_folding: hide
+    theme: cerulean
+  pdf_document: default
+description: "to prepare Class2020 presentations"
+---
+
+---
+```{r setup, echo=FALSE}
+require(Hmisc)
+knitrSet(lang='markdown', fig.path='png/', fig.align='left', w=6.5, h=4.5, cache=TRUE)
+# If using blogdown: knitrSet(lang='blogdown')
+# knitr::opts_chunk$set(echo = TRUE)
+```
+`r hidingTOC(buttonLabel="Outline")`
+
+```{r}
+setwd("~/Dropbox/Fdo/ClaseStats/RegressionClass/RegressionR_code")
+# To set the working directory at the user dir
+library(tidyverse)
+library(multcomp)
+library(car)
+library(emmeans)
+```
+# General Linear Model GLM (Modelo lineal General)
+
+## GLM
+Responce variable $Y$ is a random variable that is measured and has a distribution with expected value $ E(Y|x)$ given a set of independent variables $x$.
+$$Y_j (j=1, . . . , J)$$
+for a set of $x_jl$ predictor variables (or independent variaables) defined as vectors for each $j$
+$$ x_jl (l=1, . . . , L)$$
+with $L(L<J$, a general linear model with an error function $\epsilon_j$ can be expressed:
+$$Y_j = x_{j1}\beta_1 + x_{j2}\beta_2 + x_{j3}\beta_3 + . . . + x_{jL}\beta_L + \epsilon_j$$
+with $\epsilon_j$ an independent variable identically distributed to the Normal with mean equal to zero.
+$$\epsilon_j \approx N(0,\sigma^2)_{iid}$$
+Example of simple linear regression: exercise and glucose Glucose levels above 125 mg/dL are diagnostic of diabetes, while 100-125 mg/dL signal increased risk.
+Data from HERS (public data) has baseline of glucose levels among 2,032 participants in a clinical trial of hormone therapy (HT). Women with diabetes are excluded, to study if the exercise might help prevent progression to diabetes.
+
+```{r}
+hers <- read_csv(“DataRegressBook/Chap3/hersdata.csv”)
+# hers data structure
+hers_nodi <- filter(hers, diabetes == “no")
+hers_nodi_Fit <- lm(glucose ~ exercise, data = hers_nodi)
+# the linear model results can be printed using summary
+summary(hers_nodi_Fit)
+```
+
+```{r}
+#  Example of the HERS data for diabetic participants
+hers_yesdi <- filter(hers, diabetes == "yes")
+hers_yesdi <- mutate(hers_yesdi, physact = factor(physact, levels=c("much less active","somewhat less active","about as active","somewhat more active","much more active")))
+#  Example of ANOVA with HERS data for diabetic participants
+#
+ggplot(data = hers_yesdi, mapping = aes(x = physact, y = glucose)) + geom_boxplot(na.rm = TRUE)
+glucose_yesdi_act <- lm(glucose ~ physact, data = hers_yesdi)
+Anova(glucose_yesdi_act, type="II")
+#
+S(glucose_yesdi_act)
+glucose_emmeans <- emmeans(glucose_yesdi_act, "physact")
+contrast(glucose_emmeans, adjust="sidak")
+```
+
+### Including Plots
+
+```{r}
+summary(hers$diabetes)
+ggplot(data = hers, mapping = aes(x = exercise, y = glucose)) + geom_boxplot() + facet_grid( . ~ diabetes)
+```
+
