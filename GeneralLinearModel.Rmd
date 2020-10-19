@@ -47,9 +47,9 @@ Example of simple linear regression: exercise and glucose Glucose levels above 1
 Data from HERS (public data) has baseline of glucose levels among 2,032 participants in a clinical trial of hormone therapy (HT). Women with diabetes are excluded, to study if the exercise might help prevent progression to diabetes.
 
 ```{r}
-hers <- read_csv(“DataRegressBook/Chap3/hersdata.csv”)
+hers <- read_csv("DataRegressBook/Chap3/hersdata.csv")
 # hers data structure
-hers_nodi <- filter(hers, diabetes == “no")
+hers_nodi <- filter(hers, diabetes == "no")
 hers_nodi_Fit <- lm(glucose ~ exercise, data = hers_nodi)
 # the linear model results can be printed using summary
 summary(hers_nodi_Fit)
