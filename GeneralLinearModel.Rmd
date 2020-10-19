@@ -45,6 +45,8 @@ with $L(L<J$, a general linear model with an error function $\epsilon_j$ can be 
 $$Y_j = x_{j1}\beta_1 + x_{j2}\beta_2 + x_{j3}\beta_3 + . . . + x_{jL}\beta_L + \epsilon_j$$
 with $\epsilon_j$ an independent variable identically distributed to the Normal with mean equal to zero.
 $$\epsilon_j \approx N(0,\sigma^2)_{iid}$$
+## Linear Regresion (Chap 4, Vittinghoff et all.)
+
 Example of simple linear regression: exercise and glucose Glucose levels above 125 mg/dL are diagnostic of diabetes, while 100-125 mg/dL signal increased risk.
 Data from HERS (public data) has baseline of glucose levels among 2,032 participants in a clinical trial of Hormone Therapy (HT). Women with diabetes are excluded, to study if the exercise might help prevent progression to diabetes.
 
