@@ -86,11 +86,11 @@ There are models to regress several predictor variables to relate several random
 $$y_i = E[y_i|x_i] + \epsilon_i$$
 $$Y = \beta_0 + \beta_1 x_{1} + \beta_2 x_{2} + \dots + \beta_p x_{p}$$
 
-Multiple linear regression model coefficients, the betas, give the change in $E[Y|x]$ for an increase of one unit on the predictor $x_j$ , holding other factors in the model constant; each of the estimates is adjusted for the effects of all the other predictors. As in the simple linear model the intercept $\beta_0$ (beta zero) gives the value $E[Y|x]$ when all the predictors are equal to zero. Example of multiple linear model estimate is done with:  glucose ~ exercise + age + drinking + BMI.
+Multiple linear regression model coefficients, the betas, give the change in $E[Y|x]$ for an increase of one unit on the predictor $x_j$ , holding other factors in the model constant; each of the estimates is adjusted for the effects of all the other predictors. As in the simple linear model the intercept $\beta_0$ (beta zero) gives the value $E[Y|x]$ when all the predictors are equal to zero. Example of multiple linear model estimate is done with:  glucose ~ exercise + age + drinkany + BMI.
 
 In general in R we can write:$Y = variable_1 + variable_2 + variable_3$ for a multiple linear model.
 ```{r}
-hers_nodi_multFit <- lm(glucose ~ exercise + age + drinking + BMI, data = hers_nodi)
+hers_nodi_multFit <- lm(glucose ~ exercise + age + drinkany + BMI, data = hers_nodi)
 # the linear model results can be printed using summary
 summary(hers_nodi_multFit)
 ```
