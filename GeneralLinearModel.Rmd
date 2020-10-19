@@ -31,29 +31,32 @@ library(tidyverse)
 library(multcomp)
 library(car)
 library(emmeans)
+
+hers <- read_csv("DataRegressBook/Chap3/hersdata.csv")
 ```
 # General Linear Model GLM (Modelo lineal General)
 
 ## GLM
-Responce variable $Y$ is a random variable that is measured and has a distribution with expected value $ E(Y|x)$ given a set of independent variables $x$.
+Response variable $Y$ is a random variable that is measured and has a distribution with expected value $E(Y|x)$ given a set of independent variables $x$.
 $$Y_j (j=1, . . . , J)$$
-for a set of $x_jl$ predictor variables (or independent variaables) defined as vectors for each $j$
+for a set of $x_jl$ predictor variables (or independent variables) defined as vectors for each $j$
 $$ x_jl (l=1, . . . , L)$$
 with $L(L<J$, a general linear model with an error function $\epsilon_j$ can be expressed:
 $$Y_j = x_{j1}\beta_1 + x_{j2}\beta_2 + x_{j3}\beta_3 + . . . + x_{jL}\beta_L + \epsilon_j$$
 with $\epsilon_j$ an independent variable identically distributed to the Normal with mean equal to zero.
 $$\epsilon_j \approx N(0,\sigma^2)_{iid}$$
 Example of simple linear regression: exercise and glucose Glucose levels above 125 mg/dL are diagnostic of diabetes, while 100-125 mg/dL signal increased risk.
-Data from HERS (public data) has baseline of glucose levels among 2,032 participants in a clinical trial of hormone therapy (HT). Women with diabetes are excluded, to study if the exercise might help prevent progression to diabetes.
+Data from HERS (public data) has baseline of glucose levels among 2,032 participants in a clinical trial of Hormone Therapy (HT). Women with diabetes are excluded, to study if the exercise might help prevent progression to diabetes.
 
 ```{r}
-hers <- read_csv("DataRegressBook/Chap3/hersdata.csv")
 # hers data structure
 hers_nodi <- filter(hers, diabetes == "no")
 hers_nodi_Fit <- lm(glucose ~ exercise, data = hers_nodi)
 # the linear model results can be printed using summary
 summary(hers_nodi_Fit)
 ```
+
+Simple linear regression model shows coefficient estimate (Coef) for exercise shows that average baseline glucose levels were about 1.7mg/dL lower among women who exercised at least three times a week than among women who exercised less.
 
 ```{r}
 #  Example of the HERS data for diabetic participants
@@ -70,10 +73,30 @@ glucose_emmeans <- emmeans(glucose_yesdi_act, "physact")
 contrast(glucose_emmeans, adjust="sidak")
 ```
 
-### Including Plots
+### More Box Plots
 
 ```{r}
 summary(hers$diabetes)
 ggplot(data = hers, mapping = aes(x = exercise, y = glucose)) + geom_boxplot() + facet_grid( . ~ diabetes)
 ```
 
+## For a multiple linear model
+There are models to regress several predictor variables to relate several random independent variables.
+
+$$y_i = E[y_i|x_i] + \epsilon_i$$
+$$Y = \beta_0 + \beta_1 x_{1} + \beta_2 x_{2} + \dots + \beta_p x_{p}$$
+
+Multiple linear regression model coefficients, the betas, give the change in $E[Y|x]$ for an increase of one unit on the predictor $x_j$ , holding other factors in the model constant; each of the estimates is adjusted for the effects of all the other predictors. As in the simple linear model the intercept $\beta_0$ (beta zero) gives the value $E[Y|x]$ when all the predictors are equal to zero. Example of multiple linear model estimate is done with:  glucose ~ exercise + age + drinking + BMI.
+
+In general in R we can write:$Y = variable_1 + variable_2 + variable_3$ for a multiple linear model.
+```{r}
+hers_nodi_multFit <- lm(glucose ~ exercise + age + drinking + BMI, data = hers_nodi)
+# the linear model results can be printed using summary
+summary(hers_nodi_multFit)
+```
+## Multiple linear model, with interactions
+In general in R we can write:$Y = variable_1 + variable_2 + variable_1:varible_2$ for a multiple linear model.
+
+$$Y=\beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_1 x_2$$
+
+(The following is a very good link: http://www.sthda.com/english/articles/40-regression-analysis/ )
