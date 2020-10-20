@@ -35,6 +35,42 @@ library(emmeans)
 hers <- read_csv("DataRegressBook/Chap3/hersdata.csv")
 ```
 # General Linear Model GLM (Modelo lineal General)
+## Linear Regression
+The term "regression" was introduced by Francis Galton (Darwin's nephew) during the XIX century to describe a biological phenomenon.  The heights of the descendants of tall ancestors have the tendency to "return", come back, to the normal average high in the population, known as the regression to the media. (Mr. Galton was an Eugenics supporter)
+
+## Examples for "simple" linear regression
+The general equation for the straight line is $y = mx + b_0$, this form is the "slope, intersection form". The slope is the rate of change the gives the change in $y$ for a unit change in $x$. Remember that the slope formula for two pair of points $(x_1, y_1)$ and $(x_2, y_2)$ is:
+$$ m = \frac{(y_2 - y_1)}{(x_2 - x_1)}$$
+
+```{r}
+setwd("~/Dropbox/Fdo/ClaseStats/RegressionClass/RegressionR_code")
+# Changing wd to load the data file
+Exa9.3 = read.csv(file="DataOther/EXA_C09_S03_01.csv", header=TRUE)
+names(Exa9.3)
+plot(Exa9.3$Y ~ Exa9.3$X, pch = 20)
+Ybar=mean(Exa9.3$Y)
+Xbar=mean(Exa9.3$X)
+abline(h=Ybar, col = 2, lty = 2)
+abline(v=Xbar, col = 2, lty = 2)
+Lin9.3 = lm(Y ~ X, data=Exa9.3)
+summary(Lin9.3)
+abline(Lin9.3, col=2)
+```
+
+Following with more examples from Damiel's book.
+```{r}
+setwd("~/Dropbox/Fdo/ClaseStats/RegressionClass/RegressionR_code")
+# Changing wd to load the data file
+# Problem 9.3.3 Methadone dose and the QTc Ventricular 
+# Tachycardia
+Exr3.3=read.csv(file="DataOther/EXR_C09_S03_03.csv", header=TRUE)
+names(Exr3.3)
+plot(Exr3.3$QTC ~ Exr3.3$DOSE, pch=20)
+LinExr3.3 = lm(QTC ~ DOSE, data=Exr3.3)
+summary(LinExr3.3)
+abline(LinExr3.3, col=2)
+# Res y = 559.9 + 0.139 x
+```
 
 ## GLM
 Response variable $Y$ is a random variable that is measured and has a distribution with expected value $E(Y|x)$ given a set of independent variables $x$.
