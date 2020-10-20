@@ -96,36 +96,13 @@ hers_nodi_Fit <- lm(glucose ~ exercise, data = hers_nodi)
 summary(hers_nodi_Fit)
 ```
 
-Simple linear regression model shows coefficient estimate (Coef) for exercise shows that average baseline glucose levels were about 1.7mg/dL lower among women who exercised at least three times a week than among women who exercised less.
-
-```{r}
-#  Example of the HERS data for diabetic participants
-hers_yesdi <- filter(hers, diabetes == "yes")
-hers_yesdi <- mutate(hers_yesdi, physact = factor(physact, levels=c("much less active","somewhat less active","about as active","somewhat more active","much more active")))
-#  Example of ANOVA with HERS data for diabetic participants
-#
-ggplot(data = hers_yesdi, mapping = aes(x = physact, y = glucose)) + geom_boxplot(na.rm = TRUE)
-glucose_yesdi_act <- lm(glucose ~ physact, data = hers_yesdi)
-Anova(glucose_yesdi_act, type="II")
-#
-S(glucose_yesdi_act)
-glucose_emmeans <- emmeans(glucose_yesdi_act, "physact")
-contrast(glucose_emmeans, adjust="sidak")
-```
-
-### More Box Plots
-
-```{r}
-summary(hers$diabetes)
-ggplot(data = hers, mapping = aes(x = exercise, y = glucose)) + geom_boxplot() + facet_grid( . ~ diabetes)
-```
+Simple linear regression model shows coefficient estimate ($\beta_1$) for exercise shows that average baseline glucose levels were about 1.7mg/dL lower among women who exercised at least three times a week than among women who exercised less.
 
 ## For a multiple linear model
 There are models to regress several predictor variables to relate several random independent variables.
 
 $$y_i = E[y_i|x_i] + \epsilon_i$$
 $$Y = \beta_0 + \beta_1 x_{1} + \beta_2 x_{2} + \dots + \beta_p x_{p}$$
-
 Multiple linear regression model coefficients, the betas, give the change in $E[Y|x]$ for an increase of one unit on the predictor $x_j$ , holding other factors in the model constant; each of the estimates is adjusted for the effects of all the other predictors. As in the simple linear model the intercept $\beta_0$ (beta zero) gives the value $E[Y|x]$ when all the predictors are equal to zero. Example of multiple linear model estimate is done with:  glucose ~ exercise + age + drinkany + BMI.
 
 In general in R we can write:$Y = \beta_1 variable_1 + \beta_2 variable_2 + \beta_3 variable_3 + \beta_4 variable_4$ for a multiple linear model, in this case four regressors.
@@ -139,5 +116,4 @@ summary(hers_nodi_multFit)
 In general in R we can write the interaction term as the product of the regressors that we are studying the interaction:$variable_1:varible_2$ for a multiple linear model with two regressors and interaction the equation looks like:
 
 $$Y=\beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_1 x_2$$
-
 (The following is a very good link: http://www.sthda.com/english/articles/40-regression-analysis/ )
