@@ -24,12 +24,19 @@ knitrSet(lang='markdown', fig.path='png/', fig.align='left', w=6.5, h=4.5, cache
 # knitr::opts_chunk$set(echo = TRUE)
 ```
 `r hidingTOC(buttonLabel="Outline")`
-# Examples Chap03 
+# Examples Chap03 (Vittinghoff et al. book)
 
-The examples for chapter 3 using data from the heart and estrogen/progestin study (HERS), a clinical trial of hormone therapy (HT) for prevention of recurrent heart attacks and death among 2,763 post-menopausal women with existing coronary heart disease (CHD)
+The examples for chapter 3 (Vittinghoff's book http://www.biostat.ucsf.edu/vgsm) using data from the heart and estrogen/progestin study (HERS), a clinical trial of hormone therapy (HT) for prevention of recurrent heart attacks and death among 2,763 post-menopausal women with existing coronary heart disease (CHD)
 
 ## Introduction
-t-Test example presented in Table 3.1 of the t-Test of difference in average glucose by exercise for the women that are not diabetic. These examples are to revisit some t-test R estimations 
+t-Test example presented in Table 3.1 of the t-Test of difference in average glucose by exercise for the women that are not diabetic. These examples are to revisit some t-test R estimations and t-test function in R. And to remember that a Boxplot gives a good amount of information about a numerical variable:
+Centering described by the median
+Dispersion, measured by the hight of the box (interquartil distance).
+Observation range
+The presence of extreme values (outliers)
+And some information of the distribution “form” (skewness)
+
+This last point bears further explanation. If the median is located toward the bottom of the box, then the data are right-skewed toward larger values. That is, the distance between the median and the 75th percentile is greater than that between the median and the 25th percentile. Likewise, right-skewness will be indicated if the upper whisker is longer than the lower whisker or if there are more outliers in the upper range. Both the boxplot and the histogram show evidence for right-skewness in the SBP data.
 
 ```{r}
 setwd("~/Dropbox/Fdo/ClaseStats/RegressionClass/RegressionR_code")
@@ -47,8 +54,29 @@ boxplot(glucose ~ diabetes, data=hers)
 boxplot(glucose[hers$diabetes == "no"] ~ exercise[hers$diabetes == "no"], alternative="two.sided", data=hers)
 t.test(glucose[hers$diabetes == "no"] ~ exercise[hers$diabetes == "no"], data=hers, alternative="two.sided", mu=0, paired=FALSE, var.equal=TRUE)
 ```
+## t-test examles
+Examples of t-test from the exercises of the Daniel's book, Chap 7, section 3 number 3. Data can be downloaded from the WEB page of the Daniel's book
+```{r}
+setwd("~/Dropbox/Fdo/ClaseStats/RegressionClass/RegressionR_code")
+# Daniel's chap 7 t-test examples
+# EXR_C07_S03_03
+Ex733 = read.csv(file="DataOther/EXR_C07_S03_03.csv", header=TRUE)
+names(Ex733)
+summary(Ex733)
+# In parts
+NoOSAS = Ex733$Length[Ex733$Group == 1]
+OSAS = Ex733$Length[Ex733$Group == 2]
+# 
+boxplot(NoOSAS,OSAS)
+var.test(OSAS, NoOSAS)
+t.test(NoOSAS, OSAS, alternative="less", conf.level=0.99)
+#
+# Shorter and direct
+boxplot(Length ~ Group, data=Ex733)
+t.test(Length ~ Group, data=Ex733, alternative="less", conf.level=0.99)
+```
 
-How it looks for several variables (using other code)
+How it looks for several variables an ANOVA example using the HERS data refering to the diabetic participants.
 ```{r}
 #  Example of the HERS data for diabetic participants
 hers_yesdi <- filter(hers, diabetes == "yes")
@@ -98,8 +126,12 @@ What about if we want to compare all the groups pairwise? In this case, we can a
 ```{r}
 summary(glht(model1, mcp(Var="Tukey")))
 ```
+## Linear Regression
+The term "regression" was introduced by Francis Galton (Darwin's nephew) during the XIX century to describe a biological phenomenon.  The heights of the descendants of tall ancestors have the tendency to "return", come back, to the normal average high in the population, known as the regression to the media. (Mr. Galton was an Eugenics supporter)
+
 ## Examples for "simple" linear regression
-The general equation for the straight line is $y = mx + b_0$, this form is the "slope, intersection form". The slope is the rate of change the gives the change in $y$ for a unit change in $x$.
+The general equation for the straight line is $y = mx + b_0$, this form is the "slope, intersection form". The slope is the rate of change the gives the change in $y$ for a unit change in $x$. Remember that the slope formula for two pair of points $(x_1, y_1)$ and $(x_2, y_2)$ is:
+$$ m = frac{(y_2 - y_1)}{(x_2 - x_1)}$$
 
 ```{r}
 setwd("~/Dropbox/Fdo/ClaseStats/RegressionClass/RegressionR_code")
