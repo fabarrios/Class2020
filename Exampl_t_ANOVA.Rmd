@@ -3,7 +3,6 @@ title: "Exampl_t_ANOVA.Rmd"
 author: "F. A. Barrios<br><small>Instituto de Neurobiología UNAM<br></small>"
 date: "<small>`r Sys.Date()`</small>"
 output:
-  pdf_document: default
   html_document:
     toc: yes
     toc_depth: 3
@@ -12,6 +11,7 @@ output:
       collapsed: false
     cod_folding: hide
     theme: cerulean
+  pdf_document: default
 description: "to prepare Class2020 presentations"
 ---
 
