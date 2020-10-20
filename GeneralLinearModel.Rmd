@@ -41,6 +41,8 @@ The term "regression" was introduced by Francis Galton (Darwin's nephew) during 
 ## Examples for "simple" linear regression
 The general equation for the straight line is $y = mx + b_0$, this form is the "slope, intersection form". The slope is the rate of change the gives the change in $y$ for a unit change in $x$. Remember that the slope formula for two pair of points $(x_1, y_1)$ and $(x_2, y_2)$ is:
 $$ m = \frac{(y_2 - y_1)}{(x_2 - x_1)}$$
+We will run examples from the chapter 9 from Daniel's book. We sill solve simple (one variable) linear regressions, where the $\beta_0$ is the intercept value (this is the value taken by the model at $x_1=0$) and the adjusted $\beta_1$ is the slope of the model, the rate of change in $Y$ for a "unit of $x_1$ change"
+$$Y=\beta_0 + \beta_1 x_1$$
 
 ```{r}
 setwd("~/Dropbox/Fdo/ClaseStats/RegressionClass/RegressionR_code")
@@ -57,7 +59,7 @@ summary(Lin9.3)
 abline(Lin9.3, col=2)
 ```
 
-Following with more examples from Damiel's book.
+Following with more examples from Daniel's book.
 ```{r}
 setwd("~/Dropbox/Fdo/ClaseStats/RegressionClass/RegressionR_code")
 # Changing wd to load the data file
@@ -126,14 +128,15 @@ $$Y = \beta_0 + \beta_1 x_{1} + \beta_2 x_{2} + \dots + \beta_p x_{p}$$
 
 Multiple linear regression model coefficients, the betas, give the change in $E[Y|x]$ for an increase of one unit on the predictor $x_j$ , holding other factors in the model constant; each of the estimates is adjusted for the effects of all the other predictors. As in the simple linear model the intercept $\beta_0$ (beta zero) gives the value $E[Y|x]$ when all the predictors are equal to zero. Example of multiple linear model estimate is done with:  glucose ~ exercise + age + drinkany + BMI.
 
-In general in R we can write:$Y = variable_1 + variable_2 + variable_3$ for a multiple linear model.
+In general in R we can write:$Y = \beta_1 variable_1 + \beta_2 variable_2 + \beta_3 variable_3 + \beta_4 variable_4$ for a multiple linear model, in this case four regressors.
+
 ```{r}
 hers_nodi_multFit <- lm(glucose ~ exercise + age + drinkany + BMI, data = hers_nodi)
 # the linear model results can be printed using summary
 summary(hers_nodi_multFit)
 ```
 ## Multiple linear model, with interactions
-In general in R we can write:$Y = variable_1 + variable_2 + variable_1:varible_2$ for a multiple linear model.
+In general in R we can write the interaction term as the product of the regressors that we are studying the interaction:$variable_1:varible_2$ for a multiple linear model with two regressors and interaction the equation looks like:
 
 $$Y=\beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_1 x_2$$
 
