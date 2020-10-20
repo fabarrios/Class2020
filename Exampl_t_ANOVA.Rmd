@@ -131,7 +131,7 @@ The term "regression" was introduced by Francis Galton (Darwin's nephew) during 
 
 ## Examples for "simple" linear regression
 The general equation for the straight line is $y = mx + b_0$, this form is the "slope, intersection form". The slope is the rate of change the gives the change in $y$ for a unit change in $x$. Remember that the slope formula for two pair of points $(x_1, y_1)$ and $(x_2, y_2)$ is:
-$$ m = frac{(y_2 - y_1)}{(x_2 - x_1)}$$
+$$ m = \frac{(y_2 - y_1)}{(x_2 - x_1)}$$
 
 ```{r}
 setwd("~/Dropbox/Fdo/ClaseStats/RegressionClass/RegressionR_code")
