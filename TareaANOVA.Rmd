@@ -1,0 +1,101 @@
+---
+title: "TareaANOVA.Rmd"
+author: "F. A. Barrios<br><small>Instituto de Neurobiología, UNAM<br></small>"
+date: "<small>`r Sys.Date()`</small>"
+output:
+  html_document:
+    toc: yes
+    toc_depth: 3
+    number_sections: true
+    toc_float:
+      collapsed: false
+    cod_folding: hide
+    theme: cerulean
+  pdf_document: default
+description: "to prepare homeworks"
+---
+
+```{r setup, echo=FALSE}
+require(Hmisc)
+knitrSet(lang='markdown', fig.path='png/', fig.align='left', w=6.5, h=4.5, cache=TRUE)
+# If using blogdown: knitrSet(lang='blogdown')
+# knitr::opts_chunk$set(echo = TRUE)
+```
+`r hidingTOC(buttonLabel="Outline")`
+
+# Chapter 8 Daniel
+
+Solution of some examples and exercises from Daniel's book, the ANOVA chapter.
+
+## Including Code and comments
+
+As part of the Homework we include R code in the document, and the R code will be included too.
+
+# 1. Example 8.2.1
+
+```{r}
+setwd("~/Dropbox/Fdo/ClaseStats/RegressionClass/RegressionR_code")
+# Example Chap 8, One-Way ANOVA
+Exa8_2=read.csv(file="DataOther/EXA_C08_S02_01.csv", header=TRUE)
+summary(Exa8_2)
+boxplot(Exa8_2)
+Exa8_2.dat = stack(Exa8_2)
+names(Exa8_2.dat)
+Exa8_2.aov=aov(values~ind, data=Exa8_2.dat)
+summary(Exa8_2.aov)
+# # # # # # # # # # # # # # # # # 
+plot(values~ind, data=Exa8_2.dat)
+TukeyHSD(Exa8_2.aov, ordered=TRUE)
+plot(TukeyHSD(Exa8_2.aov), las=2)
+abline(v=0, col=2)
+```
+
+# Including Plots
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+You can also plot on different quadrants, for example:
+
+```{r, echo=FALSE}
+# Advanced graph.
+layout(matrix(c(1, 2, 3, 4), nrow=2, ncol=2, byrow=TRUE))
+plot(Exa8_2.aov)
+```
+
+# 2. Example 8.3.1
+
+The section 2 of the ANOVA chapter in Daniel's book is for a two-way ANOVA. The data for this example is not loadable from a data file provided by the site of the book. Nevertheless, we will make a table copying the data directly, which is not large, form the text.
+
+```{r}
+# Build a table, index by index since
+# Two-Way ANOVA EXAMPLE 8.3.1 has NO-data file
+# Therefore we make the example table.
+#
+Age=factor(rep(c(1,2,3,4,5), 3))
+Age
+Method=factor(rep(1:3,c(5,5,5)))
+Method
+levels(Method)=letters[1:3]
+Method
+t = c(7,8,9,10,11,9,9,9,9,12,10,10,12,12,14)
+#
+plot(t ~ Age + Method)
+# now the ANOVA model
+t_aov = aov(t ~ Method + Age)
+summary(t_aov)
+layout(matrix(c(1,2), nrow=2, ncol=1, byrow=TRUE))
+TukeyHSD(t_aov)
+plot(TukeyHSD(t_aov))
+abline(v=0, col=2)
+```
+# Pltotting
+Looking at man of rep, levels Advanced graph.
+
+```{r}
+layout(matrix(c(1, 2, 3, 4), nrow=2, ncol=2, byrow=TRUE))
+plot(t_aov)
+
+```
+
+
+
+
