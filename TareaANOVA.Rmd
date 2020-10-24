@@ -102,9 +102,10 @@ plot(t_aov)
 Licciardone et al. examined subjects with chronic, nonspecific low back pain. In this study, 18 of the subjects completed a survey questionnaire assessing physical functioning at baseline, and after 1, 3, and 6 months. The file has data for these subjects which received a sham treatment thet appeared to be genuine osteopathic manipulations. Higher values indicate better physical functioning. Higher values indicate better physical functioning. The goal of the experiment was to determine if subjects would report improvement over time even though the treatment they received would provide minimal improvement. We wish to know if there is a difference in the mean survey values among the four points in time.
 
 ```{r}
+setwd("~/Dropbox/Fdo/ClaseStats/RegressionClass/RegressionR_code")
 # Example 8.4.1 ANOVA Single factor repeated measures
 # 
-Exa4.1=read.csv(file="EXA_C08_S04_01.csv", header=TRUE)
+Exa4.1=read.csv(file="DataOther/EXA_C08_S04_01.csv", header=TRUE)
 names(Exa4.1)
 # FUNC we want to estimate if depends on SUBJ with
 # repeated measurements for SUBJ.
