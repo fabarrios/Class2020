@@ -105,16 +105,17 @@ Licciardone et al. examined subjects with chronic, nonspecific low back pain. In
 setwd("~/Dropbox/Fdo/ClaseStats/RegressionClass/RegressionR_code")
 # Example 8.4.1 ANOVA Single factor repeated measures
 # 
-Exa4.1=read.csv(file="DataOther/EXA_C08_S04_01.csv", header=TRUE)
+Exa4.1=read.csv(file="DataOther/EXA_C08_S04_01mod.csv", header=TRUE)
 names(Exa4.1)
+boxplot(Exa4.1)
 # FUNC we want to estimate if depends on SUBJ with
 # repeated measurements for SUBJ.
 # factor is used to force the numbers as factors !
 # And were grouped in time to measure effect
 # model FUNC ~ factor(TIME) + factor(SUBJ)
 layout(matrix(c(1,2), nrow=2, ncol=1, byrow=TRUE))
-plot(FUNC ~ factor(TIME) + factor(SUBJ), data=Exa4.1)
-Exa4.1.aov = aov(FUNC ~ factor(TIME) + factor(SUBJ), data=Exa4.1)
+plot(Assessment ~ factor(Time) + factor(Subject), data=Exa4.1)
+Exa4.1.aov = aov(Assessment ~ factor(Time) + factor(Subject), data=Exa4.1)
 summary(Exa4.1.aov)
 TukeyHSD(Exa4.1.aov)
 plot(TukeyHSD(Exa4.1.aov), las=2)
