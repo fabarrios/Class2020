@@ -32,7 +32,7 @@ Solution of some examples and exercises from Daniel's book, the ANOVA chapter.
 As part of the Homework we include R code in the document, and the R code will be included too.
 
 # 1. Example 8.2.1
-
+Game meats, including those from white-tailed deer and eastern gray squirrels, are used as food by families, hunters and other individuals for health, cultural, or personal reasons. A study by D Holben assessed the selenium content of the meat from free-roaming white-tailed deer (venison) and gray squirrel (squirrel) obtained from a low selenium region of the United States. These selenium content values were also compared to those of beef produced whithin and outside the same region. We want to know if the selenium levels are different in the four meat groups.
 ```{r}
 setwd("~/Dropbox/Fdo/ClaseStats/RegressionClass/RegressionR_code")
 # Example Chap 8, One-Way ANOVA
@@ -63,7 +63,9 @@ plot(Exa8_2.aov)
 
 # 2. Example 8.3.1
 
-The section 2 of the ANOVA chapter in Daniel's book is for a two-way ANOVA. The data for this example is not loadable from a data file provided by the site of the book. Nevertheless, we will make a table copying the data directly, which is not large, form the text.
+A physical therapist wishe to compare three methods for patients to use a certain prosthetic device. He felt that the rate of learing would be different for patients of different ages and wished to design an experiment in which the ifluence of age could be taken into account.
+Data. Three patients in each of the five age groups were selected to partipate in the experiment, and one patient in each age group was randomly assigned to each of the teaching methods. The methods of instruction constitute our three treatments, and the five gorups are the blocks.
+(The section 2 of the ANOVA chapter in Daniel's book is for a two-way ANOVA. The data for this example is not loadable from a data file provided by the site of the book. Nevertheless, we will make a table copying the data directly, which is not large, form the text.
 
 ```{r}
 # Build a table, index by index since
@@ -87,15 +89,39 @@ TukeyHSD(t_aov)
 plot(TukeyHSD(t_aov))
 abline(v=0, col=2)
 ```
-# Pltotting
-Looking at man of rep, levels Advanced graph.
+# Plotting
+Layout instruction divides the graphical screen in four sections, square diff and QQ-plot graphs.
 
 ```{r}
 layout(matrix(c(1, 2, 3, 4), nrow=2, ncol=2, byrow=TRUE))
 plot(t_aov)
-
 ```
 
+# 3. Example 8.4.1
 
+Licciardone et al. examined subjects with chronic, nonspecific low back pain. In this study, 18 of the subjects completed a survey questionnaire assessing physical functioning at baseline, and after 1, 3, and 6 months. The file has data for these subjects which received a sham treatment thet appeared to be genuine osteopathic manipulations. Higher values indicate better physical functioning. Higher values indicate better physical functioning. The goal of the experiment was to determine if subjects would report improvement over time even though the treatment they received would provide minimal improvement. We wish to know if there is a difference in the mean survey values among the four points in time.
 
+```{r}
+# Example 8.4.1 ANOVA Single factor repeated measures
+# 
+Exa4.1=read.csv(file="EXA_C08_S04_01.csv", header=TRUE)
+names(Exa4.1)
+# FUNC we want to estimate if depends on SUBJ with
+# repeated measurements for SUBJ.
+# factor is used to force the numbers as factors !
+# And were grouped in time to measure effect
+# model FUNC ~ factor(TIME) + factor(SUBJ)
+layout(matrix(c(1,2), nrow=2, ncol=1, byrow=TRUE))
+plot(FUNC ~ factor(TIME) + factor(SUBJ), data=Exa4.1)
+Exa4.1.aov = aov(FUNC ~ factor(TIME) + factor(SUBJ), data=Exa4.1)
+summary(Exa4.1.aov)
+TukeyHSD(Exa4.1.aov)
+plot(TukeyHSD(Exa4.1.aov), las=2)
+```
+
+```{r}
+layout(matrix(c(1,2,3,4), nrow=2, ncol=2, byrow=TRUE))
+plot(Exa4.1.aov)
+```
+```
 
