@@ -124,5 +124,15 @@ plot(TukeyHSD(Exa4.1.aov), las=2)
 layout(matrix(c(1,2,3,4), nrow=2, ncol=2, byrow=TRUE))
 plot(Exa4.1.aov)
 ```
-```
+# Exercises chapter 8 Daniel
 
+In the following exercises estimate an ANOVA model. Let $\alpha = 0.05$ for each tes. Use Tukey's HSD procedure to test for significant differences among individual pairs of means (if appropriate). Construct box-plots of the data.
+
+# 4. EXERCISE 8.2.1
+
+Reseachers at CWRU wanted to develop and implement a transducer, manageable in a clinical detting, for quialifying isometric moment produced at the elbow joint by individuals with tetraplegia (paralysis or paresis of all four limbs). The apparatus, called an elbow moment transducer (EMT), measures the force the elbow can exert when flexing. The output variable is voltage. The machine was tested at four different elbow extension angles, 30, 60, 90, 102 degrees, on a mock elbow consisting of two hinged aluminum beams. The data is at file.
+
+
+# 5. EXERCISE 8.2.3
+
+Ilich-Ernst et al. investigated dietary intake of calcium among a cross section of 113 healthy women ages 20-88. The researchers formed four age groupings as follows: Group A, 20.0 - 45.9 years; Group B, 46.0 - 55.9 years; Group C, 56.0 - 65.9 years; and Group D, over 66 years. Calcium from food intake was measured in mg/day. The data is at the file
