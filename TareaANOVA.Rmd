@@ -14,7 +14,6 @@ output:
   pdf_document: default
 description: "to prepare homeworks"
 ---
-```{r}
 
 ```{r setup, echo=FALSE}
 require(Hmisc)
@@ -24,15 +23,11 @@ knitrSet(lang='markdown', fig.path='png/', fig.align='left', w=6.5, h=4.5, cache
 ```
 `r hidingTOC(buttonLabel="Outline")`
 
-# Chapter 8 Daniel
+# Examples Chapter 8 Daniel ANOVA
 
-Solution of some examples and exercises from Daniel's book, the ANOVA chapter.
+Solution of some examples and exercises from Daniel's book, the ANOVA chapter. As part of the Homework we include R code in the document, and the R code will be included too.
 
-## Including Code and comments
-
-As part of the Homework we include R code in the document, and the R code will be included too.
-
-# 1. Example 8.2.1
+## Example 8.2.1
 Game meats, including those from white-tailed deer and eastern gray squirrels, are used as food by families, hunters and other individuals for health, cultural, or personal reasons. A study by D Holben assessed the selenium content of the meat from free-roaming white-tailed deer (venison) and gray squirrel (squirrel) obtained from a low selenium region of the United States. These selenium content values were also compared to those of beef produced whithin and outside the same region. We want to know if the selenium levels are different in the four meat groups.
 ```{r}
 setwd("~/Dropbox/Fdo/ClaseStats/RegressionClass/RegressionR_code")
@@ -51,8 +46,6 @@ plot(TukeyHSD(Exa8_2.aov), las=2)
 abline(v=0, col=2)
 ```
 
-# Including Plots
-
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
 You can also plot on different quadrants, for example:
 
@@ -62,7 +55,7 @@ layout(matrix(c(1, 2, 3, 4), nrow=2, ncol=2, byrow=TRUE))
 plot(Exa8_2.aov)
 ```
 
-# 2. Example 8.3.1
+## Example 8.3.1
 
 A physical therapist wishe to compare three methods for patients to use a certain prosthetic device. He felt that the rate of learing would be different for patients of different ages and wished to design an experiment in which the ifluence of age could be taken into account.
 Data. Three patients in each of the five age groups were selected to partipate in the experiment, and one patient in each age group was randomly assigned to each of the teaching methods. The methods of instruction constitute our three treatments, and the five gorups are the blocks.
@@ -90,7 +83,7 @@ TukeyHSD(t_aov)
 plot(TukeyHSD(t_aov))
 abline(v=0, col=2)
 ```
-# Plotting
+
 Layout instruction divides the graphical screen in four sections, square diff and QQ-plot graphs.
 
 ```{r}
@@ -98,7 +91,7 @@ layout(matrix(c(1, 2, 3, 4), nrow=2, ncol=2, byrow=TRUE))
 plot(t_aov)
 ```
 
-# 3. Example 8.4.1
+## Example 8.4.1
 
 Licciardone et al. examined subjects with chronic, nonspecific low back pain. In this study, 18 of the subjects completed a survey questionnaire assessing physical functioning at baseline, and after 1, 3, and 6 months. The file has data for these subjects which received a sham treatment thet appeared to be genuine osteopathic manipulations. Higher values indicate better physical functioning. Higher values indicate better physical functioning. The goal of the experiment was to determine if subjects would report improvement over time even though the treatment they received would provide minimal improvement. We wish to know if there is a difference in the mean survey values among the four points in time.
 
@@ -125,11 +118,12 @@ plot(TukeyHSD(Exa4.1.aov), las=2)
 layout(matrix(c(1,2,3,4), nrow=2, ncol=2, byrow=TRUE))
 plot(Exa4.1.aov)
 ```
+
 # Exercises chapter 8 Daniel
 
 In the following exercises estimate an ANOVA model. Let $\alpha = 0.05$ for each tes. Use Tukey's HSD procedure to test for significant differences among individual pairs of means (if appropriate). Construct box-plots of the data.
 
-# 4. EXERCISE 8.2.1
+## EXERCISE 8.2.1
 
 Reseachers at CWRU wanted to develop and implement a transducer, manageable in a clinical detting, for quialifying isometric moment produced at the elbow joint by individuals with tetraplegia (paralysis or paresis of all four limbs). The apparatus, called an elbow moment transducer (EMT), measures the force the elbow can exert when flexing. The output variable is voltage. The machine was tested at four different elbow extension angles, 30, 60, 90, 102 degrees, on a mock elbow consisting of two hinged aluminum beams. The data is at file.
 
@@ -151,7 +145,7 @@ plot(TukeyHSD(Exr2_1.aov), las=2)
 abline(v=0., lty=3, col=2)
 ```
 
-# 5. EXERCISE 8.2.3
+## EXERCISE 8.2.3
 
 Ilich-Ernst et al. investigated dietary intake of calcium among a cross section of 113 healthy women ages 20-88. The researchers formed four age groupings as follows: Group A, 20.0 - 45.9 years; Group B, 46.0 - 55.9 years; Group C, 56.0 - 65.9 years; and Group D, over 66 years. Calcium from food intake was measured in mg/day. The data is at the file.
 
@@ -172,7 +166,7 @@ abline(v=0, col=2, lty=2)
 layout(matrix(c(1,2,3,4), nrow=2, ncol=2, byrow=TRUE))
 plot(aovEr8.2.3)
 ```
-# 6. EXERCISE 8.3.1
+## EXERCISE 8.3.1
 
 The objective of a study by Brooks et al. was to evaluate the efficacy of using a virtual kitchen for vocational training of people with learning disabilities. Twenty-four students participated in the study. Each participant performed four food preparations tasks and they were scored on the quality of the preparation. Then each participant received regular vocational training in food preparation (real training), visual training using a TV and computer screen of a typical kitchen, work-book training with specialized reading materilas, and no training (to serve as control). After eah of these trainigs, the subjects were tested on food preparation. Improvement scores for each of the four training methods are presented in the file.  Afetr eliminating subject effects, can we conclude that the improvement scores differ among mathods of training? Let $\alpha = .05$.
 
@@ -196,7 +190,7 @@ res.add = lm(score ~ factor(type) + factor(subject), data= Exr8.3.1)
 res.notype = lm(score ~ factor(subject), data= Exr8.3.1)
 anova(res.add, res.notype)
 ```
-# 7. EXERCISE 8.3.2
+## EXERCISE 8.3.2
 
 McConville et al. report the effects of chewing one piece of nicotine gum (containing 2 mg nicotine) on tic frecuency in patients whose Tourette's disorder was inadequately controlled by haloperidol. The frecuencies under four conditions are in the table in the file. After eliminating patient effects, can we conclude that the mean number of tics differs among the four condifions? let $\alpha = .01$.
 
@@ -223,9 +217,9 @@ anova(res.add, res.nocond)
 summary(Exr3_2.aov_int)
 ```
 
-# 8. EXERCISE 8.3.3
+## EXERCISE 8.3.3
 
-A remotivation team in a psychiatryc hospital concluded am expereiment to compare five methods for remotivating patients. Patients were grouped accordig to level of initial motivation. Patients in each group were randomly assigned to the five methods. At the end of the experimental period the patients were evaluated by a team composed of a psychiatrist, a psychologist, a nurse, and a social worker, none of whom was aware of the method to which patients had been assigned. THe results are in the file. Do these data provide sufficient evidence to indicate a difference in mean scores among methods? Let $\alpha = .05$.
+A remotivation team in a psychiatric hospital concluded am expereiment to compare five methods for remotivating patients. Patients were grouped accordig to level of initial motivation. Patients in each group were randomly assigned to the five methods. At the end of the experimental period the patients were evaluated by a team composed of a psychiatrist, a psychologist, a nurse, and a social worker, none of whom was aware of the method to which patients had been assigned. THe results are in the file. Do these data provide sufficient evidence to indicate a difference in mean scores among methods? Let $\alpha = .05$.
 
 ```{r}
 setwd("~/Dropbox/Fdo/ClaseStats/RegressionClass/RegressionR_code")
@@ -244,7 +238,7 @@ TukeyHSD(Exr3_3.aov)
 plot(TukeyHSD(Exr3_3.aov), las=2)
 ```
 
-# 9. EXERCISE 8.4.1
+## EXERCISE 8.4.1
 
 One of the purposes of a study by Liu et al. was to determine the effects of MRZ 2/579 on neurological deficit in Sprague-Dawley rats. In this study, 10 rats measured at four time periods following occlusion of the middle carotid artery and subsequent treatment with the uncompetitive N-metyl-D-aspartate antagonist MRZ 2/579, which previous studies had suggested provides neuroprotecive activity. The outcom varible was a neurological function variable measured on a scale of 0-12. A higher number indicates a higher degree of neurological imparement. Let $\alpha = .05$.
 
