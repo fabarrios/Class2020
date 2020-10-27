@@ -14,6 +14,7 @@ output:
   pdf_document: default
 description: "to prepare homeworks"
 ---
+```{r}
 
 ```{r setup, echo=FALSE}
 require(Hmisc)
@@ -202,23 +203,24 @@ McConville et al. report the effects of chewing one piece of nicotine gum (conta
 ```{r}
 setwd("~/Dropbox/Fdo/ClaseStats/RegressionClass/RegressionR_code")
 # Problem 8.3.2 two-way ANOVA exercise
-Exr3.2=read.csv(file="DataOther/EXR_C08_S03_02mod.csv", header=TRUE)
+Exr3.2=read.csv(file="DataOther/EXR_C08_S03_02.mod.csv", header=TRUE)
 names(Exr3.2)
 # PATIENT are numbers and the factor command is needed to force the 
 # numbers as factors !
 layout(matrix(c(1,2),nrow=1, ncol=2))
-plot(TICS ~ factor(PATIENT) + factor(CONDITION), data=Exr3.2)
-Exr3_2.aov = aov(TICS ~ factor(PATIENT) + factor(CONDITION), data=Exr3.2)
+plot(Resp ~ factor(PATIENT) + factor(Time), data=Exr3.2)
+Exr3_2.aov = aov(Resp ~ factor(PATIENT) + factor(Time), data=Exr3.2)
 summary(Exr3_2.aov)
 TukeyHSD(Exr3_2.aov, conf.level=0.99)
 layout(matrix(c(1,2,3,4), nrow=2, ncol=2, byrow=TRUE))
-plot(TICS ~ factor(PATIENT) + factor(CONDITION), data=Exr3.2)
+plot(Resp ~ factor(PATIENT) + factor(Time), data=Exr3.2)
 plot(TukeyHSD(Exr3_2.aov, conf.level=0.99), las=2)
 # with a linear model
-res.add = lm(TICS ~ factor(CONDITION) + factor(PATIENT), data=Exr3.2)
-res.nocond = lm(TICS ~ factor(PATIENT), data= Exr3.2)
+res.add = lm(Resp ~ factor(PATIENT) + factor(Time), data=Exr3.2)
+res.nocond = lm(Resp ~ factor(PATIENT), data= Exr3.2)
 anova(res.add, res.nocond)
-Exr3_2.aov = aov(TICS ~ factor(PATIENT) + factor(CONDITION) + factor(PATIENT):factor(CONDITION), data=Exr3.2)
+(Exr3_2.aov_int = aov(Resp ~ factor(PATIENT) + factor(Time) + factor(PATIENT):factor(Time), data=Exr3.2))
+summary(Exr3_2.aov_int)
 ```
 
 # 8. EXERCISE 8.3.3
@@ -261,6 +263,7 @@ layout(matrix(c(1,2), nrow=2, ncol=1, byrow=TRUE))
 plot(outcome ~ factor(time) + factor(subj), data=Exr4.1)
 Exr4.1.aov = aov(outcome ~ factor(time) + factor(subj), data=Exr4.1)
 summary(Exr4.1.aov)
+#
 TukeyHSD(Exr4.1.aov)
 plot(TukeyHSD(Exr4.1.aov), las=2)
 ```
