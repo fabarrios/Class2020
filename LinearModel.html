@@ -1532,11 +1532,9 @@ $(document).ready(function () {
     <h2><a href="#content">General Linear Model</a></h2>
     <div id="table-of-contents">
       <ul>
-      <li><a href="#general-linear-model-glm">General Linear Model GLM</a><ul>
+      <li><a href="#general-linear-model-glm">General Linear Model (GLM)</a><ul>
       <li><a href="#linear-regression">Linear Regression</a></li>
       <li><a href="#examples-for-simple-linear-regression">Examples for “simple” linear regression</a></li>
-      <li><a href="#linear-regression-1">Linear Regression</a></li>
-      <li><a href="#glm">GLM</a></li>
       <li><a href="#linear-regresion-chap-4-vittinghoff-et-all.">Linear Regresion (Chap 4, Vittinghoff et all.)</a></li>
       <li><a href="#for-a-multiple-linear-model">For a multiple linear model</a></li>
       <li><a href="#multiple-linear-model-with-interactions">Multiple linear model, with interactions</a></li>
@@ -1553,22 +1551,15 @@ $(document).ready(function () {
 
 <div id="main">
 <div id="general-linear-model-glm" class="section level1">
-<h1>General Linear Model GLM</h1>
+<h1>General Linear Model (GLM)</h1>
 <div id="linear-regression" class="section level2">
 <h2>Linear Regression</h2>
 <p>The term “regression” was introduced by Francis Galton (Darwin’s nephew) during the XIX century to describe a biological phenomenon. The heights of the descendants of tall ancestors have the tendency to “return”, come back, to the normal average high in the population, known as the regression to the media. (Mr. Galton was an Eugenics supporter)</p>
 </div>
 <div id="examples-for-simple-linear-regression" class="section level2">
 <h2>Examples for “simple” linear regression</h2>
-<p>The general equation for the straight line is <span class="math inline">\(y = mx + b_0\)</span>, this form is the “slope, intersection form”. The slope is the rate of change the gives the change in <span class="math inline">\(y\)</span> for a unit change in <span class="math inline">\(x\)</span>. Remember that the slope formula for two pair of points <span class="math inline">\((x_1, y_1)\)</span> and <span class="math inline">\((x_2, y_2)\)</span> is: <span class="math display">\[ m = \frac{(y_2 - y_1)}{(x_2 - x_1)}\]</span> # General Linear Model GLM</p>
-</div>
-<div id="linear-regression-1" class="section level2">
-<h2>Linear Regression</h2>
-<p>The term “regression” was introduced by Francis Galton (Darwin’s nephew) during the XIX century to describe a biological phenomenon. The heights of the descendants of tall ancestors have the tendency to “return”, come back, to the normal average high in the population, known as the regression to the media. (Mr. Galton was an Eugenics supporter)</p>
-</div>
-<div id="glm" class="section level2">
-<h2>GLM</h2>
-<p>Response variable <span class="math inline">\(Y\)</span> is a random variable that is measured and has a distribution with expected value <span class="math inline">\(E(Y|x)\)</span> given a set of independent variables <span class="math inline">\(x\)</span>. <span class="math display">\[Y_j (j=1, . . . , J)\]</span> for a set of <span class="math inline">\(x_jl\)</span> predictor variables (or independent variables) defined as vectors for each <span class="math inline">\(j\)</span> <span class="math display">\[ x_jl (l=1, . . . , L)\]</span> with <span class="math inline">\(L(L&lt;J\)</span>, a general linear model with an error function <span class="math inline">\(\epsilon_j\)</span> can be expressed: <span class="math display">\[Y_j = x_{j1}\beta_1 + x_{j2}\beta_2 + x_{j3}\beta_3 + . . . + x_{jL}\beta_L + \epsilon_j\]</span> with <span class="math inline">\(\epsilon_j\)</span> an independent variable identically distributed to the Normal with mean equal to zero. <span class="math display">\[\epsilon_j \approx N(0,\sigma^2)_{iid}\]</span> ## Examples for “simple” linear regression The general equation for the straight line is <span class="math inline">\(y = mx + b_0\)</span>, this form is the “slope, intersection form”. The slope is the rate of change the gives the change in <span class="math inline">\(y\)</span> for a unit change in <span class="math inline">\(x\)</span>. Remember that the slope formula for two pair of points <span class="math inline">\((x_1, y_1)\)</span> and <span class="math inline">\((x_2, y_2)\)</span> is: <span class="math display">\[ m = \frac{(y_2 - y_1)}{(x_2 - x_1)}\]</span></p>
+<p>The general equation for the straight line is <span class="math inline">\(y = mx + b_0\)</span>, this form is the “slope, intersection form”. The slope is the rate of change the gives the change in <span class="math inline">\(y\)</span> for a unit change in <span class="math inline">\(x\)</span>. Remember that the slope formula for two pair of points <span class="math inline">\((x_1, y_1)\)</span> and <span class="math inline">\((x_2, y_2)\)</span> is: <span class="math display">\[ m = \frac{(y_2 - y_1)}{(x_2 - x_1)}\]</span></p>
+<p>Response variable <span class="math inline">\(Y\)</span> is a random variable that is measured and has a distribution with expected value <span class="math inline">\(E(Y|x)\)</span> given a set of independent variables <span class="math inline">\(x\)</span>. <span class="math display">\[Y_j (j=1, . . . , J)\]</span> for a set of <span class="math inline">\(x_jl\)</span> predictor variables (or independent variables) defined as vectors for each <span class="math inline">\(j\)</span> <span class="math display">\[ x_jl (l=1, . . . , L)\]</span> with <span class="math inline">\(L(L&lt;J\)</span>, a general linear model with an error function <span class="math inline">\(\epsilon_j\)</span> can be expressed: <span class="math display">\[Y_j = x_{j1}\beta_1 + x_{j2}\beta_2 + x_{j3}\beta_3 + . . . + x_{jL}\beta_L + \epsilon_j\]</span> with <span class="math inline">\(\epsilon_j\)</span> an independent variable identically distributed to the Normal with mean equal to zero. <span class="math display">\[\epsilon_j \approx N(0,\sigma^2)_{iid}\]</span></p>
 </div>
 <div id="linear-regresion-chap-4-vittinghoff-et-all." class="section level2">
 <h2>Linear Regresion (Chap 4, Vittinghoff et all.)</h2>
