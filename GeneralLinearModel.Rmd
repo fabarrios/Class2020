@@ -1,6 +1,6 @@
 ---
 title: "General Linear Model"
-author: "F. A. Barrios<br><small>Instituto de Neurobiología UNAM<br></small>"
+author: "F.A. Barrios<br><small>Instituto de Neurobiología UNAM<br></small>"
 date: "<small>`r Sys.Date()`</small>"
 output:
   html_document:
@@ -18,6 +18,7 @@ description: "to prepare Class2020 presentations"
 library(tidyverse)
 library(tools)
 library(here)
+
 ```
 ---
 
@@ -27,6 +28,7 @@ knitrSet(lang='markdown', fig.path='png/', fig.align='left', w=6.5, h=4.5, cache
 # If using blogdown: knitrSet(lang='blogdown')
 # knitr::opts_chunk$set(echo = TRUE)
 ```
+
 `r hidingTOC(buttonLabel="Outline")`
 
 ```{r}
@@ -46,8 +48,13 @@ The term "regression" was introduced by Francis Galton (Darwin's nephew) during 
 ## Examples for "simple" linear regression
 The general equation for the straight line is $y = mx + b_0$, this form is the "slope, intersection form". The slope is the rate of change the gives the change in $y$ for a unit change in $x$. Remember that the slope formula for two pair of points $(x_1, y_1)$ and $(x_2, y_2)$ is:
 $$ m = \frac{(y_2 - y_1)}{(x_2 - x_1)}$$
-We will run examples from the chapter 9 from Daniel's book. We sill solve simple (one variable) linear regressions, where the $\beta_0$ is the intercept value (this is the value taken by the model at $x_1=0$) and the adjusted $\beta_1$ is the slope of the model, the rate of change in $Y$ for a "unit of $x_1$ change"
-$$Y=\beta_0 + \beta_1 x_1$$
+# General Linear Model GLM (Modelo lineal General)
+## Linear Regression
+The term "regression" was introduced by Francis Galton (Darwin's nephew) during the XIX century to describe a biological phenomenon.  The heights of the descendants of tall ancestors have the tendency to "return", come back, to the normal average high in the population, known as the regression to the media. (Mr. Galton was an Eugenics supporter)
+
+## Examples for "simple" linear regression
+The general equation for the straight line is $y = mx + b_0$, this form is the "slope, intersection form". The slope is the rate of change the gives the change in $y$ for a unit change in $x$. Remember that the slope formula for two pair of points $(x_1, y_1)$ and $(x_2, y_2)$ is:
+$$ m = \frac{(y_2 - y_1)}{(x_2 - x_1)}$$
 
 ```{r}
 setwd("~/Dropbox/Fdo/ClaseStats/RegressionClass/RegressionR_code")
