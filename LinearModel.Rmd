@@ -103,13 +103,12 @@ $$Y=\beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_1 x_2$$
 This are only additive linear terms to explain a random response variable $Y$ and the adjusted parameters are the $\beta_i$ of the independent variables or predictors. These variables are random too. They can be numbers and factors. Example of multiple linear regression using the clouds data clouds from HSAUR
 
 ```{r}
-library(HSAUR2)
-
+library(wordcloud)
 data(clouds)
 head(clouds)
 
-# looking the datafor rainfall
-# boxplot(rainfall~seeding, data=clouds)
+# looking the data for rainfall
+boxplot(rainfall~seeding, data=clouds)
 # boxplot(rainfall~echomotion, data=clouds)
 layout(matrix(1:2, ncol = 2))
 boxplot(rainfall ~ seeding, data = clouds, ylab = "Rainfall", xlab = "Seeding")
