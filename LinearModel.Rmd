@@ -39,18 +39,14 @@ setwd("~/Dropbox/Fdo/ClaseStats/RegressionClass/RegressionR_code")
 hers <- read_csv("DataRegressBook/Chap3/hersdata.csv")
 ```
 
-# General Linear Model GLM
+# General Linear Model (GLM)
+
 ## Linear Regression
 The term "regression" was introduced by Francis Galton (Darwin's nephew) during the XIX century to describe a biological phenomenon.  The heights of the descendants of tall ancestors have the tendency to "return", come back, to the normal average high in the population, known as the regression to the media. (Mr. Galton was an Eugenics supporter)
 
 ## Examples for "simple" linear regression
 The general equation for the straight line is $y = mx + b_0$, this form is the "slope, intersection form". The slope is the rate of change the gives the change in $y$ for a unit change in $x$. Remember that the slope formula for two pair of points $(x_1, y_1)$ and $(x_2, y_2)$ is:
 $$ m = \frac{(y_2 - y_1)}{(x_2 - x_1)}$$
-# General Linear Model GLM
-
-## Linear Regression
-The term "regression" was introduced by Francis Galton (Darwin's nephew) during the XIX century to describe a biological phenomenon.  The heights of the descendants of tall ancestors have the tendency to "return", come back, to the normal average high in the population, known as the regression to the media. (Mr. Galton was an Eugenics supporter)
-
 ## GLM
 Response variable $Y$ is a random variable that is measured and has a distribution with expected value $E(Y|x)$ given a set of independent variables $x$.
 $$Y_j (j=1, . . . , J)$$
@@ -60,9 +56,6 @@ with $L(L<J$, a general linear model with an error function $\epsilon_j$ can be 
 $$Y_j = x_{j1}\beta_1 + x_{j2}\beta_2 + x_{j3}\beta_3 + . . . + x_{jL}\beta_L + \epsilon_j$$
 with $\epsilon_j$ an independent variable identically distributed to the Normal with mean equal to zero.
 $$\epsilon_j \approx N(0,\sigma^2)_{iid}$$
-## Examples for "simple" linear regression
-The general equation for the straight line is $y = mx + b_0$, this form is the "slope, intersection form". The slope is the rate of change the gives the change in $y$ for a unit change in $x$. Remember that the slope formula for two pair of points $(x_1, y_1)$ and $(x_2, y_2)$ is:
-$$ m = \frac{(y_2 - y_1)}{(x_2 - x_1)}$$
 
 ## Linear Regresion (Chap 4, Vittinghoff et all.)
 
