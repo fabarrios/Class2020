@@ -28,3 +28,15 @@ knitrSet(lang='markdown', fig.path='png/', fig.align='left', w=6.5, h=4.5, cache
 
 Glucose levels above 125 mg/dL are diagnostic of diabetes, while levels in the range from 100 to 125 mg/dL signal increased risk of progressing to this serious and increasingly widespread condition. So it is of interest to determine whether exercise, a modifiable lifestyle factor, would help people reduce their glucose levels and thus avoid diabetes.
 The R code shows a simple linear model using a measure of exercise to predict baseline glucose levels among 2,032 participants without diabetes, and boxplot of the data, in the HERS. Women with diabetes are excluded because the research question is whether exercise might help to prevent progression to diabetes among women at risk, and because the causal determinants of glucose may be different in that group.
+
+However, women who exercise are slightly younger, a little more likely to use alcohol, and in particular have lower average BMI, all factors associated with glucose levels. This implies that the lower average glucose we observe among women who exercise could be due at least in part to differences in these other predictors (independent variables). Under these conditions, it is important that our estimate of the difference in average glucose levels associated with exercise be “adjusted” for the effects of these potential confounders of the unadjusted association. Ideally, adjustment using a multipredictor regression model provides an estimate of the causal effect of exercise on average glucose levels, by holding the other variables constant.
+
+# The multiple regression model
+
+In the multiple regression model the expected value $E[y|x]$ (expected value of the responce funtion y given the vector x) is
+$$E[y|x] = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_3 + ... + \beta_p x_p$$
+where $x$ represetns the collection of $p$ predictors $x_1. x_2, ... x_p$ in the model, and the $\betas$ are the corresponding regresion coefficients.
+
+# Interpretation of Adjusted Regression Coefficients
+
+The coefficient $\beta_j, j=1, \dots ,p$ gives the change in $E[y|x]$ for an increase of one unit in predictor $x_j$ , holding other factors in the model constant; each of the estimates is adjusted for the effects of all the other predictors. As in the simple linear model, the intercept $\beta_0$ gives the value of $E[y|x]$ when all the predictors are equal to zero.
