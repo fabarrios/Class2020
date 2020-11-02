@@ -1,0 +1,9 @@
+
+
+# Exercise and Glucose
+
+Glucose levels above 125 mg/dL are diagnostic of diabetes, while levels in the range
+from 100 to 125 mg/dL signal increased risk of progressing to this serious and
+increasingly widespread condition. So it is of interest to determine whether exercise,
+a modifiable lifestyle factor, would help people reduce their glucose levels and thus
+avoid diabetes.
