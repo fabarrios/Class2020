@@ -110,7 +110,7 @@ glucose_fit_act <- lm(glucose ~ physact, data = hers_nodi)
 Anova(glucose_fit_act, type="II")
 S(glucose_fit_act)
 layout(matrix(1:4, nrow = 2))
-plot(glucose_fit_act)
+autoplot(glucose_fit_act)
 # To compute the estimates marginal means for specified factors or factor combinations in a linear model
 glucose_emmeans <- emmeans(glucose_fit_act, "physact")
 summary(glucose_emmeans)
