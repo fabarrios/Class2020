@@ -1,9 +1,30 @@
+---
+title: "MultipredictorRegMod.Rmd"
+author: "F. A. Barrios<br><small>Instituto de Neurobiología, UNAM<br></small>"
+date: "<small>`r Sys.Date()`</small>"
+output:
+  html_document:
+    toc: yes
+    toc_depth: 3
+    number_sections: true
+    toc_float:
+      collapsed: false
+    cod_folding: hide
+    theme: cerulean
+  pdf_document: default
+description: "example from chap 4, Vittinghoff"
+---
+
+```{r setup, echo=FALSE}
+require(Hmisc)
+knitrSet(lang='markdown', fig.path='png/', fig.align='left', w=6.5, h=4.5, cache=TRUE)
+# If using blogdown: knitrSet(lang='blogdown')
+# knitr::opts_chunk$set(echo = TRUE)
+```
+`r hidingTOC(buttonLabel="Outline")`
 
 
 # Exercise and Glucose
 
-Glucose levels above 125 mg/dL are diagnostic of diabetes, while levels in the range
-from 100 to 125 mg/dL signal increased risk of progressing to this serious and
-increasingly widespread condition. So it is of interest to determine whether exercise,
-a modifiable lifestyle factor, would help people reduce their glucose levels and thus
-avoid diabetes.
+Glucose levels above 125 mg/dL are diagnostic of diabetes, while levels in the range from 100 to 125 mg/dL signal increased risk of progressing to this serious and increasingly widespread condition. So it is of interest to determine whether exercise, a modifiable lifestyle factor, would help people reduce their glucose levels and thus avoid diabetes.
+The R code shows a simple linear model using a measure of exercise to predict baseline glucose levels among 2,032 participants without diabetes, and boxplot of the data, in the HERS.
