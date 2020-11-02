@@ -27,4 +27,4 @@ knitrSet(lang='markdown', fig.path='png/', fig.align='left', w=6.5, h=4.5, cache
 # Exercise and Glucose
 
 Glucose levels above 125 mg/dL are diagnostic of diabetes, while levels in the range from 100 to 125 mg/dL signal increased risk of progressing to this serious and increasingly widespread condition. So it is of interest to determine whether exercise, a modifiable lifestyle factor, would help people reduce their glucose levels and thus avoid diabetes.
-The R code shows a simple linear model using a measure of exercise to predict baseline glucose levels among 2,032 participants without diabetes, and boxplot of the data, in the HERS.
+The R code shows a simple linear model using a measure of exercise to predict baseline glucose levels among 2,032 participants without diabetes, and boxplot of the data, in the HERS. Women with diabetes are excluded because the research question is whether exercise might help to prevent progression to diabetes among women at risk, and because the causal determinants of glucose may be different in that group.
