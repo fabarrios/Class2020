@@ -200,7 +200,12 @@ summary(Gluc_GenLinHypoth, test=adjusted("single-step"))
 
 # Confounding
 
-The model $\tt lm(glucose ~ exercise, data = hersnodi)$, the unadjusted coefficient for exercise estimates the difference in mean glucose levels between two subgroups of the population of women with heart disease. But this comparison ignores other ways in which those subgroups may differ. In other words, the analysis does not take account of confounding of the association we see. Although the unadjusted coefficient may be useful for describing differences between subgroups, it would be risky to infer any causal connection between exercise and glucose on this basis. In contrast, the adjusted coefficient for exercise in the model $ \tt lm(glucose ~ exercise + age + drinkany + BMI, data = hersnodi)$, takes account of the fact that women who exercise also have lower BMI and are slightly younger and more likely to report alcohol use, all factors which are associated with differences in glucose levels. While this adjusted model is clearly rudimentary, the underlying premise of multipredictor regression analysis of observational data is that with a sufficiently refined model, we can estimate causal effects, free or almost free of confounding. Confounding is when one predictor $x_i$ (independent variable) can depend in some of the same variables that the response function $Y$
+The model $\tt lm(glucose \sim exercise, data = hersnodi)$, the unadjusted coefficient for exercise estimates the difference in mean glucose levels between two subgroups of the population of women with heart disease. But this comparison ignores other ways in which those subgroups may differ. In other words, the analysis does not take account of confounding of the association we see. Although the unadjusted coefficient may be useful for describing differences between subgroups, it would be risky to infer any causal connection between exercise and glucose on this basis. In contrast, the adjusted coefficient for exercise in the model $ \tt lm(glucose \sim exercise + age + drinkany + BMI, data = hersnodi)$, takes account of the fact that women who exercise also have lower BMI and are slightly younger and more likely to report alcohol use, all factors which are associated with differences in glucose levels. While this adjusted model is clearly rudimentary, the underlying premise of multipredictor regression analysis of observational data is that with a sufficiently refined model, we can estimate causal effects, free or almost free of confounding. Confounding is when one predictor $x_i$ (independent variable) can depend in some of the same variables that the response function $Y$.
+
+## Example: BMI and LDL
+
+We turn to a relatively simple example, again using data from the HERS cohort. BMI and LDL cholesterol are both established heart disease risk factors. It is reasonable
+to hypothesize that higher BMI leads to higher LDL in some causal sense. An unadjusted model for BMI and LDL is obtainde with $ \tt lm(LDL \sim BMI, data = hers)$. The unadjusted estimate shows that average LDL increases .42mg/dL per unit increase in BMI. 
 
 ```{r}
 # when one predictor (independent variable) can depend in some of the 
@@ -211,14 +216,23 @@ The model $\tt lm(glucose ~ exercise, data = hersnodi)$, the unadjusted coeffici
 LDL_fit_bmi <- lm(LDL ~ BMI, data = hers)
 S(LDL_fit_bmi)
 
+```
+
+However, age, ethnicity (nonwhite), smoking, and alcohol use (drinkany) may confound this unadjusted association. These covariates may either represent determinants of LDL or be proxies for such determinants, and are correlated with but almost surely not caused by BMI, and so may confound the BMI–LDL relationship.
+
+```{r}
+
 # example of LDL modeled with BMI and other factors
 LDL_fit_all <- lm(LDL ~ BMI + age + nonwhite + smoking + drinkany, data = hers)
 S(LDL_fit_all)
 
 ```
+After adjustment for these four demographic and lifestyle factors, the estimated increase in average LDL is 0.36mg/dL per unit increase in BMI, an association that remains highly statistically significant. In addition, average LDL is estimated to be 5.2mg/dL higher among nonwhite women, after adjustment for between-group
+differences in BMI, age, smoking, and alcohol use. The association of smoking with higher LDL is also statistically significant, and there is some evidence for lower LDL among older women and those who use alcohol.
+
+# Interaction
 
 ```{r}
-# Chapter 4, Interaction
 # Now for the group with Hormone Therapy the complete HERS cohort
 # Model of cholesterol LDL and the effect of Hormone Therapy (HT) and
 # Statin use model is at the one year visit (to se the HT effect)
