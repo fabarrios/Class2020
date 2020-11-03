@@ -33,6 +33,7 @@ library(emmeans)
 library(multcomp)
 library(MASS)
 library(car)
+library(HSAUR2)
 #
 ```
 
