@@ -3,7 +3,6 @@ title: "MultipredictorRegMod.Rmd"
 author: "F. A. Barrios<br><small>Instituto de Neurobiología, UNAM<br></small>"
 date: "<small>`r Sys.Date()`</small>"
 output:
-  pdf_document: default
   html_document:
     toc: yes
     toc_depth: 3
@@ -12,6 +11,7 @@ output:
       collapsed: false
     cod_folding: hide
     theme: cerulean
+  pdf_document: default
 description: "example from chap 4, Vittinghoff"
 ---
 
@@ -28,11 +28,11 @@ knitrSet(lang='markdown', fig.path='png/', fig.align='left', w=6.5, h=4.5, cache
 # Multilevel categorical predictors Chap 4 Vittinghoff
 # libraries
 #
-library(car)
+library(tidyverse)
 library(emmeans)
 library(multcomp)
-library(tidyverse)
 library(MASS)
+library(car)
 #
 ```
 
