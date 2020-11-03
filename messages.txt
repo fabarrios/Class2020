@@ -8,5 +8,3 @@
 ## The following objects are masked from 'package:base':
 ## 
 ##     format.pval, units
-Warning in S.lm(glucose_rmodel_bi): residual degrees of freedom in object
-suggest this is not an "lm" fit
