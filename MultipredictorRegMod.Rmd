@@ -32,6 +32,7 @@ library(car)
 library(emmeans)
 library(multcomp)
 library(tidyverse)
+library(MASS)
 #
 ```
 
@@ -123,6 +124,14 @@ $$E[glucose \mid x] = \beta_0 + \beta_2 SomewhatLessActive + \beta_3 AboutAsActi
 Without other predictors, or covariates, the model is equivalent to a one-way ANOVA.
 The parameters of the model can be manipulated to give the estimated mean in any group, or to give the estimated differences between any two groups. Estimated differences are the contrasts.
 
+## Multiple Pairwise Comparisons Between Categories
+
+It is frequently of interest to examine multiple pairwise differences between levels of a categorical predictor, especially when the overall F -test is statistically significant, and in some cases even when it is not.
+For this case, various methods are available for controlling the familywise error rate (FER) for the wider set of comparisons being made. These methods differ in the trade-off made between power and the breadth of the circumstances under which the type-I error rate is protected. One of the most straightforward is Fisher’s least significant difference (LSD) procedure, in which the pairwise comparisons are carried out using t -tests at the nominal type-I error rate, but only if the overall F-test is statistically significant.
+More conservative procedures that protect the FER (FWE) under partial null hypotheses include setting the level of the pairwise tests required to declare statistical significance
+equal to $\alpha/k$ (Bonferroni) or$1-(1-\alpha)^{1/k}$ (Sidak), where $\alpha$ is the desired FER and $k$ is the number of preplanned comparisons to be made. The Sidak correction
+is slightly more liberal for small values of $k$, but otherwise equivalent.
+
 ```{r}
 # Contrasts
 # contrasts using the adjusted parameters for a categorical variable with several categories
@@ -130,13 +139,26 @@ The parameters of the model can be manipulated to give the estimated mean in any
 # R call categorical variables factors and their categories levels so we have factors with different
 # levels in these cases we can estimate contrasts of the adjusted parameters.
 
-Contrast_Table4.6 = list(gluc_b0 = c(1, 0, 0, 0, 0), 
-                         gluc_b1 = c(-1, 1, 0, 0, 0), 
-                         gluc_b2 = c(-1, 0, 1, 0, 0), 
-                         gluc_b3 = c(-1, 0, 0, 1, 0), 
-                         gluc_b4 = c(-1, 0, 0, 0, 1))
+Contrast_Table4.6 <- list(gluc_b0 = c(1, 0, 0, 0, 0), 
+                         gluc_b2 = c(-1, 1, 0, 0, 0), 
+                         gluc_b3 = c(-1, 0, 1, 0, 0), 
+                         gluc_b4 = c(-1, 0, 0, 1, 0), 
+                         gluc_b5 = c(-1, 0, 0, 0, 1))
+# For the Bonferroni correction adjust "bonferroni" this is talbe 4.6
+contrast(glucose_emmeans, Contrast_Table4.6, adjust="sidak")
+contrast(glucose_emmeans, Contrast_Table4.6, adjust="bonferroni")
 
-Contrasts_glu = list(MAvsLA          = c(-1, -1, 0,  1,  1),
+# Same contrasts with multicomp library
+
+```
+
+## Testing for Trend Across Categories
+The coefficient estimates for the categories of physact from last section, decrease in order, suggesting that mean glucose levels are characterized by a linear trend across the levels of physact. Tests for linear trend are best performed using a contrast in the coefficients corresponding to the various levels of the categorical predictor.
+Definition: A contrast is a weighted sum of the regression coefficients of the form $a_1\beta_1 + a_2\beta_2 + \cdots + a_p\beta_p$ in which the weights, or contrast coefficients, sum to zero: that is, $a_1 + a_2 + \cdots + a_p = 0$
+
+```{r}
+# 
+Contrasts_glu <- list(MAvsLA          = c(-1, -1, 0,  1,  1),
                      MAvsLAforMuch   = c(-1,  0, 0,  0,  1),
                      MAvsLAforSome   = c( 0, -1, 0,  1,  0),
                      MLAvsC          = c(-1,  0, 1,  0,  0),
@@ -146,21 +168,14 @@ Contrasts_glu = list(MAvsLA          = c(-1, -1, 0,  1,  1),
                      LinTrend_phys   = c(-2, -1, 0,  1,  2))
 
 # compare the results with emmeans adjusted with Sidak, FWE.
-
-contrast(glucose_emmeans, Contrast_Table4.6, adjust="sidak")
 contrast(glucose_emmeans, Contrasts_glu, adjust="bonferroni")
+contrast(glucose_emmeans, Contrasts_glu, adjust="sidak")
+# With adjust="none", results will be the same as the aov method.
 
 # for other more general examples
-contrast(glucose_emmeans, Contrasts_glu, adjust="sidak")
+# Using the multcomp library
 
-# With adjust="none", results will be the same as the aov method.
-# For the Bonferroni correction adjust "bonferroni" this is talbe 4.6
-
-contrast(glucose_emmeans, Contrasts_glu, adjust="bonferroni")
-
-# Same contrasts with multicomp library
-
-Input = ("
+ContrastGlucExa1 <- ("
 Contrast.Name     MLA SLA AAA SMA MMA
  MAvsLA           -1  -1   0   1   1
  MAvsLAforMuch    -1   0   0   0   1
@@ -172,14 +187,124 @@ Contrast.Name     MLA SLA AAA SMA MMA
  LinearTrending   -2  -1   0   1   2
 ")
 
-Cont_glucose_Matriz = as.matrix(read.table(textConnection(Input), header=TRUE, row.names=1))
-Cont_glucose_Matriz
-G = glht(glucose_fit_act, linfct = mcp(physact = Cont_glucose_Matriz))
-G$linfct
-
-summary(G, test=adjusted("single-step"))
+ContrastGlucExa1_Matriz = as.matrix(read.table(textConnection(ContrastGlucExa1), header=TRUE, row.names=1))
+ContrastGlucExa1_Matriz
+#
+# glucose_fit_act came from lm(glucose ~ physact, data = hers_nodi)
+Gluc_GenLinHypoth = glht(glucose_fit_act, linfct = mcp(physact = ContrastGlucExa1_Matriz))
+#
+Gluc_GenLinHypoth$linfct
+summary(Gluc_GenLinHypoth, test=adjusted("single-step"))
 
 ```
 
 
+```{r}
+
+# Confounding 
+# when one predictor (independet variable) can depend in some of the 
+# same variables that the responce function
+# Example 4 
+# Example of BMI (Body mass index) and LDL (colesterol) using the HERS cohort data Table 4.12
+
+LDL_fit_bmi <- lm(LDL ~ BMI, data = hers)
+S(LDL_fit_bmi)
+LDL_fit_all <- lm(LDL ~ BMI + age + nonwhite + smoking + drinkany, data = hers)
+S(LDL_fit_all)
+
+# Chapter 4, Interaction
+# Now for the group with Hormone Therapy the complete HERS cohort
+# Model of cholesterol LDL and the effect of Hormone Therapy (HT) and
+# Statin use model is at the one year visit (to se the HT effect)
+
+hers <- mutate(hers, HT = factor(HT))
+hers <- hers %>% mutate(HT = relevel(HT, ref = "placebo"))
+
+# For the first year visit LDL levels at one year LDL1
+LDL1_model <- lm(LDL1 ~ HT * statins, data = hers)
+S(LDL1_model)
+
+# For the table 4.15 of the book, to test for the linear 
+# combination of the coefficients for the interaction to
+# TEST the linear combination of the coefficients for HT
+# and the statin interaction b1 and b3 the third part of table 4.15
+
+coefeq <- matrix(data=0, nrow = 1, ncol = length(LDL_model$coefficients))
+colnames(coefeq) <- names(LDL_model$coefficients)
+coefeq
+coefeq[1, "HThormone therapy"] <- 1
+coefeq[1, "HThormone therapy:statinsyes"] <- 1
+coefeq %*% LDL_model$coefficients
+
+# coeftest <- glht(model= LDL_model, linfct= coefeq, rhs= 0, alternative= "greater")
+coeftest <- glht(model= LDL_model, linfct= coefeq, rhs= 0)
+summary(coeftest)
+
+# Example of LDL after one year of HT and physact
+# This is the table 4.16 of the book, effect of the hormone therapy
+# combined with effects of physical activity at the one year visit
+# now to estimate the linear combination of the coefficients
+hers <- mutate(hers, physact = factor(physact, levels=c("much less active","somewhat less active","about as active","somewhat more active","much more active")))
+LDL1phys_model <- lm(LDL1 ~ HT * physact, data = hers)
+S(LDL1phys_model)
+
+# The coefficients test for interaction
+# can be done with glht()
+
+coef_LDL1phys <- matrix(data=0, nrow = 1, ncol = length(LDL1phys_model$coefficients))
+colnames(coef_LDL1phys) <- names(LDL1phys_model$coefficients)
+
+# E[LDL|x] = b0 + b1 HT + b2 physact + b3 HT:physact
+# we will look at slope = b3 BMIc; coeff = 0, 0, 0, 0, 0, 1, 1, 1, 1
+# to test of significance
+
+coef_LDL1phys[1, "HThormone therapy:physactsomewhat less active"] <- 1
+coef_LDL1phys[1, "HThormone therapy:physactabout as active"] <- 1
+coef_LDL1phys[1, "HThormone therapy:physactsomewhat more active"] <- 1
+coef_LDL1phys[1, "HThormone therapy:physactmuch more active"] <- 1
+coef_LDL1phys %*% LDLphys_model$coefficients
+coef_LDL1phys
+coef_LDL1phystest <- glht(model= LDL1phys_model, linfct= coef_LDL1phys, rhs= 0)
+S(coef_LDL1phystest)
+
+# Example of BMI and statins, with interaction
+# Model of LDL and BMI*statins and other variables
+hers <- mutate(hers, statins = factor(statins))
+hers <- mutate(hers, nonwhite = factor(nonwhite))
+hers <- mutate(hers, smoking = factor(smoking))
+hers <- mutate(hers, drinkany = factor(drinkany))
+hers <- mutate(hers, BMIc = BMI - mean(BMI, na.rm=TRUE))
+LDLbmi_model <- lm(LDL ~ statins*BMIc + age + nonwhite + smoking + drinkany, data = hers)
+summary(LDLbmi_model)
+
+# For the table 4.17 of the book, to test for the linear 
+# combination of the coefficients for the interaction to
+# TEST the linear combination of the coefficients for HT
+
+coef_LDLbmi <- matrix(data=0, nrow = 1, ncol = length(LDLbmi_model$coefficients))
+colnames(coef_LDLbmi) <- names(LDLbmi_model$coefficients)
+
+# E[LDL|x] = b0 + b1 statins + b2 BMIc + b3 statins:BMIc + b4 age
+#           + b5 nonwhite + b6 smoking + b7 + drinkany
+# we will look at slope = b2 + b3 BMIc; coeff = 0, 0, 1, 1, 0, 0, 0, 0
+
+coef_LDLbmi[1, "statinsyes"] <- 0
+coef_LDLbmi[1, "BMIc"] <- 1
+coef_LDLbmi[1, "statinsyes:BMIc"] <- 1
+coef_LDLbmi %*% LDLbmi_model$coefficients
+coef_LDLbmi
+coef_LDLbmitest <- glht(model= LDLbmi_model, linfct= coef_LDLbmi, rhs= 0)
+summary(coef_LDLbmitest)
+
+# Comp of regular linear model and robust and some standard error handling
+#
+glucose_model <- lm(glucose ~ diabetes + BMI + age + drinkany, data= hers)
+
+# MASS rlm()
+glucose_rmodel <- rlm(glucose ~ diabetes + BMI + age + drinkany, data= hers)
+#
+glucose_rmodel_bi <- rlm(glucose ~ diabetes + BMI + age + drinkany, psi= psi.bisquare, data= hers)
+
+#
+```
 
