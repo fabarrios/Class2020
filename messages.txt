@@ -1,0 +1,12 @@
+## Loading required package: Hmisc
+## Loading required package: lattice
+## Loading required package: survival
+## Loading required package: Formula
+## Loading required package: ggplot2
+## 
+## Attaching package: 'Hmisc'
+## The following objects are masked from 'package:base':
+## 
+##     format.pval, units
+Warning in S.lm(glucose_rmodel_bi): residual degrees of freedom in object
+suggest this is not an "lm" fit

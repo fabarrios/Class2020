@@ -111,7 +111,7 @@ glucose_fit_act <- lm(glucose ~ physact, data = hers_nodi)
 Anova(glucose_fit_act, type="II")
 S(glucose_fit_act)
 layout(matrix(1:4, nrow = 2))
-autoplot(glucose_fit_act)
+plot(glucose_fit_act)
 # To compute the estimates marginal means for specified factors or factor combinations in a linear model
 glucose_emmeans <- emmeans(glucose_fit_act, "physact")
 summary(glucose_emmeans)
@@ -249,15 +249,15 @@ S(LDL1_model)
 # TEST the linear combination of the coefficients for HT
 # and the statin interaction b1 and b3 the third part of table 4.15
 
-coefeq <- matrix(data=0, nrow = 1, ncol = length(LDL_model$coefficients))
-colnames(coefeq) <- names(LDL_model$coefficients)
+coefeq <- matrix(data=0, nrow = 1, ncol = length(LDL1_model$coefficients))
+colnames(coefeq) <- names(LDL1_model$coefficients)
 coefeq
 coefeq[1, "HThormone therapy"] <- 1
 coefeq[1, "HThormone therapy:statinsyes"] <- 1
-coefeq %*% LDL_model$coefficients
+coefeq %*% LDL1_model$coefficients
 
 # coeftest <- glht(model= LDL_model, linfct= coefeq, rhs= 0, alternative= "greater")
-coeftest <- glht(model= LDL_model, linfct= coefeq, rhs= 0)
+coeftest <- glht(model= LDL1_model, linfct= coefeq, rhs= 0)
 summary(coeftest)
 
 # Example of LDL after one year of HT and physact
@@ -282,7 +282,7 @@ coef_LDL1phys[1, "HThormone therapy:physactsomewhat less active"] <- 1
 coef_LDL1phys[1, "HThormone therapy:physactabout as active"] <- 1
 coef_LDL1phys[1, "HThormone therapy:physactsomewhat more active"] <- 1
 coef_LDL1phys[1, "HThormone therapy:physactmuch more active"] <- 1
-coef_LDL1phys %*% LDLphys_model$coefficients
+coef_LDL1phys %*% LDL1phys_model$coefficients
 coef_LDL1phys
 coef_LDL1phystest <- glht(model= LDL1phys_model, linfct= coef_LDL1phys, rhs= 0)
 S(coef_LDL1phystest)
