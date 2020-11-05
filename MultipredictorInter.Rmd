@@ -3,7 +3,6 @@ title: "MultipredictorInter.Rmd"
 author: "F.A. Barrios"
 date: "<small>`r Sys.Date()`</small>"
 output:
-  output:
   rmdformats::readthedown:
     highlight: kate
   pdf_document: default
@@ -120,7 +119,7 @@ LDLbmi_model <- lm(LDL ~ statins*BMIc + age + nonwhite + smoking + drinkany, dat
 summary(LDLbmi_model)
 ```
 
-```{r}
+```
 # For the table 4.17 of the book, to test for the linear 
 # combination of the coefficients for the interaction to
 # TEST the linear combination of the coefficients for HT
