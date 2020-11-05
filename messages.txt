@@ -8,3 +8,4 @@
 ## The following objects are masked from 'package:base':
 ## 
 ##     format.pval, units
+Loading required package: tools
