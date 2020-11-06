@@ -15,7 +15,7 @@ library(rmdformats)
 
 ## Global options
 options(max.print="75")
-opts_chunk$set(echo=FALSE,
+opts_chunk$set(echo=TRUE,
 	             cache=TRUE,
                prompt=FALSE,
                tidy=TRUE,
@@ -61,24 +61,32 @@ hers <- hers %>% mutate(HT = relevel(HT, ref = "placebo"))
 
 # For the first year visit LDL levels at one year LDL1
 LDL1_model <- lm(LDL1 ~ HT * statins, data = hers)
-S(LDL1_model)
+summary(LDL1_model)
+confint(LDL1_model)
 
 # For the table 4.15 of the book, to test for the linear 
 # combination of the coefficients for the interaction to
-# TEST the linear combination of the coefficients for HT
+# TEST the linear combination of the coconefficients for HT
 # and the statin interaction b1 and b3 the third part of table 4.15
 
 coefeq <- matrix(data=0, nrow = 1, ncol = length(LDL1_model$coefficients))
 colnames(coefeq) <- names(LDL1_model$coefficients)
 coefeq
 coefeq[1, "HThormone therapy"] <- 1
+coefeq[1, "statinsyes"] <- 1
 coefeq[1, "HThormone therapy:statinsyes"] <- 1
 coefeq %*% LDL1_model$coefficients
 
 # coeftest <- glht(model= LDL_model, linfct= coefeq, rhs= 0, alternative= "greater")
+coeftestAll <- glht(model= LDL1_model, linfct= coefeq, rhs= 0)
+summary(coeftestAll)
+
+coefeq[1, "statinsyes"] <- 0
+coefeq %*% LDL1_model$coefficients
 coeftest <- glht(model= LDL1_model, linfct= coefeq, rhs= 0)
 summary(coeftest)
 ```
+
 
 ```{r}
 # Example of LDL after one year of HT and physact
