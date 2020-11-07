@@ -64,10 +64,8 @@ LDL1_model <- lm(LDL1 ~ HT * statins, data = hers)
 summary(LDL1_model)
 confint(LDL1_model)
 
-# For the table 4.15 of the book, to test for the linear 
-# combination of the coefficients for the interaction to
-# TEST the linear combination of the coconefficients for HT
-# and the statin interaction b1 and b3 the third part of table 4.15
+# For the table 4.15 of the book, to test for the linear combination of the coefficients for the interaction to
+# TEST the combination of the coefficients, HT, statin and HT and statin interaction b1, b2, and b3.
 
 coefeq <- matrix(data=0, nrow = 1, ncol = length(LDL1_model$coefficients))
 colnames(coefeq) <- names(LDL1_model$coefficients)
@@ -77,10 +75,10 @@ coefeq[1, "statinsyes"] <- 1
 coefeq[1, "HThormone therapy:statinsyes"] <- 1
 coefeq %*% LDL1_model$coefficients
 
-# coeftest <- glht(model= LDL_model, linfct= coefeq, rhs= 0, alternative= "greater")
 coeftestAll <- glht(model= LDL1_model, linfct= coefeq, rhs= 0)
 summary(coeftestAll)
 
+# TEST the combination of the coefficients for HT and the statin interaction b1 and b3 the third part of table 4.15
 coefeq[1, "statinsyes"] <- 0
 coefeq %*% LDL1_model$coefficients
 coeftest <- glht(model= LDL1_model, linfct= coefeq, rhs= 0)
