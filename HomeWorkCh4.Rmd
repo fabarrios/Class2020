@@ -3,6 +3,7 @@ title: "HomeWorkCh4.Rmd"
 author: "F.A. Barrios"
 date: "11/7/2020"
 output: 
+  pdf_document: default
   html_document:
     toc: yes
     toc_depth: 3
@@ -11,7 +12,6 @@ output:
       collapsed: false
     cod_folding: hide
     theme: cerulean
-  pdf_document: default
 description: "to prepare Class2020 homeworks"
 ---
 
