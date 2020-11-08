@@ -54,6 +54,7 @@ ggplot(data = hers_nodi, mapping = aes(x = exercise, y = glucose)) +
 # The simple linear model adjust the exercise like in table 4.1
 hers_nodi_Fit <- lm(glucose ~ exercise, data = hers_nodi)
 summary(hers_nodi_Fit)
+confint(hers_nodi_Fit)
 ```
 
 The "coefficients" for the variable "exerciseyes" shows that average baseline glucose levels were about 1.7mg/dL lower among women who exercised at least three times a week than among women who exercised less. This difference is statistically significant ($t = -3.87, P < 0.000113$).
@@ -71,6 +72,7 @@ where $x$ represents the collection of $p$ predictors $x_1, x_2, \ldots x_p$ in 
 
 hers_nodi_Fit2 <- lm(glucose ~ exercise + age + drinkany + BMI, data = hers_nodi)
 S(hers_nodi_Fit2)
+confint(hers_nodi_Fit2)
 #
 ```
 
@@ -231,6 +233,7 @@ However, age, ethnicity (nonwhite), smoking, and alcohol use (drinkany) may conf
 # example of LDL modeled with BMI and other factors
 LDL_fit_all <- lm(LDL ~ BMI + age + nonwhite + smoking + drinkany, data = hers)
 S(LDL_fit_all)
+confint(LDL_fit_all)
 
 ```
 
@@ -258,7 +261,9 @@ We examined the extent to which the effects of BMI on glucose levels might be me
 # example of LDL modeled with BMI and other factors
 Gluc_fit_BMIall <- lm(glucose ~ BMI + age10 + nonwhite + smoking + drinkany + poorfair, data = hers_nodi)
 summary(Gluc_fit_BMIall)
+confint(Gluc_fit_BMIall)
 # and the second model
 Gluc_fit_BMIexer <- lm(glucose ~ BMI + age10 + nonwhite + smoking + drinkany + poorfair + exercise, data = hers_nodi)
 summary(Gluc_fit_BMIexer)
+confint(Gluc_fit_BMIexer)
 ```
