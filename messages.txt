@@ -9,7 +9,7 @@
 ## 
 ##     format.pval, units
 
-── Column specification ────────────────────────────────────────────────────────
+-- Column specification --------------------------------------------------------
 cols(
   .default = col_double(),
   HT = col_character(),
@@ -27,4 +27,4 @@ cols(
   dmpills = col_character(),
   insulin = col_character()
 )
-ℹ Use `spec()` for the full column specifications.
+i Use `spec()` for the full column specifications.
