@@ -6,7 +6,7 @@ output:
   rmdformats::readthedown:
     highlight: kate
   pdf_document: default
-description: "to prepare homeworks"
+description: "to prepare homewor"
 ---
 
 ```{r setup, echo=FALSE, cache=FALSE}
@@ -85,6 +85,11 @@ coeftest <- glht(model= LDL1_model, linfct= coefeq, rhs= 0)
 summary(coeftest)
 ```
 
+The full model is:
+$$ E[LDL | x] = \beta_0 + \beta_1 HT + \beta_2 statins + \beta_3 HT:statins $$
+The coefficient for HT, $\hat \beta_1$, shoes that women who did not report stati use at baseline, the average LDL at one year was almost 18 mg/dL lower that placebo. And for the group of HT among statin users is $\beta_1 + \beta_3$ so $\beta_3$ the interaction term gives the difference between the HT and statin users group.
+
+
 
 ```{r}
 # Example of LDL after one year of HT and physact
@@ -114,8 +119,21 @@ coef_LDL1phys
 coef_LDL1phystest <- glht(model= LDL1phys_model, linfct= coef_LDL1phys, rhs= 0)
 S(coef_LDL1phystest)
 
+```
+
+
+Centering BMI about its mean value of $28.6 kg/m^2$, make the interpretacion fro statin use easier. We compute BMIc, statins is a parameter coded 1 fro users and 0 for nonusers . So the multipredictor general model is
+$$ E[LDL|x] = \beta_0 + \beta_1 statins + \beta_2 BMIc + \beta_3 statins:BMIc + \beta_4 age + \beta_5 nonwhite + \beta_6 smoking + \beta_7 drinkany $$
+the slopeasociated with BMIc in this case is $\beta_2$, for women who do notuse statins (statins is 0)
+$$ E[LDL|x] = \beta_0  + \beta_2 BMIc + \beta_4 age + \beta_5 nonwhite + \beta_6 smoking + \beta_7 drinkany $$
+and statins users 
+$$ E[LDL|x] = \beta_0 + \beta_1 + (\beta_2 + \beta_3) BMIc + \beta_4 age + \beta_5 nonwhite + \beta_6 smoking + \beta_7 drinkany $$
+So for the group of women 
+```{r}
 # Example of BMI and statins, with interaction
-# Model of LDL and BMI*statins and other variables
+# Model of LDL and BMI*statins whith age nonwhite smoking drinkany
+# For the table 4.17 of the book, to test for the linear 
+# combination of the coefficients for the interaction
 hers <- mutate(hers, statins = factor(statins))
 hers <- mutate(hers, nonwhite = factor(nonwhite))
 hers <- mutate(hers, smoking = factor(smoking))
@@ -123,18 +141,18 @@ hers <- mutate(hers, drinkany = factor(drinkany))
 hers <- mutate(hers, BMIc = BMI - mean(BMI, na.rm=TRUE))
 LDLbmi_model <- lm(LDL ~ statins*BMIc + age + nonwhite + smoking + drinkany, data = hers)
 summary(LDLbmi_model)
+confint(LDLbmi_model)
 ```
 
-```
-# For the table 4.17 of the book, to test for the linear 
-# combination of the coefficients for the interaction to
-# TEST the linear combination of the coefficients for HT
+```{r}
+# Interaction model for HT effects on absolute change in LDL
+# TEST the linear combination of the coefficients for LDL ~ statins*BMIc
 
 coef_LDLbmi <- matrix(data=0, nrow = 1, ncol = length(LDLbmi_model$coefficients))
 colnames(coef_LDLbmi) <- names(LDLbmi_model$coefficients)
 
 # E[LDL|x] = b0 + b1 statins + b2 BMIc + b3 statins:BMIc + b4 age
-#           + b5 nonwhite + b6 smoking + b7 + drinkany
+#           + b5 nonwhite + b6 smoking + b7 drinkany
 # we will look at slope = b2 + b3 BMIc; coeff = 0, 0, 1, 1, 0, 0, 0, 0
 
 coef_LDLbmi[1, "statinsyes"] <- 0
@@ -146,15 +164,30 @@ coef_LDLbmitest <- glht(model= LDLbmi_model, linfct= coef_LDLbmi, rhs= 0)
 summary(coef_LDLbmitest)
 
 # Comp of regular linear model and robust and some standard error handling
-#
-glucose_model <- lm(glucose ~ diabetes + BMI + age + drinkany, data= hers)
-summary(glucose_model)
+# LDLbmi_model
 
-# MASS rlm()
-glucose_rmodel <- rlm(glucose ~ diabetes + BMI + age + drinkany, data= hers)
-summary(glucose_rmodel)
-#
-glucose_rmodel_bi <- rlm(glucose ~ diabetes + BMI + age + drinkany, psi= psi.bisquare, data= hers)
-S(glucose_rmodel_bi)
-#
+ggplot(data = hers, mapping=aes(x=BMI, y=LDL)) + labs(x="Body Mass Index kg/m^2", y= "LDL Cholesteron mg/dL", title = "Interaction") + geom_point(shape=20, color=2) + geom_smooth(method="lm", formula=y~x)
+ggplot(data = hers, mapping=aes(x=statins, y=LDL)) + labs(x="Body Mass Index kg/m^2", y= "LDL Cholesteron mg/dL", title = "Interaction") + geom_point(shape=20, color=2) + geom_smooth(method="lm", formula=y~x)
+```
+## Interaction and scale
+
+The The effect of HT on LDL cholesterol in the HERS trial was dependent on baseline values of LDL, with larger reductions seen among women with higher baseline values. An interaction model for absolute change in LDL from baseline to the first annual visit. Note that baseline LDL is centered in this model in order to make the coefficient for hormone therapy (HT) easier to interpret.
+The coefficients in the model have the following interpretations:
+
+* HT: Among women with the average baseline LDL level of 135mg/dL, the effect of HT is to lower LDL an average of 15.5mg/dL over the first year of the study.
+* cLDL0: Among women assigned to placebo, each mg/dL increase in baseline LDL is associated with a 0.35mg/dL greater decrease in LDL over the first year. That is, women with higher baseline LDL experience greater decreases in the absence of treatment; this is in part due to regression to the mean and in part to greater likelihood of starting use of statins.
+* HT * cLDL0: The effect of HT is to lower LDL an additional 0.08mg/dL for each additional mg/dL in baseline LDL. In short, larger treatment effects are seen among women with higher baseline values. The interaction is statistically significant (P = 0:013).
+```{r}
+# Results for Table 4.18
+hers <- mutate(hers, LDLch = LDL1 - LDL)
+hers <- mutate(hers, cLDL0 = LDL - mean(LDL, na.rm = TRUE))
+LDLch_model <- lm(LDLch ~ HT * cLDL0, data = hers)
+summary(LDLch_model)
+confint(LDLch_model)
+
+# Percent change Tabel 4.19
+hers <- mutate(hers, LDLpctch = ((LDL1-LDL)/LDL)*100)
+LDLpctch_model <- lm(LDLpctch ~ HT * cLDL0, data = hers)
+summary(LDLpctch_model)
+confint(LDLpctch_model)
 ```
