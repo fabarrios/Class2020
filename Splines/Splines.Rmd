@@ -60,6 +60,7 @@ $$ f(X) = \beta_0 + \beta_1 X + \beta_2 X^2 + \beta_3 X^3 + \beta_4 (X-a)^{3}_+ 
 
 Cubic splines behave poorly at the tails, that is before the first knot and after the last knot. Natural splines $ns$ or restricted cubic spline function constrain the function to be linear at the tails
 $$f(X) = \beta+0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_{k-1} X_{k-1}$$
+
 where $ X_1 = X $ and for $ j= 1, \dots ,k-2$,
 
 $$ X_{j+1} = (X - t_j)^{3}_+ - (X - t_{k-1})^{3}_+(t_k - t_j)/(t_k - t_{k-1}) + (X - t_k)^{3}_+(t_{k-1} - t_j)/(t_k - t_{k-1}) $$
@@ -103,7 +104,7 @@ ggplot(data = hers, mapping=aes(x=BMI, y=LDL)) + labs(x="Body Mass Index kg/m^2"
   geom_point(shape=20, color=4) + 
   geom_smooth(method="lm", formula=y~lspline(x, quantile(x, c(0, .05, .275, .5, .775, .95, 1), include.lowest = TRUE)))
 
-ggplot(data = hers_no_statins, mapping=aes(x=BMI, y=LDL)) + labs(x="Body Mass Index kg/m^2", y= "LDL Cholesteron mg/dL", title = "Linear Splines") + 
+ggplot(data = hers, mapping=aes(x=BMI, y=LDL)) + labs(x="Body Mass Index kg/m^2", y= "LDL Cholesteron mg/dL", title = "Linear Splines") + 
   geom_point(shape=20, color=4) + 
   geom_smooth(method="lm", formula=y~rcs(x, quantile(x, c(0, .05, .275, .5, .775, .95, 1), include.lowest = TRUE)))
               
@@ -112,7 +113,7 @@ ggplot(data = hers, mapping=aes(x=BMI, y=HDL)) + labs(x="Body Mass Index kg/m^2"
   geom_point(shape=20, color=2) + 
   geom_smooth(method="lm", formula=y~rcspline.eval(x))
 
-ggplot(data = hers_no_statins, mapping=aes(x=BMI, y=HDL)) + labs(x="Body Mass Index kg/m^2", y= "HDL Cholesteron mg/dL", title = "Restricted Cubic Splines 7 knots") +
+ggplot(data = hers, mapping=aes(x=BMI, y=HDL)) + labs(x="Body Mass Index kg/m^2", y= "HDL Cholesteron mg/dL", title = "Restricted Cubic Splines 7 knots") +
   geom_point(shape=20, color=2) + 
   geom_smooth(method="lm", formula=y~rcspline.eval(x, quantile(x, c(0, .05, .275, .5, .775, .95, 1), include.lowest = TRUE)))
 ```
