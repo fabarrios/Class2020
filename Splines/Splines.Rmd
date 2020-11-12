@@ -70,6 +70,8 @@ hers <- mutate(hers, nonwhite = factor(nonwhite))
 hers <- mutate(hers, smoking = factor(smoking))
 hers <- mutate(hers, drinkany = factor(drinkany))
 hers <- mutate(hers, BMIc = BMI - mean(BMI, na.rm=TRUE))
+hers_no_statins <- mutate(hers, statins = "no")
+hers_statins <- mutate(hers, statins = "yes")
 #
 #
 ggplot(data = hers, mapping=aes(x=BMI, y=LDL), labs(x="BodyMassIndex", y= "LDL")) + 
