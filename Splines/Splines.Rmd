@@ -30,6 +30,7 @@ library(rms)
 library(splines)
 library(car)
 library(MASS)
+library(lspline)
 #
 setwd("~/Dropbox/GitHub/Class2020")
 # loading the HERS data set from Vittinghoff's data
@@ -87,6 +88,15 @@ ggplot(data = hers_no_statins, mapping=aes(x=BMI, y=HDL)) +
 ggplot(data = hers_no_statins, mapping=aes(x=BMI, y=LDL)) + labs(x="Body Mass Index kg/m^2", y= "LDL Cholesteron mg/dL", title = "Natural Splines") + 
   geom_point(shape=20, color=2) + 
   geom_smooth(method="lm", formula=y~ns(x))
+
+ggplot(data = hers_no_statins, mapping=aes(x=BMI, y=LDL)) + labs(x="Body Mass Index kg/m^2", y= "LDL Cholesteron mg/dL", title = "Linear Splines") + 
+  geom_point(shape=20, color=4) + 
+  geom_smooth(method="lm", formula=y~lspline(x, quantile(x, c(0, .05, .275, .5, .775, .95, 1), include.lowest = TRUE)))
+
+ggplot(data = hers_no_statins, mapping=aes(x=BMI, y=LDL)) + labs(x="Body Mass Index kg/m^2", y= "LDL Cholesteron mg/dL", title = "Linear Splines") + 
+  geom_point(shape=20, color=4) + 
+  geom_smooth(method="lm", formula=y~rcs(x, quantile(x, c(0, .05, .275, .5, .775, .95, 1), include.lowest = TRUE)))
+              
 # with the Hmisc spline function knots = 5
 ggplot(data = hers_no_statins, mapping=aes(x=BMI, y=HDL)) + labs(x="Body Mass Index kg/m^2", y= "HDL Cholesteron mg/dL", title = "Restricted Cubic Splines") + 
   geom_point(shape=20, color=2) + 
@@ -94,6 +104,6 @@ ggplot(data = hers_no_statins, mapping=aes(x=BMI, y=HDL)) + labs(x="Body Mass In
 
 ggplot(data = hers_no_statins, mapping=aes(x=BMI, y=HDL)) + labs(x="Body Mass Index kg/m^2", y= "HDL Cholesteron mg/dL", title = "Restricted Cubic Splines 7 knots") +
   geom_point(shape=20, color=2) + 
-  geom_smooth(method="lm", formula=y~rcspline.eval(x, nk=7))
+  geom_smooth(method="lm", formula=y~rcspline.eval(x, quantile(x, c(0, .05, .275, .5, .775, .95, 1), include.lowest = TRUE)))
 ```
 
