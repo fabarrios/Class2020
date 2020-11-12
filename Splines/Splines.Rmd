@@ -1,5 +1,6 @@
 ---
 title: "Splines for Estimating Shape of Regression Functions"
+author: "F.A. Barrios"
 date: "`r Sys.Date()`"
 output:
   rmdformats::readthedown:
@@ -49,10 +50,12 @@ The general linear model can be written assuming only piecewise linearity in X
 $$ X \beta = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \beta_3 X_3 + \beta_4 X_4 $$
 and
 $$ X_1 = X , X_2 = (X-a)_+ , X_3 = (X-b)_+ , X_4 =(X-c)_+ $$
+
 ## Cubic Spline Functions
 
 Cubic polinomials have been found tohave nice properties with good ability to fit sharply curving shapes.  Cubic splines can be made to be smooth at the joint points(knots), by forcing the first and second derivatives of the function to agree at the knots:
 $$ f(X) = \beta_0 + \beta_1 X + \beta_2 X^2 + \beta_3 X^3 + \beta_4 (X-a)^{3}_+ + \beta_5 (X-b)^{3}_+ + \beta_6 (X-c)^{3}_+ $$
+
 ## Restricted Cubic Splines
 
 Cubic splines behave poorly at the tails, that is before the first knot and after the last knot. Natural splines $ns$ or restricted cubic spline function constrain the function to be linear at the tails
@@ -75,12 +78,14 @@ hers_no_statins <- mutate(hers, statins = "no")
 hers_statins <- mutate(hers, statins = "yes")
 #
 #
-ggplot(data = hers, mapping=aes(x=BMI, y=LDL), labs(x="BodyMassIndex", y= "LDL")) + 
+ggplot(data = hers, mapping=aes(x=BMI, y=LDL)) +
+  labs(x="BodyMassIndex", y= "LDL", title = "Smooth") + 
   geom_point(shape=20, color=2) + 
   geom_smooth()
 
 # now with splines
-ggplot(data = hers, mapping=aes(x=BMI, y=LDL), labs(x="BodyMassIndex", y= "LDL", title = "Linear model")) + 
+ggplot(data = hers, mapping=aes(x=BMI, y=LDL)) +
+  labs(x="BodyMassIndex", y= "LDL", title = "Linear model") + 
   geom_point(shape=20, color=2) + 
   geom_smooth(method="lm", formula=y~x)
 #
