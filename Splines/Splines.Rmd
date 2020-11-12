@@ -95,11 +95,11 @@ ggplot(data = hers, mapping=aes(x=BMI, y=HDL)) +
   geom_point(shape=20, color=2) + 
   geom_smooth(method="lm", formula=y~ns(x))
 #
-ggplot(data = hers_no_statins, mapping=aes(x=BMI, y=LDL)) + labs(x="Body Mass Index kg/m^2", y= "LDL Cholesteron mg/dL", title = "Natural Splines") + 
+ggplot(data = hers, mapping=aes(x=BMI, y=LDL)) + labs(x="Body Mass Index kg/m^2", y= "LDL Cholesteron mg/dL", title = "Natural Splines") + 
   geom_point(shape=20, color=2) + 
   geom_smooth(method="lm", formula=y~ns(x))
 
-ggplot(data = hers_no_statins, mapping=aes(x=BMI, y=LDL)) + labs(x="Body Mass Index kg/m^2", y= "LDL Cholesteron mg/dL", title = "Linear Splines") + 
+ggplot(data = hers, mapping=aes(x=BMI, y=LDL)) + labs(x="Body Mass Index kg/m^2", y= "LDL Cholesteron mg/dL", title = "Linear Splines") + 
   geom_point(shape=20, color=4) + 
   geom_smooth(method="lm", formula=y~lspline(x, quantile(x, c(0, .05, .275, .5, .775, .95, 1), include.lowest = TRUE)))
 
