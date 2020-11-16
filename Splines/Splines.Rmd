@@ -69,40 +69,67 @@ where $X_1 = X$ and for $j= 1, \dots ,k-2$,
 $$ X_{j+1} = (X - t_j)^{3}_+ - (X - t_{k-1})^{3}_+(t_k - t_j)/(t_k - t_{k-1}) + (X - t_k)^{3}_+(t_{k-1} - t_j)/(t_k - t_{k-1}) $$
 in the Hmisc and rms functions the terme in the last equation are scaled divided by $\tau = (t_k - t_1)^2$
 
-For the HERS data ploting the LDL and HDL variables vs. BMI we get
+For the HERS data plotting the LDL and HDL variables vs. BMI we get
 
 ```{r}
-# to prepare the HERS data
+# to prepare the HERS data adding variables
 hers <- mutate(hers, statins = factor(statins))
 hers <- mutate(hers, nonwhite = factor(nonwhite))
 hers <- mutate(hers, smoking = factor(smoking))
 hers <- mutate(hers, drinkany = factor(drinkany))
+# centering and other manipulations
 hers <- mutate(hers, BMIc = BMI - mean(BMI, na.rm=TRUE))
+hers <- mutate(hers, BMIc2 = BMIc^2)
+hers <- mutate(hers, agec = age - mean(age, na.rm= TRUE))
+#
 hers_no_statins <- mutate(hers, statins = "no", na.rm=TRUE)
 hers_statins <- mutate(hers, statins = "yes", na.rm=TRUE)
 #
+```
+
+For a 67-year old, white nonsmoker abstiner (nonwhite=0, smoking=0, drinkany=0) with $BMI = 28.6 kg/m^2$, the base HDL value is $47.87 mg/dL$ in a model centered and corrected to quadratic centered BMI, the BMIc coefficient of -0.53 estimates the decrease in average HDL per unit inclease in BMI, at the point where $BMI = 28.6 kg/m^2$, while the coefficient for BMIc2 captures the (upward) curvature of the regression line.
+
+```{r}
+# TABLE 4.20
+HDL_model_BMIc2 <- lm(HDL ~ BMIc + BMIc2 + agec + nonwhite + smoking + drinkany, data=hers)
+S(HDL_model_BMIc2)
+confint(HDL_model_BMIc2)
+
 #
+# FIGURE 4.5
+ggplot(data = hers, mapping=aes(y=HDL, x=BMI, color=agec)) +
+  labs(x="Centered BodyMassIndex", y= "HDL", title = "LOESS and lm") + 
+  geom_point(shape=20, na.rm=TRUE) +
+  geom_smooth(method="loess", na.rm=TRUE) +
+  geom_smooth(method="lm", color =2, linetype=2, na.rm=TRUE, se=FALSE) +
+  ggPredict(HDL_model_plot, interactive= TRUE)
+```
+
+```{r}
+# And the plots are here
 ggplot(data = hers, mapping=aes(x=BMI, y=LDL)) +
-  labs(x="BodyMassIndex", y= "LDL", title = "Smooth") + 
-  geom_point(shape=20, color=2) + 
-  geom_smooth()
+  labs(x="BodyMassIndex", y= "HDL", title = "LOESS and lm") + 
+  geom_point(shape=20, color=2, na.rm=TRUE) + 
+  geom_smooth(method = "loess", na.rm=TRUE) +
+  geom_smooth(method="lm", formula=y~x, color=1, linetype=2, ymax= 350, ymin=50, na.rm=TRUE)
 
 # now with splines
 ggplot(data = hers, mapping=aes(x=BMI, y=LDL)) +
   labs(x="BodyMassIndex", y= "LDL", title = "Linear model") + 
-  geom_point(shape=20, color=2) + 
-  geom_smooth(method="lm", formula=y~x)
+  geom_point(shape=20, color=2, na.rm=TRUE) + 
+  geom_smooth(method="lm", formula=y~x, na.rm=TRUE)
 #
 # with the splines R package functions ns Natural Splines
 ggplot(data = hers, mapping=aes(x=BMI, y=HDL)) + 
   labs(x="Body Mass Index kg/m^2", y= "HDL Cholesteron mg/dL", title = "Natural Splines") + 
-  geom_point(shape=20, color=2) + 
-  geom_smooth(method="lm", formula=y~ns(x))
+  geom_point(shape=20, color=2, na.rm=TRUE) + 
+  geom_smooth(method="auto", formula=y~ns(x))
 #
 #
-ggplot(data = hers, mapping=aes(x=BMI, y=LDL)) + labs(x="Body Mass Index kg/m^2", y= "LDL Cholesteron mg/dL", title = "Natural Splines") + 
-  geom_point(shape=20, color=2) + 
-  geom_smooth(method="lm", formula=y~ns(x))
+ggplot(data = hers, mapping=aes(x=BMI, y=LDL)) + 
+  labs(x="Body Mass Index kg/m^2", y= "LDL Cholesteron mg/dL", title = "Natural Splines") + 
+  geom_point(shape=20, color=2, na.rm=TRUE) + 
+  geom_smooth(method="auto", formula=y~ns(x), na.rm=TRUE)
 #
 ggplot(data = hers, mapping=aes(x=BMI, y=LDL)) + labs(x="Body Mass Index kg/m^2", y= "LDL Cholesteron mg/dL", title = "Linear Splines") + 
   geom_point(shape=20, color=4) + 
