@@ -157,6 +157,8 @@ DFBETAS (standardized difference of the beta) is a measure that standardizes the
 
 ```{r}
 plot(HDL_model_BMIc2)
+# DFBETAS (standardized difference of the beta) is a measure that standardizes the absolute difference in parameter estimates
+dfbetasPlots(HDL_model_BMIc2)
 
 # From the olsrr package
 ols_plot_cooksd_bar(HDL_model_BMIc2)
