@@ -1,0 +1,81 @@
+---
+title: ""
+date: "`r Sys.Date()`"
+output:
+  rmdformats::readthedown:
+    highlight: kate
+---
+
+
+```{r setup, echo=FALSE, cache=FALSE}
+library(knitr)
+library(rmdformats)
+
+## Global options
+options(max.print="75")
+opts_chunk$set(echo=TRUE,
+	             cache=TRUE,
+               prompt=FALSE,
+               tidy=TRUE,
+               comment=NA,
+               message=FALSE,
+               warning=FALSE)
+opts_knit$set(width=75)
+```
+
+The Erythrocyte sedimentation rate (ESR). ESR increases when protein levels rise associated with chronic infectons, rheumatic conditions. The level of ESR per se, is not important as long as it is < 20mm/hr (healthy) to asses ESR as useful diagnostic tool. Example from HSAUR
+
+```{r}
+# ESR > 20mm/hr for proteins fibrinogen and gamma globulin, using glm
+
+library(HSAUR2)
+library(emmeans)
+library(multcomp)
+library(car)
+library(tidyverse)
+
+```
+
+```{r}
+# Using plasma data from HSAUR
+
+data("plasma", package = "HSAUR2")
+layout(matrix(1:2, ncol = 2))
+cdplot(ESR ~ fibrinogen, data = plasma)
+cdplot(ESR ~ globulin, data = plasma)
+
+# glm general linear model default is logistic for binomial distrbution
+
+plasma_glm01 <- glm(ESR ~ fibrinogen, data = plasma, family = binomial())
+summary(plasma_glm01)
+
+# coeff fibrinogen is sifnificative 5%
+# one unit change in this variable increases the log-odds in favor of
+# ESR > 20mm/hr
+
+confint(plasma_glm01, parm = "fibrinogen")
+exp(coef(plasma_glm01)["fibrinogen"])
+exp(confint(plasma_glm01, parm = "fibrinogen"))
+
+#anova(plasma_glm01, test = "Chisq")
+
+# full model with two variables
+
+plasma_glm02 <- glm(ESR ~ fibrinogen + globulin, data = plasma, family = binomial())
+summary(plasma_glm02)
+
+# Comparing the resudial deviance of the models:
+# residual deviance 01: 24.84 residual deviance 02: 22.971 -> 1.869 (1.87)
+# to test for significance R take the lgm with a chisq
+# the 1.87 -> globulin has no influence in the ESR
+
+anova(plasma_glm01, plasma_glm02, test = "Chisq")
+
+# Estimates conditional probability of a ESR > 20 for all observations
+
+prob <- predict(plasma_glm02, type = "response")
+layout(matrix(1:1, ncol = 1))
+
+plot(globulin ~ fibrinogen, data = plasma, xlim = c(2, 6), ylim = c(25, 55), pch = ".")
+symbols(plasma$fibrinogen, plasma$globulin, circles = prob, add = TRUE)
+```
