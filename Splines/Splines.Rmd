@@ -90,10 +90,15 @@ hers_statins <- mutate(hers, statins = "yes", na.rm=TRUE)
 For a 67-year old, white nonsmoker abstainer (nonwhite=0, smoking=0, drinkany=0) with $BMI = 28.6 kg/m^2$, the base HDL value is $47.87 mg/dL$ in a model centered and corrected to quadratic centered BMI, the BMIc coefficient of -0.53 estimates the decrease in average HDL per unit inclease in BMI, at the point where $BMI = 28.6 kg/m^2$, while the coefficient for BMIc2 captures the (upward) curvature of the regression line.
 
 ```{r}
-# TABLE 4.20 and the model check
+# Table 4.20 and the model check
 HDL_model_BMIc2 <- lm(HDL ~ BMIc + BMIc2 + agec + nonwhite + smoking + drinkany, data=hers)
 S(HDL_model_BMIc2)
 confint(HDL_model_BMIc2)
+
+# Table 4.21
+HDL_model_BMIns <- lm(HDL ~ ns(BMI, df=5) + age10 + nonwhite + smoking + drinkany, data = hers)
+S(HDL_model_BMIns)
+confint(HDL_model_BMIns)
 ```
 
 ## Checking Model Assumptions and Fit
