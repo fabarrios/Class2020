@@ -26,8 +26,8 @@ opts_knit$set(width=75)
 
 
 ```{r}
-# ESR > 20mm/hr for proteins fibrinogen and gamma globulin, using glm
 
+# ESR > 20mm/hr for proteins fibrinogen and gamma globulin, using glm
 library(HSAUR2)
 library(emmeans)
 library(multcomp)
@@ -36,7 +36,7 @@ library(tidyverse)
 
 ```
 
-The Erythrocyte sedimentation rate (ESR). ESR increases when protein levels rise associated with chronic infectons, rheumatic conditions. The level of ESR per se, is not important as long as it is < 20mm/hr (healthy) to asses ESR as useful diagnostic tool. Example from HSAUR
+The Erythrocyte sedimentation rate (ESR). ESR increases when protein levels rise associated with chronic infections, rheumatic conditions. The level of ESR per se, is not important as long as it is < 20mm/hr (healthy) to asses ESR as useful diagnostic tool. Example from HSAUR
 
 ```{r}
 # Using plasma data from HSAUR
@@ -59,7 +59,7 @@ confint(plasma_glm01, parm = "fibrinogen")
 exp(coef(plasma_glm01)["fibrinogen"])
 exp(confint(plasma_glm01, parm = "fibrinogen"))
 
-#anova(plasma_glm01, test = "Chisq")
+# anova(plasma_glm01, test = "Chisq")
 
 # full model with two variables
 
