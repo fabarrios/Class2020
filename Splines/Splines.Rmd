@@ -31,7 +31,7 @@ library(rms)
 library(splines)
 library(car)
 library(MASS)
-library(lspline)
+library(olsrr)
 #
 setwd("~/Dropbox/GitHub/Class2020")
 # loading the HERS data set from Vittinghoff's data
@@ -87,66 +87,79 @@ hers_statins <- mutate(hers, statins = "yes", na.rm=TRUE)
 #
 ```
 
-For a 67-year old, white nonsmoker abstiner (nonwhite=0, smoking=0, drinkany=0) with $BMI = 28.6 kg/m^2$, the base HDL value is $47.87 mg/dL$ in a model centered and corrected to quadratic centered BMI, the BMIc coefficient of -0.53 estimates the decrease in average HDL per unit inclease in BMI, at the point where $BMI = 28.6 kg/m^2$, while the coefficient for BMIc2 captures the (upward) curvature of the regression line.
+For a 67-year old, white nonsmoker abstainer (nonwhite=0, smoking=0, drinkany=0) with $BMI = 28.6 kg/m^2$, the base HDL value is $47.87 mg/dL$ in a model centered and corrected to quadratic centered BMI, the BMIc coefficient of -0.53 estimates the decrease in average HDL per unit inclease in BMI, at the point where $BMI = 28.6 kg/m^2$, while the coefficient for BMIc2 captures the (upward) curvature of the regression line.
 
 ```{r}
-# TABLE 4.20
+# TABLE 4.20 and the model check
 HDL_model_BMIc2 <- lm(HDL ~ BMIc + BMIc2 + agec + nonwhite + smoking + drinkany, data=hers)
 S(HDL_model_BMIc2)
 confint(HDL_model_BMIc2)
+```
 
+## Checking Model Assumptions and Fit
+
+Departures from linearity could be carried out using LOESS. If the linear fit were satisfactory, the LOESS curve would be close to the model regression line.
+
+```{r}
+## Comparing simpler models of the same data.
+LDL_simpModel <- lm(LDL ~ BMI, data= hers)
+HDL_simpModel <- lm(HDL ~ BMI, data= hers)
+
+plot(HDL ~ BMI, pch= 20, col= "blue", data=hers)
+abline(coef=coef(HDL_simpModel), col="red")
 #
+plot(LDL ~ BMI, pch= 20, col= "blue", data=hers)
+abline(LDL_simpModel, col="red")
+#
+
 # FIGURE 4.5
 ggplot(data = hers, mapping=aes(y=HDL, x=BMI, color=agec)) +
-  labs(x="Centered BodyMassIndex", y= "HDL", title = "LOESS and lm") + 
+  labs(x="BodyMassIndex", y= "HDL", title = "LOESS and lm") + 
   geom_point(shape=20, na.rm=TRUE) +
-  geom_smooth(method="loess", na.rm=TRUE) +
-  geom_smooth(method="lm", color =2, linetype=2, na.rm=TRUE, se=FALSE) +
-  ggPredict(HDL_model_plot, interactive= TRUE)
+  geom_smooth(method="loess", color= 3, na.rm=TRUE) +
+  geom_smooth(method="lm", color= 2, linetype=2, na.rm=TRUE, se=FALSE)
 ```
 
 ```{r}
 # And the plots are here
-ggplot(data = hers, mapping=aes(x=BMI, y=LDL)) +
-  labs(x="BodyMassIndex", y= "HDL", title = "LOESS and lm") + 
-  geom_point(shape=20, color=2, na.rm=TRUE) + 
-  geom_smooth(method = "loess", na.rm=TRUE) +
-  geom_smooth(method="lm", formula=y~x, color=1, linetype=2, ymax= 350, ymin=50, na.rm=TRUE)
-
-# now with splines
-ggplot(data = hers, mapping=aes(x=BMI, y=LDL)) +
-  labs(x="BodyMassIndex", y= "LDL", title = "Linear model") + 
-  geom_point(shape=20, color=2, na.rm=TRUE) + 
-  geom_smooth(method="lm", formula=y~x, na.rm=TRUE)
-#
-# with the splines R package functions ns Natural Splines
-ggplot(data = hers, mapping=aes(x=BMI, y=HDL)) + 
-  labs(x="Body Mass Index kg/m^2", y= "HDL Cholesteron mg/dL", title = "Natural Splines") + 
-  geom_point(shape=20, color=2, na.rm=TRUE) + 
-  geom_smooth(method="auto", formula=y~ns(x))
-#
-#
-ggplot(data = hers, mapping=aes(x=BMI, y=LDL)) + 
-  labs(x="Body Mass Index kg/m^2", y= "LDL Cholesteron mg/dL", title = "Natural Splines") + 
-  geom_point(shape=20, color=2, na.rm=TRUE) + 
-  geom_smooth(method="auto", formula=y~ns(x), na.rm=TRUE)
-#
-ggplot(data = hers, mapping=aes(x=BMI, y=LDL)) + labs(x="Body Mass Index kg/m^2", y= "LDL Cholesteron mg/dL", title = "Linear Splines") + 
-  geom_point(shape=20, color=4) + 
-  geom_smooth(method="lm", formula=y~lspline(x, quantile(x, c(0, .05, .275, .5, .775, .95, 1), include.lowest = TRUE)))
-
-#
-ggplot(data = hers, mapping=aes(x=BMI, y=LDL)) + labs(x="Body Mass Index kg/m^2", y= "LDL Cholesteron mg/dL", title = "Linear Splines") + 
-  geom_point(shape=20, color=4) + 
-  geom_smooth(method="lm", formula=y~rcs(x, quantile(x, c(0, .05, .275, .5, .775, .95, 1), include.lowest = TRUE)))
-              
-# with the B-spline function knots = 3 form the R slines
-ggplot(data = hers, mapping=aes(x=BMI, y=HDL)) + labs(x="Body Mass Index kg/m^2", y= "HDL Cholesteron mg/dL", title = "Restricted Cubic Splines") + 
-  geom_point(shape=20, color=2) + 
-  geom_smooth(method="lm", formula=y~bs(x, df = 3))
-
-ggplot(data = hers_statins, mapping=aes(x=BMI, y=HDL)) + labs(x="Body Mass Index kg/m^2", y= "HDL Cholesteron mg/dL", title = "Restricted Cubic Splines 7 knots") +
-  geom_point(shape=20, color=2) + 
-  geom_smooth(method="lm", formula=y~rcspline.eval(x, quantile(x, c(0, .05, .275, .5, .775, .95, 1), include.lowest = TRUE)))
+ggplot(data = hers, mapping=aes(y=LDL, x=BMI, color=agec)) +
+  labs(x="BodyMassIndex", y= "LDL", title = "LOESS and lm") + 
+  geom_point(shape=20, na.rm=TRUE) + 
+  geom_smooth(method = "loess", color= 3, na.rm=TRUE) +
+  geom_smooth(method="lm", formula=y~x, color= 2, linetype= 2, na.rm=TRUE, se=FALSE)
 ```
+
+### Linearity
+
+The most precise evaluation is isong the residuals $r_i = y_i - \hat{y_i}$. Te basic idea is plot the residuals versus each of the continuous predictors in the model; then a non-parametric smoother is used to detect departures from a linear trend in the average (zero, if centered) value of the residuals across the values of the predictor. **This is a residual versus predictor (RVP) plot**.
+
+
+### Normality
+
+Confidence intervals for regression coefficients and related hypothesis tests are based on the assumption that the coefficient estimates have a normal distribution. The residuals are $r_j = y_j - \hat{y_j}$, the $\epsilon$ is assumed mormally distributed, it is important to apply the diagnostic tool to the residuals rather than to the outcome variable. Graphical tools for assessing the normality of the residuals in R we can estimate the Q-Q plot.
+
+### Constant Variance
+
+An additional assumption concerning the normality of $\epsilon$ is homoscedasticity, meaning that its variance $\sigma_{\epsilon}^2$ is constant across observations. Violations of the constant variance assumption also use the residuals versus fitted plots RVP. If the constant variance assumption is met, then the vertical spread of the residuals should be similar across the ranges of the predictors and fitted values.
+
+
+### Outliers, High Leverage and Influential Points
+
+Large residuals can cause trouble. *high leverage* points, which could be described as x-outliers, since they tend to have extreme values of one of more predictors. This points can also be *influential* in the sense that one or more of the coefficients estimates can change by an unduly large amount. This can happen when a high-leverage point also has lage residual.
+*Definition: High leverage points are x-outliers with the potential to exert undue influence on regression coefficient estimates. Influential points are points that have exerted undue influence on the regression coefficient estimates.
+
+DFBETAS (standardized difference of the beta) is a measure that standardizes the absolute difference in parameter estimates between a (mixed effects) regression model based on a full set of data, and a model from which a (potentially influential) subset of data is removed.
+
+```{r}
+plot(HDL_model_BMIc2)
+
+# From the olsrr package
+ols_plot_cooksd_bar(HDL_model_BMIc2)
+ols_plot_resid_stand(HDL_model_BMIc2)
+ols_plot_dfbetas(HDL_model_BMIc2)
+```
+
+
+
+
 
