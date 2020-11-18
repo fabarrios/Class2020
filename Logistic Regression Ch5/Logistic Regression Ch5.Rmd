@@ -39,14 +39,17 @@ hers <- read_csv("DataRegressBook/Chap3/hersdata.csv")
 
 # Logistic Regression
 
-## Introduction
+## Example from HSAUR  (Chapter 7, in HSAUR3)
 
-The erythrocyte sedimentation rate (ESR). ESR increases when protein levels rise associated with chronic infections, rheumatic conditions. The level of ESR per se, is not important as long as it is < 20mm/hr (healthy) to asses ESR as useful diagnostic tool. Example from HSAUR
+### Introduction
+
+The erythrocyte sedimentation rate (ESR) is the rate at which red blood cells (erythrocytes) settle out of suspension in the blood plasma, when measured under standard conditions.  If the ESR increases when the level of certain proteins in the blood plasma rise in association with conditions such as rheumatic diseases, chronic infections, and malignant diseases, its determination might be useful in screening blood samples taken from people suspected of suffering from one of the conditions mentioned. The absolute value of the ESR is not of great importance; rather, less than 20mm/hr indicates a 'healthy' individual. To asses wheder the ESR is a useful diagnostic tool, Collett and Jemain (1985) collected the data in HSAUR2. The question of interest is whether there is any association between the probabilityof an ESR reading greater than 20mm/hr and the levels of the two plasma proteins. If there is not then the determination of ESR would not be useful for diagnostic purposes.
 
 ```{r}
 # Using plasma data from HSAUR
 data("plasma", package = "HSAUR2")
 layout(matrix(1:2, ncol = 2))
+# cdplot computes and plots conditional densities describing how the conditional distribution of a categorical variable y changes over a numerical variable x
 cdplot(ESR ~ fibrinogen, data = plasma)
 cdplot(ESR ~ globulin, data = plasma)
 
