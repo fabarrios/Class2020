@@ -52,29 +52,36 @@ layout(matrix(1:2, ncol = 2))
 # cdplot computes and plots conditional densities describing how the conditional distribution of a categorical variable y changes over a numerical variable x
 cdplot(ESR ~ fibrinogen, data = plasma)
 cdplot(ESR ~ globulin, data = plasma)
+```
+To estimate a logistic regression model in R the glm (General Linear Model) is used, for binomial distribution the glm() function defalut to a logistic model.
 
+```{r}
 # glm general linear model default is logistic for binomial distribution
 
 plasma_glm01 <- glm(ESR ~ fibrinogen, data = plasma, family = binomial())
 summary(plasma_glm01)
+```
+From these results we see that the regression coefficients for fibrogen is significant at the 5% level. An inclrease of one unit in this variable increases le log-odds on favor of an ESR value greater then 20 by estimated 1.83 with 95% confidence interval:
 
+```{r}
 # coeff fibrinogen is sifnificative 5%
-# one unit change in this variable increases the log-odds in favor of
-# ESR > 20mm/hr-
+# one unit change in this variable increases the log-odds in favor of ESR > 20mm/hr by 1.83
 confint(plasma_glm01, parm = "fibrinogen")
 exp(coef(plasma_glm01)["fibrinogen"])
 exp(confint(plasma_glm01, parm = "fibrinogen"))
+```
+These are the values of the odds themselves (by exponentiating the estimate). So **increased values of fibrogen lead to a grater probability of an ESR value greater than 20**.
 
+
+```{r}
 # full model with two variables
-
 plasma_glm02 <- glm(ESR ~ fibrinogen + globulin, data = plasma, family = binomial())
 summary(plasma_glm02)
+```
 
-# Comparing the resudial deviance of the models:
-# residual deviance 01: 24.84 residual deviance 02: 22.971 -> 1.869 (1.87)
-# to test for significance R take the lgm with a chisq
-# the 1.87 -> globulin has no influence in the ESR
-
+Comparing the residual deviance of the models: residual deviance 01: 24.84 residual deviance 02: 22.971 -> 1.869 (1.87), to test for significance R take the lgm with a $\chi^2$ the 1.87 we conclude that **the globulin has no influence in the ESR**.
+To compare the two models (with fibrinogen and fibrinogen + gamma globulin)
+```{r}
 anova(plasma_glm01, plasma_glm02, test = "Chisq")
 
 # Estimates conditional probability of a ESR > 20 for all observations
