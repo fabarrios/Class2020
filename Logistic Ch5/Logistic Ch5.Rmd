@@ -1,0 +1,69 @@
+---
+title: "Logistic Regression"
+author: "F.A. Barrios"
+date: "<small>`r Sys.Date()`</small>"
+output:
+  rmdformats::html_docco:
+    highlight: kate
+  pdf_document: default
+description: "to prepare Class2020 presentations"
+---
+
+```{r setup, echo=FALSE, cache=FALSE}
+library(knitr)
+library(rmdformats)
+
+## Global options
+options(max.print="75")
+opts_chunk$set(echo=TRUE,
+	             cache=TRUE,
+               prompt=FALSE,
+               tidy=TRUE,
+               comment=NA,
+               message=FALSE,
+               warning=FALSE)
+opts_knit$set(width=75)
+```
+
+```{r message = FALSE}
+# Multilevel categorical predictors Chap 4 Vittinghoff
+# Interaction
+#
+library(tidyverse)
+library(emmeans)
+library(multcomp)
+library(MASS)
+library(car)
+library(HSAUR2)
+#
+setwd("~/Dropbox/GitHub/Class2020")
+# loading the HERS data set from Vittinghoff's data
+hers <- read_csv("DataRegressBook/Chap3/hersdata.csv")
+```
+
+# Logistic Regression
+
+## Example
+
+The Erythrocyte sedimentation rate (ESR). ESR increases when protein levels rise associated with chronic infections, rheumatic conditions. The level of ESR per se, is not important as long as it is < 20mm/hr (healthy) to asses ESR as useful diagnostic tool. Example from HSAUR
+
+```{r}
+# Using plasma data from HSAUR
+
+data("plasma", package = "HSAUR2")
+layout(matrix(1:2, ncol = 2))
+cdplot(ESR ~ fibrinogen, data = plasma)
+cdplot(ESR ~ globulin, data = plasma)
+
+# glm general linear model default is logistic for binomial distribution
+
+plasma_glm01 <- glm(ESR ~ fibrinogen, data = plasma, family = binomial())
+summary(plasma_glm01)
+
+# coeff fibrinogen is sifnificative 5%
+# one unit change in this variable increases the log-odds in favor of ESR > 20mm/hr
+confint(plasma_glm01, parm = "fibrinogen")
+exp(coef(plasma_glm01)["fibrinogen"])
+exp(confint(plasma_glm01, parm = "fibrinogen"))
+
+```
