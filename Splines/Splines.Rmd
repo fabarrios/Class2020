@@ -160,7 +160,7 @@ plot(HDL_model_BMIc2)
 # DFBETAS (standardized difference of the beta) is a measure that standardizes the absolute difference in parameter estimates
 dfbetasPlots(HDL_model_BMIc2)
 
-# From the olsrr package
+# Ordinary Least Squires (OLS) From the olsrr package, there is a full set of lm tools and a lm tool itself.
 ols_plot_cooksd_bar(HDL_model_BMIc2)
 ols_plot_resid_stand(HDL_model_BMIc2)
 ols_plot_dfbetas(HDL_model_BMIc2)
