@@ -146,6 +146,6 @@ summary(CHD_glm01)
 confint(CHD_glm01, parm = "age")
 exp(coef(CHD_glm01)["age"])
 # To estimate the model
-anova(CHD_glm01, test = "Chisq")
+# anova(CHD_glm01, test = "Chisq")
 
 ```

@@ -1667,6 +1667,45 @@ Model 2: ESR ~ fibrinogen + globulin
 <li>The mean <span class="math inline">\(E[y|x] = P(x)\)</span> is given by the logistic function</li>
 <li>Values of the outcome are statistically independent</li>
 </ol>
+<pre><code>
+Call:
+glm(formula = chd69 ~ age, family = binomial(), data = wcgs)
+
+Deviance Residuals: 
+    Min       1Q   Median       3Q      Max  
+-0.6209  -0.4545  -0.3669  -0.3292   2.4835  
+
+Coefficients:
+            Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept) -5.93952    0.54932 -10.813  &lt; 2e-16 ***
+age          0.07442    0.01130   6.585 4.56e-11 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 1781.2  on 3153  degrees of freedom
+Residual deviance: 1738.4  on 3152  degrees of freedom
+AIC: 1742.4
+
+Number of Fisher Scoring iterations: 5</code></pre>
+<pre><code>     2.5 %     97.5 % 
+0.05227351 0.09661197 </code></pre>
+<pre><code>     age 
+1.077262 </code></pre>
+<pre><code>Analysis of Deviance Table
+
+Model: binomial, link: logit
+
+Response: chd69
+
+Terms added sequentially (first to last)
+
+     Df Deviance Resid. Df Resid. Dev  Pr(&gt;Chi)    
+NULL                  3153     1781.2              
+age   1   42.888      3152     1738.4 5.798e-11 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 </div>
 </div>
 </div>
