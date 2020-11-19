@@ -33,8 +33,8 @@ library(HSAUR2)
 library(car)
 library(multcomp)
 
-setwd("~/Dropbox/Fdo/ClaseStats/RegressionClass/RegressionR_code")
-hers <- read_csv("DataRegressBook/Chap3/hersdata.csv")
+setwd("~/Dropbox/Fdo/GitHub/Class2020/")
+wcgs <- read_csv("DataRegressBook/Chap2/wcgs.csv")
 ```
 
 # Logistic Regression
@@ -43,7 +43,7 @@ hers <- read_csv("DataRegressBook/Chap3/hersdata.csv")
 
 ### Introduction
 
-The erythrocyte sedimentation rate (ESR) is the rate at which red blood cells (erythrocytes) settle out of suspension in the blood plasma, when measured under standard conditions.  If the ESR increases when the level of certain proteins in the blood plasma rise in association with conditions such as rheumatic diseases, chronic infections, and malignant diseases, its determination might be useful in screening blood samples taken from people suspected of suffering from one of the conditions mentioned. The absolute value of the ESR is not of great importance; rather, less than 20mm/hr indicates a 'healthy' individual. To asses wheder the ESR is a useful diagnostic tool, Collett and Jemain (1985) collected the data in HSAUR2. The question of interest is whether there is any association between the probabilityof an ESR reading greater than 20mm/hr and the levels of the two plasma proteins. If there is not then the determination of ESR would not be useful for diagnostic purposes.
+The erythrocyte sedimentation rate (ESR) is the rate at which red blood cells (erythrocytes) settle out of suspension in the blood plasma, when measured under standard conditions.  If the ESR increases when the level of certain proteins in the blood plasma rise in association with conditions such as rheumatic diseases, chronic infections, and malignant diseases, its determination might be useful in screening blood samples taken from people suspected of suffering from one of the conditions mentioned. The absolute value of the ESR is not of great importance; rather, less than 20mm/hr indicates a 'healthy' individual. To asses whether the ESR is a useful diagnostic tool, Collett and Jemain (1985) collected the data in HSAUR2. The question of interest is whether there is any association between the probability of an ESR reading greater than 20mm/hr and the levels of the two plasma proteins. If there is not then the determination of ESR would not be useful for diagnostic purposes.
 
 ```{r}
 # Using plasma data from HSAUR
@@ -61,7 +61,7 @@ To estimate a logistic regression model in R the glm (General Linear Model) is u
 plasma_glm01 <- glm(ESR ~ fibrinogen, data = plasma, family = binomial())
 summary(plasma_glm01)
 ```
-From these results we see that the regression coefficients for fibrogen is significant at the 5% level. An inclrease of one unit in this variable increases le log-odds on favor of an ESR value greater then 20 by estimated 1.83 with 95% confidence interval:
+From these results we see that the regression coefficients for fibrinogen is significant at the 5% level. An increase of one unit in this variable increases the log-odds on favor of an ESR value greater then 20 by estimated 1.83 with 95% confidence interval:
 
 ```{r}
 # coeff fibrinogen is sifnificative 5%
@@ -70,7 +70,7 @@ confint(plasma_glm01, parm = "fibrinogen")
 exp(coef(plasma_glm01)["fibrinogen"])
 exp(confint(plasma_glm01, parm = "fibrinogen"))
 ```
-These are the values of the odds themselves (by exponentiating the estimate). So **increased values of fibrogen lead to a grater probability of an ESR value greater than 20**.
+These are the values of the odds themselves (by exponentiating the estimate). So **increased values of fibrinogen lead to a grater probability of an ESR value greater than 20**.
 
 
 ```{r}
@@ -80,7 +80,7 @@ summary(plasma_glm02)
 ```
 
 Comparing the residual deviance of the models: residual deviance 01: 24.84 residual deviance 02: 22.971 -> 1.869 (1.87), to test for significance R take the lgm with a $\chi^2$ the 1.87 we conclude that **the globulin has no influence in the ESR**.
-To compare the two models (with fibrinogen and fibrinogen + gamma globulin)
+To compare the two nested models (with fibrinogen and fibrinogen + gamma globulin) we can estimate the ANOVA of the models (Pr of 0.1716)
 ```{r}
 anova(plasma_glm01, plasma_glm02, test = "Chisq")
 
@@ -93,4 +93,48 @@ plot(globulin ~ fibrinogen, data = plasma, xlim = c(2, 6), ylim = c(25, 55), pch
 symbols(plasma$fibrinogen, plasma$globulin, circles = prob, add = TRUE)
 
 ```
+## Single predictor models
+
+In the linear model the "expected value" of the $Y|x$ is estimated with a simple linear model
+$$E[y|x]=\beta_0 + \beta_1$$
+And to model a function that has a binary outcome, in particular if we assign the expected value $E[y|x]$ to the observed proportion ($P(x)$) of a variable given $x$ that take the fomr of a simple linear model in x 
+$$P(x) = E[y|x] = \beta_0 + \beta_1 x$$
+At this equation if x is a binary predictor taking on the values 0 or 1, $P(0) = \beta_0 + \beta_1 (0)$ and $P(1) = \beta_0 + \beta_1(1)$, then $P(0)-P(1) = \beta_1$ therefore the effect of increasing x one unit is to add an increment $\beta_1$ to the outcome.  This is the risk difference associated with a unit increase in $x$. Models with this property are often referred to as *additive risk models*.
+
+The statistical machinery which allowed us to use this linear model to make inferences about the strength of relationship in expected value $E[y|x]$ linear model,required that the outcome variable follow an approximate normal distribution. For binary outcome, this assumption is incorret. And, the outcome in the model that we are studing now represents a probability or risk. Thus, any estimates of the regression coefficients must constrain the estimated probability to lie between zero and one for the model to make sense. $P(x) = E[y|x]$.
+
+The smooth S-shaped curve in the following plot is known as the logistic model. The exponential model is also known as log linear because it specifies that the logarithm of the outcome risk is linear in x
+
+```{r}
+# generate fake data
+set.seed(42)
+n <- 1000
+x <- (runif(n) * 10) - 5 
+y <- (exp(x) / (1 + exp(x)))
+df <- data.frame(x = x, y = y)
+
+# Logistic plot
+p1 <- ggplot(df, aes(x, y)) +
+    geom_point(alpha = 0.1) +
+    geom_smooth(se = FALSE) +
+    theme_bw()
+p1
+```
+
+The logistic model allows for a smooth change in risk throughout the range of x, and has the property that risk increases slowly up to a “threshold” range of x. The mathematical model is the folowing for a simple linear model
+$$P(x) = \frac{e^{(\beta_0 + \beta_1x)}}{1+e^{(\beta_0 + \beta_1 x)}}$$
+
+in terms of the odds of the outcome associated with the predictor x, the model can also be expressed as
+$$\frac{P(x)}{1-P(x)} = e^{(\beta_0 + \beta_1 x)}$$
+
+If x takes the values 0 or 1 (binary predictor), the ratio of the odds for these two values are
+$$\frac{\frac{P(1)}{1-P(1)}}{\frac{P(0)}{1-P(x)}} = \frac{e^{(\beta_0 + \beta_1)}}{e^{\beta_0}} = e^{\beta_1}$$
+Therefore the logit model ia a "multiplicative risk model". The most widely used model for binary outcomes in clinical and epidemiological applications, and forms the basis
+of logistic regression modeling.
+The random part of the model specifies the distribution of the outcome variable $y_i$, conditional on the observed value $x_i$ of the predictor (where the subscript i denotes the value for a particular subject). For binary outcomes, this distribution is called the binomial distribution and is completely specified by the mean of yi conditional on the value $x_i$. To summarize, the logistic model makes the following assumptions about the outcome $y_i$:
+1. $y_i$ follows a Binomial distribution
+2. The mean $E[y|x] = P(x)$ is given by the logistic function
+3. Values of the outcome are statistically independent
+
+```{r}
 
