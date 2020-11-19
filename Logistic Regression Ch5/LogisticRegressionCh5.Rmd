@@ -33,7 +33,7 @@ library(HSAUR2)
 library(car)
 library(multcomp)
 
-setwd("~/Dropbox/Fdo/GitHub/Class2020/")
+setwd("~/Dropbox/GitHub/Class2020")
 wcgs <- read_csv("DataRegressBook/Chap2/wcgs.csv")
 ```
 
@@ -132,9 +132,20 @@ $$\frac{\frac{P(1)}{1-P(1)}}{\frac{P(0)}{1-P(x)}} = \frac{e^{(\beta_0 + \beta_1)
 Therefore the logit model ia a "multiplicative risk model". The most widely used model for binary outcomes in clinical and epidemiological applications, and forms the basis
 of logistic regression modeling.
 The random part of the model specifies the distribution of the outcome variable $y_i$, conditional on the observed value $x_i$ of the predictor (where the subscript i denotes the value for a particular subject). For binary outcomes, this distribution is called the binomial distribution and is completely specified by the mean of yi conditional on the value $x_i$. To summarize, the logistic model makes the following assumptions about the outcome $y_i$:
+
 1. $y_i$ follows a Binomial distribution
 2. The mean $E[y|x] = P(x)$ is given by the logistic function
 3. Values of the outcome are statistically independent
 
-```{r}
 
+```{r}
+wcgs <- mutate(wcgs, chd69 = factor(chd69))
+# For table 5.2
+CHD_glm01 <- glm(chd69 ~ age, data = wcgs, family = binomial())
+summary(CHD_glm01)
+confint(CHD_glm01, parm = "age")
+exp(coef(CHD_glm01)["age"])
+# To estimate the model
+anova(CHD_glm01, test = "Chisq")
+
+```
