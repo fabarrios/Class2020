@@ -10,7 +10,7 @@
 
 <meta name="author" content="F.A. Barrios Instituto de Neurobiología UNAM" />
 
-<meta name="date" content="2020-11-18" />
+<meta name="date" content="2020-11-19" />
 
 <title>Logistic Regression Ch5</title>
 
@@ -1573,13 +1573,14 @@ $(document).ready(function () {
       <ul>
       <li><a href="#logistic-regression">Logistic Regression</a><ul>
       <li><a href="#example-from-hsaur-chapter-7-in-hsaur3">Example from HSAUR (Chapter 7, in HSAUR3)</a></li>
+      <li><a href="#interpretation-of-regression-coefficients">Interpretation of Regression Coefficients</a></li>
       </ul></li>
       </ul>
     </div>
     
     <div id="postamble" data-toggle="wy-nav-shift" class="status">
               <p class="author"><span class="glyphicon glyphicon-user"></span> F.A. Barrios<br><small>Instituto de Neurobiología UNAM<br></small></p>
-                  <p class="date"><span class="glyphicon glyphicon-calendar"></span> <small>2020-11-18</small></p>
+                  <p class="date"><span class="glyphicon glyphicon-calendar"></span> <small>2020-11-19</small></p>
         </div>
 </div>
 
@@ -1667,13 +1668,16 @@ Model 2: ESR ~ fibrinogen + globulin
 <li>The mean <span class="math inline">\(E[y|x] = P(x)\)</span> is given by the logistic function</li>
 <li>Values of the outcome are statistically independent</li>
 </ol>
-<pre><code>
-Call:
-glm(formula = chd69 ~ age, family = binomial(), data = wcgs)
-
-Deviance Residuals: 
-    Min       1Q   Median       3Q      Max  
--0.6209  -0.4545  -0.3669  -0.3292   2.4835  
+</div>
+</div>
+<div id="interpretation-of-regression-coefficients" class="section level2">
+<h2>Interpretation of Regression Coefficients</h2>
+<p>So, the estimated logistic-regression model is given by</p>
+<p><span class="math display">\[log[\frac{\hat\mu(x)}{1-\hat\mu(x)}] = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \cdots + \beta_k x_k\]</span></p>
+<p>If exponentiate both sides of the equation, we get <span class="math display">\[\frac{\hat\mu(x)}{1-\hat\mu(x)} = exp(\beta_0) \times exp(\beta_1 x_1) \times exp(\beta_2 x_2) \times \cdots \times exp(beta_k x_k)\]</span></p>
+<p>where the left hadn of the equation, <span class="math inline">\(\frac{\hat\mu(x)}{1-\hat\mu(x)}\)</span>, gives the <em>fitted odds</em> of success, <strong>the fitted probability of success divided by the fitted probability of failure</strong>. Exponentiating the model removes the logarithms and vhanges the model in the log-odds scale to one that is multiplicative, in this log odds scale.</p>
+<p>For the WCGS data and the variable Corollary Heart Disease (CHD) and age, the <span class="math inline">\(\beta_1\)</span> is the age slope of the fitted logistic model. The outcome of the model is the log odds of CHD risk and the relationship with age is linear, the slope coefficient <span class="math inline">\(\beta_1\)</span> gives the change in the log odds of chd69 associated with</p>
+<pre><code>Call: glm(formula = chd69 ~ age, family = binomial(), data = wcgs)
 
 Coefficients:
             Estimate Std. Error z value Pr(&gt;|z|)    
@@ -1686,14 +1690,68 @@ Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&
 
     Null deviance: 1781.2  on 3153  degrees of freedom
 Residual deviance: 1738.4  on 3152  degrees of freedom
-AIC: 1742.4
 
-Number of Fisher Scoring iterations: 5</code></pre>
-<pre><code>     2.5 %     97.5 % 
-0.05227351 0.09661197 </code></pre>
+ logLik      df     AIC     BIC 
+-869.18       2 1742.36 1754.47 
+
+Number of Fisher Scoring iterations: 5
+
+Exponentiated Coefficients and Confidence Bounds
+               Estimate        2.5 %      97.5 %
+(Intercept) 0.002633304 0.0008898193 0.007676359
+age         1.077261913 1.0536638869 1.101432899</code></pre>
 <pre><code>     age 
 1.077262 </code></pre>
-</div>
+<pre><code>  lfp            k5              k618            age          wc        hc     
+ no :325   Min.   :0.0000   Min.   :0.000   Min.   :30.00   no :541   no :458  
+ yes:428   1st Qu.:0.0000   1st Qu.:0.000   1st Qu.:36.00   yes:212   yes:295  
+           Median :0.0000   Median :1.000   Median :43.00                      
+           Mean   :0.2377   Mean   :1.353   Mean   :42.54                      
+           3rd Qu.:0.0000   3rd Qu.:2.000   3rd Qu.:49.00                      
+           Max.   :3.0000   Max.   :8.000   Max.   :60.00                      
+      lwg               inc        
+ Min.   :-2.0541   Min.   :-0.029  
+ 1st Qu.: 0.8181   1st Qu.:13.025  
+ Median : 1.0684   Median :17.700  
+ Mean   : 1.0971   Mean   :20.129  
+ 3rd Qu.: 1.3997   3rd Qu.:24.466  
+ Max.   : 3.2189   Max.   :96.000  </code></pre>
+<pre><code>Call: glm(formula = lfp ~ k5 + k618 + age + wc + hc + lwg + inc, family =
+          binomial, data = Mroz)
+
+Coefficients:
+             Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)  3.182140   0.644375   4.938 7.88e-07 ***
+k5          -1.462913   0.197001  -7.426 1.12e-13 ***
+k618        -0.064571   0.068001  -0.950 0.342337    
+age         -0.062871   0.012783  -4.918 8.73e-07 ***
+wcyes        0.807274   0.229980   3.510 0.000448 ***
+hcyes        0.111734   0.206040   0.542 0.587618    
+lwg          0.604693   0.150818   4.009 6.09e-05 ***
+inc         -0.034446   0.008208  -4.196 2.71e-05 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 1029.75  on 752  degrees of freedom
+Residual deviance:  905.27  on 745  degrees of freedom
+
+ logLik      df     AIC     BIC 
+-452.63       8  921.27  958.26 
+
+Number of Fisher Scoring iterations: 4
+
+Exponentiated Coefficients and Confidence Bounds
+              Estimate     2.5 %     97.5 %
+(Intercept) 24.0982799 6.9377228 87.0347916
+k5           0.2315607 0.1555331  0.3370675
+k618         0.9374698 0.8200446  1.0710837
+age          0.9390650 0.9154832  0.9625829
+wcyes        2.2417880 1.4347543  3.5387571
+hcyes        1.1182149 0.7467654  1.6766380
+lwg          1.8306903 1.3689201  2.4768235
+inc          0.9661401 0.9502809  0.9814042</code></pre>
 </div>
 </div>
 </div>
