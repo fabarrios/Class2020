@@ -137,6 +137,9 @@ The random part of the model specifies the distribution of the outcome variable 
 2. The mean $E[y|x] = P(x)$ is given by the logistic function
 3. Values of the outcome are statistically independent
 
+## Interpretation of Regression Coefficients
+
+For the WCGS data and the variable Corollary Heart Disease (CHD) and age, the $\beta_1$ is the age slope of the fitted logistic model. The outcome of the model is the log odds of CHD risk and the relationship with age is linear, the slope coefficient $\beta_1$ gives the change in the log odds of chd69 associated with 
 
 ```{r}
 wcgs <- mutate(wcgs, chd69 = factor(chd69))
