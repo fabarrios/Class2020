@@ -1,0 +1,553 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Logistic Regression Ch5},
+  pdfauthor={F.A. Barrios Instituto de Neurobiología UNAM},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+
+\title{Logistic Regression Ch5}
+\author{F.A. BarriosInstituto de Neurobiología UNAM}
+\date{2020-11-19}
+
+\begin{document}
+\maketitle
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(tidyverse)}
+\KeywordTok{library}\NormalTok{(here)}
+\KeywordTok{library}\NormalTok{(wesanderson)}
+\KeywordTok{library}\NormalTok{(rstatix)}
+\KeywordTok{library}\NormalTok{(HSAUR2)}
+\KeywordTok{library}\NormalTok{(car)}
+\KeywordTok{library}\NormalTok{(multcomp)}
+
+\KeywordTok{setwd}\NormalTok{(}\StringTok{"~/Dropbox/GitHub/Class2020"}\NormalTok{)}
+\NormalTok{wcgs <-}\StringTok{ }\KeywordTok{read_csv}\NormalTok{(}\StringTok{"DataRegressBook/Chap2/wcgs.csv"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{logistic-regression}{%
+\section{Logistic Regression}\label{logistic-regression}}
+
+\hypertarget{example-from-hsaur-chapter-7-in-hsaur3}{%
+\subsection{Example from HSAUR (Chapter 7, in
+HSAUR3)}\label{example-from-hsaur-chapter-7-in-hsaur3}}
+
+\hypertarget{introduction}{%
+\subsubsection{Introduction}\label{introduction}}
+
+The erythrocyte sedimentation rate (ESR) is the rate at which red blood
+cells (erythrocytes) settle out of suspension in the blood plasma, when
+measured under standard conditions. If the ESR increases when the level
+of certain proteins in the blood plasma rise in association with
+conditions such as rheumatic diseases, chronic infections, and malignant
+diseases, its determination might be useful in screening blood samples
+taken from people suspected of suffering from one of the conditions
+mentioned. The absolute value of the ESR is not of great importance;
+rather, less than 20mm/hr indicates a `healthy' individual. To asses
+whether the ESR is a useful diagnostic tool, Collett and Jemain (1985)
+collected the data in HSAUR2. The question of interest is whether there
+is any association between the probability of an ESR reading greater
+than 20mm/hr and the levels of the two plasma proteins. If there is not
+then the determination of ESR would not be useful for diagnostic
+purposes.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Using plasma data from HSAUR}
+\KeywordTok{data}\NormalTok{(}\StringTok{"plasma"}\NormalTok{, }\DataTypeTok{package =} \StringTok{"HSAUR2"}\NormalTok{)}
+\KeywordTok{layout}\NormalTok{(}\KeywordTok{matrix}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{2}\NormalTok{, }\DataTypeTok{ncol =} \DecValTok{2}\NormalTok{))}
+\CommentTok{# cdplot computes and plots conditional densities describing how the conditional distribution of a categorical variable y changes over a numerical variable x}
+\KeywordTok{cdplot}\NormalTok{(ESR }\OperatorTok{~}\StringTok{ }\NormalTok{fibrinogen, }\DataTypeTok{data =}\NormalTok{ plasma)}
+\KeywordTok{cdplot}\NormalTok{(ESR }\OperatorTok{~}\StringTok{ }\NormalTok{globulin, }\DataTypeTok{data =}\NormalTok{ plasma)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{LogisticRegressionCh5_files/figure-latex/unnamed-chunk-2-1.pdf}
+To estimate a logistic regression model in R the glm (General Linear
+Model) is used, for binomial distribution the glm() function defalut to
+a logistic model.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# glm general linear model default is logistic for binomial distribution}
+
+\NormalTok{plasma_glm01 <-}\StringTok{ }\KeywordTok{glm}\NormalTok{(ESR }\OperatorTok{~}\StringTok{ }\NormalTok{fibrinogen, }\DataTypeTok{data =}\NormalTok{ plasma, }\DataTypeTok{family =} \KeywordTok{binomial}\NormalTok{())}
+\KeywordTok{summary}\NormalTok{(plasma_glm01)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Call:
+glm(formula = ESR ~ fibrinogen, family = binomial(), data = plasma)
+
+Deviance Residuals: 
+    Min       1Q   Median       3Q      Max  
+-0.9298  -0.5399  -0.4382  -0.3356   2.4794  
+
+Coefficients:
+            Estimate Std. Error z value Pr(>|z|)  
+(Intercept)  -6.8451     2.7703  -2.471   0.0135 *
+fibrinogen    1.8271     0.9009   2.028   0.0425 *
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 30.885  on 31  degrees of freedom
+Residual deviance: 24.840  on 30  degrees of freedom
+AIC: 28.84
+
+Number of Fisher Scoring iterations: 5
+\end{verbatim}
+
+From these results we see that the regression coefficients for
+fibrinogen is significant at the 5\% level. An increase of one unit in
+this variable increases the log-odds on favor of an ESR value greater
+then 20 by estimated 1.83 with 95\% confidence interval:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# coeff fibrinogen is sifnificative 5%}
+\CommentTok{# one unit change in this variable increases the log-odds in favor of ESR > 20mm/hr by 1.83}
+\KeywordTok{confint}\NormalTok{(plasma_glm01, }\DataTypeTok{parm =} \StringTok{"fibrinogen"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+    2.5 %    97.5 % 
+0.3387619 3.9984921 
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{exp}\NormalTok{(}\KeywordTok{coef}\NormalTok{(plasma_glm01)[}\StringTok{"fibrinogen"}\NormalTok{])}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+fibrinogen 
+  6.215715 
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{exp}\NormalTok{(}\KeywordTok{confint}\NormalTok{(plasma_glm01, }\DataTypeTok{parm =} \StringTok{"fibrinogen"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+    2.5 %    97.5 % 
+ 1.403209 54.515884 
+\end{verbatim}
+
+These are the values of the odds themselves (by exponentiating the
+estimate). So \textbf{increased values of fibrinogen lead to a grater
+probability of an ESR value greater than 20}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# full model with two variables}
+\NormalTok{plasma_glm02 <-}\StringTok{ }\KeywordTok{glm}\NormalTok{(ESR }\OperatorTok{~}\StringTok{ }\NormalTok{fibrinogen }\OperatorTok{+}\StringTok{ }\NormalTok{globulin, }\DataTypeTok{data =}\NormalTok{ plasma, }\DataTypeTok{family =} \KeywordTok{binomial}\NormalTok{())}
+\KeywordTok{summary}\NormalTok{(plasma_glm02)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Call:
+glm(formula = ESR ~ fibrinogen + globulin, family = binomial(), 
+    data = plasma)
+
+Deviance Residuals: 
+    Min       1Q   Median       3Q      Max  
+-0.9683  -0.6122  -0.3458  -0.2116   2.2636  
+
+Coefficients:
+            Estimate Std. Error z value Pr(>|z|)  
+(Intercept) -12.7921     5.7963  -2.207   0.0273 *
+fibrinogen    1.9104     0.9710   1.967   0.0491 *
+globulin      0.1558     0.1195   1.303   0.1925  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 30.885  on 31  degrees of freedom
+Residual deviance: 22.971  on 29  degrees of freedom
+AIC: 28.971
+
+Number of Fisher Scoring iterations: 5
+\end{verbatim}
+
+Comparing the residual deviance of the models: residual deviance 01:
+24.84 residual deviance 02: 22.971 -\textgreater{} 1.869 (1.87), to test
+for significance R take the lgm with a \(\chi^2\) the 1.87 we conclude
+that \textbf{the globulin has no influence in the ESR}. To compare the
+two nested models (with fibrinogen and fibrinogen + gamma globulin) we
+can estimate the ANOVA of the models (Pr of 0.1716)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{anova}\NormalTok{(plasma_glm01, plasma_glm02, }\DataTypeTok{test =} \StringTok{"Chisq"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Analysis of Deviance Table
+
+Model 1: ESR ~ fibrinogen
+Model 2: ESR ~ fibrinogen + globulin
+  Resid. Df Resid. Dev Df Deviance Pr(>Chi)
+1        30     24.840                     
+2        29     22.971  1   1.8692   0.1716
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Estimates conditional probability of a ESR > 20 for all observations}
+
+\NormalTok{prob <-}\StringTok{ }\KeywordTok{predict}\NormalTok{(plasma_glm02, }\DataTypeTok{type =} \StringTok{"response"}\NormalTok{)}
+\KeywordTok{layout}\NormalTok{(}\KeywordTok{matrix}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{1}\NormalTok{, }\DataTypeTok{ncol =} \DecValTok{1}\NormalTok{))}
+
+\KeywordTok{plot}\NormalTok{(globulin }\OperatorTok{~}\StringTok{ }\NormalTok{fibrinogen, }\DataTypeTok{data =}\NormalTok{ plasma, }\DataTypeTok{xlim =} \KeywordTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{, }\DecValTok{6}\NormalTok{), }\DataTypeTok{ylim =} \KeywordTok{c}\NormalTok{(}\DecValTok{25}\NormalTok{, }\DecValTok{55}\NormalTok{), }\DataTypeTok{pch =} \StringTok{"."}\NormalTok{)}
+\KeywordTok{symbols}\NormalTok{(plasma}\OperatorTok{$}\NormalTok{fibrinogen, plasma}\OperatorTok{$}\NormalTok{globulin, }\DataTypeTok{circles =}\NormalTok{ prob, }\DataTypeTok{add =} \OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{LogisticRegressionCh5_files/figure-latex/unnamed-chunk-6-1.pdf}
+\#\# Single predictor models
+
+In the linear model the ``expected value'' of the \(Y|x\) is estimated
+with a simple linear model \[E[y|x]=\beta_0 + \beta_1\] And to model a
+function that has a binary outcome, in particular if we assign the
+expected value \(E[y|x]\) to the observed proportion (\(P(x)\)) of a
+variable given \(x\) that take the fomr of a simple linear model in x
+\[P(x) = E[y|x] = \beta_0 + \beta_1 x\] At this equation if x is a
+binary predictor taking on the values 0 or 1,
+\(P(0) = \beta_0 + \beta_1 (0)\) and \(P(1) = \beta_0 + \beta_1(1)\),
+then \(P(0)-P(1) = \beta_1\) therefore the effect of increasing x one
+unit is to add an increment \(\beta_1\) to the outcome. This is the risk
+difference associated with a unit increase in \(x\). Models with this
+property are often referred to as \emph{additive risk models}.
+
+The statistical machinery which allowed us to use this linear model to
+make inferences about the strength of relationship in expected value
+\(E[y|x]\) linear model,required that the outcome variable follow an
+approximate normal distribution. For binary outcome, this assumption is
+incorret. And, the outcome in the model that we are studing now
+represents a probability or risk. Thus, any estimates of the regression
+coefficients must constrain the estimated probability to lie between
+zero and one for the model to make sense. \(P(x) = E[y|x]\).
+
+The smooth S-shaped curve in the following plot is known as the logistic
+model. The exponential model is also known as log linear because it
+specifies that the logarithm of the outcome risk is linear in x
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# generate fake data}
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{42}\NormalTok{)}
+\NormalTok{n <-}\StringTok{ }\DecValTok{1000}
+\NormalTok{x <-}\StringTok{ }\NormalTok{(}\KeywordTok{runif}\NormalTok{(n) }\OperatorTok{*}\StringTok{ }\DecValTok{10}\NormalTok{) }\OperatorTok{-}\StringTok{ }\DecValTok{5} 
+\NormalTok{y <-}\StringTok{ }\NormalTok{(}\KeywordTok{exp}\NormalTok{(x) }\OperatorTok{/}\StringTok{ }\NormalTok{(}\DecValTok{1} \OperatorTok{+}\StringTok{ }\KeywordTok{exp}\NormalTok{(x)))}
+\NormalTok{df <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ x, }\DataTypeTok{y =}\NormalTok{ y)}
+
+\CommentTok{# Logistic plot}
+\NormalTok{p1 <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(df, }\KeywordTok{aes}\NormalTok{(x, y)) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{geom_point}\NormalTok{(}\DataTypeTok{alpha =} \FloatTok{0.1}\NormalTok{) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{geom_smooth}\NormalTok{(}\DataTypeTok{se =} \OtherTok{FALSE}\NormalTok{) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{theme_bw}\NormalTok{()}
+\NormalTok{p1}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{LogisticRegressionCh5_files/figure-latex/unnamed-chunk-7-1.pdf}
+
+The logistic model allows for a smooth change in risk throughout the
+range of x, and has the property that risk increases slowly up to a
+``threshold'' range of x. The mathematical model is the folowing for a
+simple linear model
+\[P(x) = \frac{e^{(\beta_0 + \beta_1x)}}{1+e^{(\beta_0 + \beta_1 x)}}\]
+
+in terms of the odds of the outcome associated with the predictor x, the
+model can also be expressed as
+\[\frac{P(x)}{1-P(x)} = e^{(\beta_0 + \beta_1 x)}\]
+
+If x takes the values 0 or 1 (binary predictor), the ratio of the odds
+for these two values are
+\[\frac{\frac{P(1)}{1-P(1)}}{\frac{P(0)}{1-P(x)}} = \frac{e^{(\beta_0 + \beta_1)}}{e^{\beta_0}} = e^{\beta_1}\]
+Therefore the logit model ia a ``multiplicative risk model''. The most
+widely used model for binary outcomes in clinical and epidemiological
+applications, and forms the basis of logistic regression modeling. The
+random part of the model specifies the distribution of the outcome
+variable \(y_i\), conditional on the observed value \(x_i\) of the
+predictor (where the subscript i denotes the value for a particular
+subject). For binary outcomes, this distribution is called the binomial
+distribution and is completely specified by the mean of yi conditional
+on the value \(x_i\). To summarize, the logistic model makes the
+following assumptions about the outcome \(y_i\):
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \(y_i\) follows a Binomial distribution
+\item
+  The mean \(E[y|x] = P(x)\) is given by the logistic function
+\item
+  Values of the outcome are statistically independent
+\end{enumerate}
+
+\hypertarget{interpretation-of-regression-coefficients}{%
+\subsection{Interpretation of Regression
+Coefficients}\label{interpretation-of-regression-coefficients}}
+
+So, the estimated logistic-regression model is given by
+
+\[log[\frac{\hat\mu(x)}{1-\hat\mu(x)}] = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \cdots + \beta_k x_k\]
+
+If exponentiate both sides of the equation, we get
+\[\frac{\hat\mu(x)}{1-\hat\mu(x)} = exp(\beta_0) \times exp(\beta_1 x_1) \times exp(\beta_2 x_2) \times \cdots \times exp(beta_k x_k)\]
+
+where the left hadn of the equation,
+\(\frac{\hat\mu(x)}{1-\hat\mu(x)}\), gives the \emph{fitted odds} of
+success, \textbf{the fitted probability of success divided by the fitted
+probability of failure}. Exponentiating the model removes the logarithms
+and vhanges the model in the log-odds scale to one that is
+multiplicative, in this log odds scale.
+
+For the WCGS data and the variable Corollary Heart Disease (CHD) and
+age, the \(\beta_1\) is the age slope of the fitted logistic model. The
+outcome of the model is the log odds of CHD risk and the relationship
+with age is linear, the slope coefficient \(\beta_1\) gives the change
+in the log odds of chd69 associated with
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{wcgs <-}\StringTok{ }\KeywordTok{mutate}\NormalTok{(wcgs, }\DataTypeTok{chd69 =} \KeywordTok{factor}\NormalTok{(chd69))}
+\CommentTok{# For table 5.2}
+\NormalTok{CHD_glm01 <-}\StringTok{ }\KeywordTok{glm}\NormalTok{(chd69 }\OperatorTok{~}\StringTok{ }\NormalTok{age, }\DataTypeTok{data =}\NormalTok{ wcgs, }\DataTypeTok{family =} \KeywordTok{binomial}\NormalTok{())}
+\KeywordTok{S}\NormalTok{(CHD_glm01)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Call: glm(formula = chd69 ~ age, family = binomial(), data = wcgs)
+
+Coefficients:
+            Estimate Std. Error z value Pr(>|z|)    
+(Intercept) -5.93952    0.54932 -10.813  < 2e-16 ***
+age          0.07442    0.01130   6.585 4.56e-11 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 1781.2  on 3153  degrees of freedom
+Residual deviance: 1738.4  on 3152  degrees of freedom
+
+ logLik      df     AIC     BIC 
+-869.18       2 1742.36 1754.47 
+
+Number of Fisher Scoring iterations: 5
+
+Exponentiated Coefficients and Confidence Bounds
+               Estimate        2.5 %      97.5 %
+(Intercept) 0.002633304 0.0008898193 0.007676359
+age         1.077261913 1.0536638869 1.101432899
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#confint(CHD_glm01, parm = "age")}
+
+\KeywordTok{exp}\NormalTok{(}\KeywordTok{coef}\NormalTok{(CHD_glm01)[}\StringTok{"age"}\NormalTok{])}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+     age 
+1.077262 
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# To estimate the model}
+
+\CommentTok{##################### From car}
+\CommentTok{# carData Mroz}
+\CommentTok{# lfp labor force participation}
+\CommentTok{# k5 number of children ages 5 and younger}
+\CommentTok{# k618 number of children ages 6 to 18}
+\CommentTok{# age}
+\CommentTok{# wc wife's college attendance}
+\CommentTok{# hc husband's college attendance }
+\CommentTok{# lwg log of estimated wife's wage}
+\CommentTok{# inc family income excluding wife's income}
+
+\KeywordTok{summary}\NormalTok{(Mroz)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+  lfp            k5              k618            age          wc        hc     
+ no :325   Min.   :0.0000   Min.   :0.000   Min.   :30.00   no :541   no :458  
+ yes:428   1st Qu.:0.0000   1st Qu.:0.000   1st Qu.:36.00   yes:212   yes:295  
+           Median :0.0000   Median :1.000   Median :43.00                      
+           Mean   :0.2377   Mean   :1.353   Mean   :42.54                      
+           3rd Qu.:0.0000   3rd Qu.:2.000   3rd Qu.:49.00                      
+           Max.   :3.0000   Max.   :8.000   Max.   :60.00                      
+      lwg               inc        
+ Min.   :-2.0541   Min.   :-0.029  
+ 1st Qu.: 0.8181   1st Qu.:13.025  
+ Median : 1.0684   Median :17.700  
+ Mean   : 1.0971   Mean   :20.129  
+ 3rd Qu.: 1.3997   3rd Qu.:24.466  
+ Max.   : 3.2189   Max.   :96.000  
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mroz.mod <-}\StringTok{ }\KeywordTok{glm}\NormalTok{(lfp }\OperatorTok{~}\StringTok{ }\NormalTok{k5 }\OperatorTok{+}\StringTok{ }\NormalTok{k618 }\OperatorTok{+}\StringTok{ }\NormalTok{age }\OperatorTok{+}\StringTok{ }\NormalTok{wc }\OperatorTok{+}\StringTok{ }\NormalTok{hc }\OperatorTok{+}\StringTok{ }\NormalTok{lwg }\OperatorTok{+}\StringTok{ }\NormalTok{inc, }\DataTypeTok{family=}\NormalTok{binomial, }\DataTypeTok{data=}\NormalTok{Mroz)}
+\KeywordTok{S}\NormalTok{(mroz.mod)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Call: glm(formula = lfp ~ k5 + k618 + age + wc + hc + lwg + inc, family =
+          binomial, data = Mroz)
+
+Coefficients:
+             Estimate Std. Error z value Pr(>|z|)    
+(Intercept)  3.182140   0.644375   4.938 7.88e-07 ***
+k5          -1.462913   0.197001  -7.426 1.12e-13 ***
+k618        -0.064571   0.068001  -0.950 0.342337    
+age         -0.062871   0.012783  -4.918 8.73e-07 ***
+wcyes        0.807274   0.229980   3.510 0.000448 ***
+hcyes        0.111734   0.206040   0.542 0.587618    
+lwg          0.604693   0.150818   4.009 6.09e-05 ***
+inc         -0.034446   0.008208  -4.196 2.71e-05 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 1029.75  on 752  degrees of freedom
+Residual deviance:  905.27  on 745  degrees of freedom
+
+ logLik      df     AIC     BIC 
+-452.63       8  921.27  958.26 
+
+Number of Fisher Scoring iterations: 4
+
+Exponentiated Coefficients and Confidence Bounds
+              Estimate     2.5 %     97.5 %
+(Intercept) 24.0982799 6.9377228 87.0347916
+k5           0.2315607 0.1555331  0.3370675
+k618         0.9374698 0.8200446  1.0710837
+age          0.9390650 0.9154832  0.9625829
+wcyes        2.2417880 1.4347543  3.5387571
+hcyes        1.1182149 0.7467654  1.6766380
+lwg          1.8306903 1.3689201  2.4768235
+inc          0.9661401 0.9502809  0.9814042
+\end{verbatim}
+
+\end{document}
