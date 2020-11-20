@@ -3,7 +3,6 @@ title: "Logistic Regression Ch5"
 author: "F.A. Barrios<br><small>Instituto de Neurobiología UNAM<br></small>"
 date: "<small>`r Sys.Date()`</small>"
 output:
-  pdf_document:
   html_document:
     toc: yes
     toc_depth: 3
@@ -11,7 +10,8 @@ output:
     toc_float:
       collapsed: false
     cod_folding: hide
-    theme: cerulean
+    theme: united
+  pdf_document:
 description: "to prepare Class2020 presentations"
 ---
 
