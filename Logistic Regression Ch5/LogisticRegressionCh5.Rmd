@@ -3,8 +3,17 @@ title: "Logistic Regression Ch5"
 author: "F.A. Barrios<br><small>Instituto de Neurobiología UNAM<br></small>"
 date: "<small>`r Sys.Date()`</small>"
 output:
-  rmdformats::readthedown:
-    highlight: kate
+  html_document:
+    toc: yes
+    toc_depth: 3
+    number_sections: true
+    toc_float:
+      collapsed: false
+    cod_folding: hide
+    theme: cerulean
+  pdf_document:
+    toc:true
+    keep_tex:true
 description: "to prepare Class2020 presentations"
 ---
 
