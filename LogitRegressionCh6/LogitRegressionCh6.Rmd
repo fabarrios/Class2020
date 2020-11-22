@@ -1,0 +1,96 @@
+---
+title: "Logistic Regession"
+author: "F.A. Barrios"
+date: "`r Sys.Date()`"
+output:
+  rmdformats::material:
+    highlight: kate
+---
+
+
+```{r setup, echo=FALSE, cache=FALSE}
+library(knitr)
+library(rmdformats)
+
+## Global options
+options(max.print="75")
+opts_chunk$set(echo=TRUE,
+	             cache=TRUE,
+               prompt=FALSE,
+               tidy=TRUE,
+               comment=NA,
+               message=FALSE,
+               warning=FALSE)
+opts_knit$set(width=75)
+```
+
+# Examples from the CAR book (Fox & Weisberg) [^1]
+
+[^1]: All notes are taken form the "Companion to Applied Regression", 3^0 Ed. Fox & Weisberg
+
+## Review of the Structure of GLMs
+
+The structure of a GLM is very simiar to that of the linear model. In partiular we have a response variable $y$ and $m$ predictors, and we are interested in undestanding how the mean of $y$ varies as the values of the predictors change.
+
+A GLM consists of three components
+
+1. Random component, specifying the conditional or "error" distribution of the response variable, $y$, given the predictors from an *exponential family*.  Both the binomial and Poisson distributions ae in the class of explonential families, and so problems with categorical or discrete responses can be studied with GLMs.
+
+2. As in linear models, the $m$ predictors in a GLMare translated into a vector of $k + 1$ regressor varibles, ${\bf x} = (x_0, x_1, \dots , x_k)$, possibly using contrast regressors for factors, polynomials, regression splines, transformations, and interactions. The response depends on the predictors only through a linear function of the regressors, called the *linear predictor*,
+$$ \eta({\bf x}) = \beta_0 + \beta_1 x_1 + \cdots + \beta_k x_k$$
+3. The connection between the conditional mean $E[y|{\bf x}]$ of the response and the predictor $\eta({\bf x})$ in a linear model is direct,
+$$E[y|{\bf x}] = \eta({\bf x}) = \beta_0 + \beta_1 x_1 + \cdots + \beta_k x_k$$
+and so the mean is equal to a linear combination of the regressors. This direct relationshi is not appropriate for all GLM because $\eta({\bf x})$ can take any value, whereas the mean of a binary response variable must be in the interval (0,1). Therefore we introduce an invertible *link function g* that translates from the scale of the mean response to the scale of the linear predictor. $\eta({\bf x}) = E[y|{\bf x}]$ is standard in the GLM for the conditional mean of the response, therfore
+$$g[\mu({\bf x})] = \eta({\bf x})$$
+Reversing this relationship produces the *inverse-link function*, $g^{-1}[\eta(\bf {x})] = \mu(\bf {x})$. THe inverse of the link function is sometimes is sometimes called the *mean link funcion*
+
+
+Standard link functions and their inverses table: $\mu = E[y|\bf x]$ is the expected value of the response; $\eta = \beta_0 + \beta_1 x_1 + \cdots + \beta_k x_k$ is the linear predictor.
+$$\begin{array}{cccc}
+  \bf Link & {\bf  \eta = g(\mu)} & {\bf \mu = g^{-1}(\eta)} & \bf Inverse Link \\
+  identity & \mu & \eta & identity \\
+  log  & \log(\mu) & e^\eta & exponential  \\
+  inverse & \mu^{-1} & \eta^{-1} & inverse  \\
+  inverse square & \mu^{-2} & \eta^{-1/2} & inverse square root  \\
+  square root & \sqrt{\mu} & \eta^{2} & square \\
+  logit & \log\frac{\mu}{1-\mu} & \frac{1}{1+e^{-\eta}} & logistic \\
+  probit & \Phi(\mu) & \Phi^{-1}(\eta) & normal quantile \\
+  comp. log-log & \log[-\log(-\mu)] & 1- \exp[-\exp(\eta)] & -
+\end{array} $$
+
+
+And the table for canonical or default link, response range, and conditional variance function for GLM families.
+$$\begin{array}{cccc}
+  \bf{Family} & {\bf Default Link} & {\bf Range of y}  & {\bf Var}(y|{\bf x}) \\
+  gaussian & identity & (-\infty, +\infty) & \phi \\
+  binomial & logit & \frac{0,1,\dots, N}{N} & \frac{\mu(1-\mu)}{N} \\
+  poisson & log & 0,1,\dots & \mu \\
+  Gamma & inverse & (0,\infty) & \phi \mu^2 \\
+  Inverse.gaussian & \frac{1}{\mu^2} & (0,\infty) & \phi \mu^3
+\end{array} $$
+
+The variance distributions of an exponential family is a product of a positive *dipersion (scale)* parameter $\phi$ and a function of the mean given the linear predictor:
+$$Var(y|{\bf x}) = \phi \times V[\mu({\bf x})]$$
+The variances for several exponential families are listed in the table above.
+
+The *deviance*, based on the maximized value of the log-likelihood, provides a measure of the fit of a GLM to the data, much as the residual sum of squares does for a linear model.
+
+# GLMs for Binary Responce Data
+
+Consider data in which each case provides a *binary response*, say "success" or "falure", the cases are independent, and the probability of success $\mu({\bf x})$ 
+```{r}
+# Example from the car Book Chp 6
+Probit <- binomial(link=probit)
+Logit <- binomial(link=logit)
+Cloglog <- binomial(link=cloglog)
+range <- seq(-10,10,length=1000)
+plot(range,Logit$linkinv(range),type="l", xlim=c(-5,5), lty=1,
+       xlab=expression(eta(x)), ylab=expression(mu(x)))
+lines(sqrt(pi^2/3)*range, Probit$linkinv(range), lty=2)
+lines(range,Cloglog$linkinv(range), lty=4, lwd=2)
+legend("topleft",c("logit", "probit", "cloglog"), lty=c(1,2,4),
+       lwd=c(1,1,2), inset=0.02)
+```
+
+
+
