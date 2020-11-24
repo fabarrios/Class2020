@@ -32,7 +32,7 @@ library(wesanderson)
 library(rstatix)
 library(HSAUR2)
 library(car)
-library(multcomp)
+library(effects)
 
 setwd("~/Dropbox/GitHub/Class2020")
 wcgs <- read_csv("DataRegressBook/Chap2/wcgs.csv")
@@ -153,5 +153,38 @@ mroz.mod <- glm(lfp ~ k5 + k618 + age + wc + hc + lwg + inc, family=binomial, da
 S(mroz.mod)
 ```
 
-Exponentiating the model removes the logarithms (S function shows the exponents of the betas).  For example increasing the age of a woman by one year, holding the other predictors constant, multiplies the fitted odds of her being in the workforce by $\exp(\beta_3) = \exp(-0.06287) = 0.9391$. That is, reduces the odds of working by $100(1-0.9391) \approx 6\%$. 
+Exponentiating the model removes the logarithms (S function shows the exponents of the betas).  For example increasing the age of a woman by one year, holding the other predictors constant, multiplies the fitted odds of her being in the workforce by $\exp(\beta_3) = \exp(-0.06287) = 0.9391$. That is, reduces the odds of working by $100(1-0.9391) \approx 6\%$.
+Compared to a woman that who did not attend college, a collega-educated woman with all other predictors fixed has fitted odds of working about 2.24 times higher, with a 95% confidence interval [1.43, 3.54].  THe exponents of the coefficient estimates are called *risk factors* or *odds ratios*. The confidence intervals for the GLM are based on profiling the log-likelihood. The confidence intervals may not be symmetric.
+
+## Volunteering for a Psychological Experiment
+
+Cowles collected data on the willingness of students in an introductory psychology class to volunteer for a psychological experiment.
+The data set contains several variables:
+1. The personality dimension *neuroticism*, a numeric variable with integer scores on a scale from zero to 24
+2. The personality dimension *extraversion*, also a numeric variable with a potential range of zero to 24.
+3. The factor sex, with levels "female" and "male".
+4. Tha factor volunteer, with levels "no" and "yes".
+
+Researchers expected volunteering to depend on the sex variable and on the interaction of the personality dimensions, so included the linear-by-linear interaction between nuroticism and extraversion:
+
+```{r}
+brief(Cowles)
+sum(Cowles$volunteer == "yes") # number yes
+
+cowles.mod <- glm(volunteer ~ sex + neuroticism*extraversion,
+    data=Cowles, family=binomial)
+brief(cowles.mod, pvalues=TRUE)
+```
+
+## Predictor Effect Plots for Logistic Regression
+
+The **effects** package, can draw predictor effect plots for generalized linear models, including logisic regression.
+```{r}
+plot(predictorEffects(mroz.mod))
+
+plot(predictorEffects(cowles.mod, ~ neuroticism + extraversion,
+    xlevels=list(neuroticism=seq(0, 24, by=8), 
+        extraversion=seq(0, 24, by=8))), 
+    lines=list(multiline=TRUE))
+```
 
