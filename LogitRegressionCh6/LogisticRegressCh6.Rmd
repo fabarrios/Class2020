@@ -24,17 +24,10 @@ opts_chunk$set(echo=TRUE,
 opts_knit$set(width=75)
 ```
 
-# Examples from the CAR book (Fox & Weisberg) [^1]
-
-[^1]: All notes are taken form the "Companion to Applied Regression", 3^0 Ed. Fox & Weisberg
-
-## Review of the Structure of GLMs
-
-The structure of a GLM is very simiar to that of the linear model. In partiular we have a response variable $y$ and $m$ predictors, and we are interested in undestanding how the mean of $y$ varies as the values of the predictors change.
-
 ```{r}
+# All the needed libraries
 library(tidyverse)
-library(here)
+library(emmeans)
 library(wesanderson)
 library(rstatix)
 library(HSAUR2)
@@ -44,18 +37,25 @@ library(multcomp)
 setwd("~/Dropbox/GitHub/Class2020")
 wcgs <- read_csv("DataRegressBook/Chap2/wcgs.csv")
 ```
+# Examples from the CAR book (Fox & Weisberg) [^1]
+
+[^1]: All notes are taken form the "Companion to Applied Regression", 3rd Ed. Fox & Weisberg
+
+## Review of the Structure of GLMs
+
+The structure of a GLM is very similar to that of the linear model. In particular we have a response variable *y* and *k* predictors, and we are interested in understanding how the mean of *y* varies as the values of the predictors change.
+
 
 A GLM consists of three components
 
 1. Random component, specifying the conditional or "error" distribution of the response variable, $y$, given the predictors from an *exponential family*.  Both the binomial and Poisson distributions ae in the class of explonential families, and so problems with categorical or discrete responses can be studied with GLMs.
 
-2. As in linear models, the $m$ predictors in a GLMare translated into a vector of $k + 1$ regressor varibles, ${\bf x} = (x_0, x_1, \dots , x_k)$, possibly using contrast regressors for factors, polynomials, regression splines, transformations, and interactions. The response depends on the predictors only through a linear function of the regressors, called the *linear predictor*,
-$$ \eta({\bf x}) = \beta_0 + \beta_1 x_1 + \cdots + \beta_k x_k$$
+2. As in linear models, the $m$ predictors in a GLMare translated into a vector of $k + 1$ regresor variables, ${\bf x} = (x_0, x_1, \dots , x_k)$, possibly using contrast regressors for factors, polynomials, regression splines, transformations, and interactions. The response depends on the predictors only through a linear function of the regressors, called the *linear predictor*, $ \eta({\bf x}) = \beta_0 + \beta_1 x_1 + \cdots + \beta_k x_k$.
+
 3. The connection between the conditional mean $E[y|{\bf x}]$ of the response and the predictor $\eta({\bf x})$ in a linear model is direct,
 $$E[y|{\bf x}] = \eta({\bf x}) = \beta_0 + \beta_1 x_1 + \cdots + \beta_k x_k$$
-and so the mean is equal to a linear combination of the regressors. This direct relationshi is not appropriate for all GLM because $\eta({\bf x})$ can take any value, whereas the mean of a binary response variable must be in the interval (0,1). Therefore we introduce an invertible *link function g* that translates from the scale of the mean response to the scale of the linear predictor. $\eta({\bf x}) = E[y|{\bf x}]$ is standard in the GLM for the conditional mean of the response, therfore
-$$g[\mu({\bf x})] = \eta({\bf x})$$
-Reversing this relationship produces the *inverse-link function*, $g^{-1}[\eta(\bf {x})] = \mu(\bf {x})$. THe inverse of the link function is sometimes is sometimes called the *mean link funcion*
+and so the mean is equal to a linear combination of the regressors. This direct relation is not appropriate for all GLM because $\eta({\bf x})$ can take any value, whereas the mean of a binary response variable must be in the interval (0,1). Therefore we introduce an invertible *link function g* that translates from the scale of the mean response to the scale of the linear predictor. $\eta({\bf x}) = E[y|{\bf x}]$ is standard in the GLM for the conditional mean of the response, therefore $g[\mu({\bf x})] = \eta({\bf x})$
+Reversing this relationship produces the *inverse-link function*, $g^{-1}[\eta(\bf {x})] = \mu(\bf {x})$. The inverse of the link function is sometimes is sometimes called the *mean link funcion*
 
 
 Standard link functions and their inverses table: $\mu = E[y|\bf x]$ is the expected value of the response; $\eta = \beta_0 + \beta_1 x_1 + \cdots + \beta_k x_k$ is the linear predictor.
@@ -82,21 +82,29 @@ $$\begin{array}{cccc}
   Inverse.gaussian & \frac{1}{\mu^2} & (0,\infty) & \phi \mu^3
 \end{array} $$
 
-The variance distributions of an exponential family is a product of a positive *dipersion (scale)* parameter $\phi$ and a function of the mean given the linear predictor:
+The variance distributions of an exponential family is a product of a positive *disperssion (scale)* parameter $\phi$ and a function of the mean given the linear predictor:
 $$Var(y|{\bf x}) = \phi \times V[\mu({\bf x})]$$
 The variances for several exponential families are listed in the table above.
 
-The *deviance*, based on the maximized value of the log-likelihood, provides a measure of the fit of a GLM to the data, much as the residual sum of squares does for a linear model.
+The *deviance*, based on the maximized value of the log-likelihood, provides a measure of the fit of a GLM to the data, much as the residual sum of squares does for a linear model. The value of the log-likelihood evaluated at the maximum likelihood estimates the regression coefficients for fixed dispersion is
+$$ \log L_0 = \sum \log p[y_i;\hat \mu({\bf x_i}), \phi] $$
+An fitting to a saturated model, with one parameter for each of the *n* observations, with the mean response for each observation just the observed value 
+$$ \log L_1 = \sum \log p[y_i; y_i , \phi] $$
+THe resudual deviance is defined as twice the difference of the log-likelihoods,
+$$D({\bf y; \hat \mu}) = 2(\log L_1 - \log L_0) $$
+the larger the diviance, the less well the the model of interest matches the data.
 
-# GLMs for Binary Responce Data
+## GLMs for Binary Responce Data
 
 Considering data in which each case provides a *binary response*, say "success" or "failure", the cases are independent, and the probability of success $\mu({\bf x})$ is the same for all cases with the same values **x** of the regressors.
+
 When the response is binary, we think of the mean function $\mu({\bf x})$ as the conditional probability that response is success given the values **x** of the regressors. The most common link funtction used with binary response data is the ligit link, for which
 $$\log[\frac{\mu({\bf x})}{1-\mu({\bf x})}] = \eta({\bf x})$$
-THe left side of the equation is called the *logit* of the *log-odds*, where the *odds* are the probability of success divided bythe probability of failure. Solving for $\mu({\bf x}) gives the mean function,
+
+The left side of the equation is called the *logit* of the *log-odds*, where the *odds* are the probability of success divided bythe probability of failure. Solving for $\mu({\bf x}) gives the mean function,
 $$\mu({\bf x}) = \frac{1}{1+\exp[-\eta{\bf x})]}$$
 
-Comparison of the login, probit, and complementary log-log links
+Plot of the comparison of the logit, probit, and complementary log-log links
 
 ```{r}
 # Example from the car Book Chp 6
@@ -112,8 +120,38 @@ legend("topleft",c("logit", "probit", "cloglog"), lty=c(1,2,4),
        lwd=c(1,1,2), inset=0.02)
 ```
 
-
 ## Example: Women's Labor Force Participation
 
+To illustrate logistic regression, we turn to a study of the U.S. Panel Study of Income Dynamics of the response variable is married women's labor force participation. The data is in Mroz (carData).
+$$\begin{array}{llc}
+  \bf{Variable} & {\bf Description} & {\bf Remarcs} \\
+  lfp & \verb+labor force participation+ & factor: no, yes \\
+  k5 & \verb+number of children ages 5 and younger+ & 0-3 \\
+  k618 & \verb+number of children ages 6 to 18+ & 0-8\\
+  age & \verb+wife's age in yars+ & 30-60 \\
+  wc & \verb+wife's college attendance+ & factor: no, yes \\
+  hc & \verb+husband's college attendance+ & factor: no, yes \\
+  lwg & \verb+log of estimated wife's wage+ &  \\
+  inc & \verb+family income excluding wife's income+ & 1000s
+\end{array} $$
 
+So, the estimated logistic-regression model is given by
+
+$$log[\frac{\hat\mu(x)}{1-\hat\mu(x)}] = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \cdots + \beta_k x_k$$
+
+If exponentiate both sides of the equation, we get
+$$\frac{\hat\mu(x)}{1-\hat\mu(x)} = exp(\beta_0) \times exp(\beta_1 x_1) \times exp(\beta_2 x_2) \times \cdots \times exp(beta_k x_k)$$
+
+where the left hand of the equation, $\frac{\hat\mu(x)}{1-\hat\mu(x)}$, gives the *fitted odds* of success, **the fitted probability of success divided by the fitted probability of failure**. Exponentiating the model removes the logarithms and changes the model in the log-odds scale to one that is multiplicative, in this log odds scale. 
+
+```{r}
+##################### From car
+# carData Mroz
+summary(Mroz)
+# logistic model family= binomial's default link is logit
+mroz.mod <- glm(lfp ~ k5 + k618 + age + wc + hc + lwg + inc, family=binomial, data=Mroz)
+S(mroz.mod)
+```
+
+Exponentiating the model removes the logarithms (S function shows the exponents of the betas).  For example increasing the age of a woman by one year, holding the other predictors constant, multiplies the fitted odds of her being in the workforce by $\exp(\beta_3) = \exp(-0.06287) = 0.9391$. That is, reduces the odds of working by $100(1-0.9391) \approx 6\%$. 
 

@@ -102,7 +102,7 @@
 
 \title{Logistic Regression Ch5}
 \author{F.A. BarriosInstituto de Neurobiología UNAM}
-\date{2020-11-19}
+\date{2020-11-23}
 
 \begin{document}
 \maketitle
@@ -417,8 +417,8 @@ multiplicative, in this log odds scale.
 For the WCGS data and the variable Corollary Heart Disease (CHD) and
 age, the \(\beta_1\) is the age slope of the fitted logistic model. The
 outcome of the model is the log odds of CHD risk and the relationship
-with age is linear, the slope coefficient \(\beta_1\) gives the change
-in the log odds of chd69 associated with
+with age, the slope coefficient \(\beta_1\) gives the change in the log
+odds of chd69 associated with the model.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -458,7 +458,7 @@ age         1.077261913 1.0536638869 1.101432899
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{#confint(CHD_glm01, parm = "age")}
-
+\CommentTok{# To estimate the model}
 \KeywordTok{exp}\NormalTok{(}\KeywordTok{coef}\NormalTok{(CHD_glm01)[}\StringTok{"age"}\NormalTok{])}
 \end{Highlighting}
 \end{Shaded}
@@ -468,86 +468,6 @@ age         1.077261913 1.0536638869 1.101432899
 1.077262 
 \end{verbatim}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{# To estimate the model}
-
-\CommentTok{##################### From car}
-\CommentTok{# carData Mroz}
-\CommentTok{# lfp labor force participation}
-\CommentTok{# k5 number of children ages 5 and younger}
-\CommentTok{# k618 number of children ages 6 to 18}
-\CommentTok{# age}
-\CommentTok{# wc wife's college attendance}
-\CommentTok{# hc husband's college attendance }
-\CommentTok{# lwg log of estimated wife's wage}
-\CommentTok{# inc family income excluding wife's income}
-
-\KeywordTok{summary}\NormalTok{(Mroz)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-  lfp            k5              k618            age          wc        hc     
- no :325   Min.   :0.0000   Min.   :0.000   Min.   :30.00   no :541   no :458  
- yes:428   1st Qu.:0.0000   1st Qu.:0.000   1st Qu.:36.00   yes:212   yes:295  
-           Median :0.0000   Median :1.000   Median :43.00                      
-           Mean   :0.2377   Mean   :1.353   Mean   :42.54                      
-           3rd Qu.:0.0000   3rd Qu.:2.000   3rd Qu.:49.00                      
-           Max.   :3.0000   Max.   :8.000   Max.   :60.00                      
-      lwg               inc        
- Min.   :-2.0541   Min.   :-0.029  
- 1st Qu.: 0.8181   1st Qu.:13.025  
- Median : 1.0684   Median :17.700  
- Mean   : 1.0971   Mean   :20.129  
- 3rd Qu.: 1.3997   3rd Qu.:24.466  
- Max.   : 3.2189   Max.   :96.000  
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{mroz.mod <-}\StringTok{ }\KeywordTok{glm}\NormalTok{(lfp }\OperatorTok{~}\StringTok{ }\NormalTok{k5 }\OperatorTok{+}\StringTok{ }\NormalTok{k618 }\OperatorTok{+}\StringTok{ }\NormalTok{age }\OperatorTok{+}\StringTok{ }\NormalTok{wc }\OperatorTok{+}\StringTok{ }\NormalTok{hc }\OperatorTok{+}\StringTok{ }\NormalTok{lwg }\OperatorTok{+}\StringTok{ }\NormalTok{inc, }\DataTypeTok{family=}\NormalTok{binomial, }\DataTypeTok{data=}\NormalTok{Mroz)}
-\KeywordTok{S}\NormalTok{(mroz.mod)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-Call: glm(formula = lfp ~ k5 + k618 + age + wc + hc + lwg + inc, family =
-          binomial, data = Mroz)
-
-Coefficients:
-             Estimate Std. Error z value Pr(>|z|)    
-(Intercept)  3.182140   0.644375   4.938 7.88e-07 ***
-k5          -1.462913   0.197001  -7.426 1.12e-13 ***
-k618        -0.064571   0.068001  -0.950 0.342337    
-age         -0.062871   0.012783  -4.918 8.73e-07 ***
-wcyes        0.807274   0.229980   3.510 0.000448 ***
-hcyes        0.111734   0.206040   0.542 0.587618    
-lwg          0.604693   0.150818   4.009 6.09e-05 ***
-inc         -0.034446   0.008208  -4.196 2.71e-05 ***
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-(Dispersion parameter for binomial family taken to be 1)
-
-    Null deviance: 1029.75  on 752  degrees of freedom
-Residual deviance:  905.27  on 745  degrees of freedom
-
- logLik      df     AIC     BIC 
--452.63       8  921.27  958.26 
-
-Number of Fisher Scoring iterations: 4
-
-Exponentiated Coefficients and Confidence Bounds
-              Estimate     2.5 %     97.5 %
-(Intercept) 24.0982799 6.9377228 87.0347916
-k5           0.2315607 0.1555331  0.3370675
-k618         0.9374698 0.8200446  1.0710837
-age          0.9390650 0.9154832  0.9625829
-wcyes        2.2417880 1.4347543  3.5387571
-hcyes        1.1182149 0.7467654  1.6766380
-lwg          1.8306903 1.3689201  2.4768235
-inc          0.9661401 0.9502809  0.9814042
-\end{verbatim}
+The link transformation is the exponentiation, to obtain the odds.
 
 \end{document}

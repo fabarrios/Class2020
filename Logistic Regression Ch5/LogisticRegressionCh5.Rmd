@@ -155,7 +155,7 @@ $$\frac{\hat\mu(x)}{1-\hat\mu(x)} = exp(\beta_0) \times exp(\beta_1 x_1) \times 
 
 where the left hadn of the equation, $\frac{\hat\mu(x)}{1-\hat\mu(x)}$, gives the *fitted odds* of success, **the fitted probability of success divided by the fitted probability of failure**. Exponentiating the model removes the logarithms and vhanges the model in the log-odds scale to one that is multiplicative, in this log odds scale.
 
-For the WCGS data and the variable Corollary Heart Disease (CHD) and age, the $\beta_1$ is the age slope of the fitted logistic model. The outcome of the model is the log odds of CHD risk and the relationship with age is linear, the slope coefficient $\beta_1$ gives the change in the log odds of chd69 associated with 
+For the WCGS data and the variable Corollary Heart Disease (CHD) and age, the $\beta_1$ is the age slope of the fitted logistic model. The outcome of the model is the log odds of CHD risk and the relationship with age, the slope coefficient $\beta_1$ gives the change in the log odds of chd69 associated with the model.
 
 ```{r}
 wcgs <- mutate(wcgs, chd69 = factor(chd69))
@@ -163,24 +163,7 @@ wcgs <- mutate(wcgs, chd69 = factor(chd69))
 CHD_glm01 <- glm(chd69 ~ age, data = wcgs, family = binomial())
 S(CHD_glm01)
 #confint(CHD_glm01, parm = "age")
-
-exp(coef(CHD_glm01)["age"])
 # To estimate the model
-
-##################### From car
-# carData Mroz
-# lfp labor force participation
-# k5 number of children ages 5 and younger
-# k618 number of children ages 6 to 18
-# age
-# wc wife's college attendance
-# hc husband's college attendance 
-# lwg log of estimated wife's wage
-# inc family income excluding wife's income
-
-summary(Mroz)
-mroz.mod <- glm(lfp ~ k5 + k618 + age + wc + hc + lwg + inc, family=binomial, data=Mroz)
-S(mroz.mod)
-
-
+exp(coef(CHD_glm01)["age"])
 ```
+The link transformation is the exponentiation, to obtain the odds. 
