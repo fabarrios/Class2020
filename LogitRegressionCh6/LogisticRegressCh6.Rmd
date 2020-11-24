@@ -50,7 +50,7 @@ A GLM consists of three components
 
 1. Random component, specifying the conditional or "error" distribution of the response variable, $y$, given the predictors from an *exponential family*.  Both the binomial and Poisson distributions ae in the class of explonential families, and so problems with categorical or discrete responses can be studied with GLMs.
 
-2. As in linear models, the $m$ predictors in a GLMare translated into a vector of $k + 1$ regresor variables, ${\bf x} = (x_0, x_1, \dots , x_k)$, possibly using contrast regressors for factors, polynomials, regression splines, transformations, and interactions. The response depends on the predictors only through a linear function of the regressors, called the *linear predictor*, $ \eta({\bf x}) = \beta_0 + \beta_1 x_1 + \cdots + \beta_k x_k$.
+2. As in linear models, the $m$ predictors in a GLM are translated into a vector of $k + 1$ regresor variables, ${\bf x} = (x_0, x_1, \dots , x_k)$, possibly using contrast regressors for factors, polynomials, regression splines, transformations, and interactions. The response depends on the predictors only through a linear function of the regressors, called the *linear predictor*, $\eta({\bf x}) = \beta_0 + \beta_1 x_1 + \cdots + \beta_k x_k$.
 
 3. The connection between the conditional mean $E[y|{\bf x}]$ of the response and the predictor $\eta({\bf x})$ in a linear model is direct,
 $$E[y|{\bf x}] = \eta({\bf x}) = \beta_0 + \beta_1 x_1 + \cdots + \beta_k x_k$$
@@ -153,8 +153,8 @@ mroz.mod <- glm(lfp ~ k5 + k618 + age + wc + hc + lwg + inc, family=binomial, da
 S(mroz.mod)
 ```
 
-Exponentiating the model removes the logarithms (S function shows the exponents of the betas).  For example increasing the age of a woman by one year, holding the other predictors constant, multiplies the fitted odds of her being in the workforce by $\exp(\beta_3) = \exp(-0.06287) = 0.9391$. That is, reduces the odds of working by $100(1-0.9391) \approx 6\%$.
-Compared to a woman that who did not attend college, a collega-educated woman with all other predictors fixed has fitted odds of working about 2.24 times higher, with a 95% confidence interval [1.43, 3.54].  THe exponents of the coefficient estimates are called *risk factors* or *odds ratios*. The confidence intervals for the GLM are based on profiling the log-likelihood. The confidence intervals may not be symmetric.
+Exponentiating the model removes the logarithms (S function shows the exponents of the betas).  For example increasing the age of a woman by one year, holding the other predictors constant, from $odds = \exp(c_0) \times \exp(c_1) \times \exp(c_2) \times \exp(\beta_3) \times \exp(c_4) \dots$ therefore multiplies the fitted odds of her being in the workforce by $\exp(\beta_3) = \exp(-0.06287) = 0.9391$. That is, reduces the odds of working by $100(1-0.9391) \approx 6\%$.
+Compared to a woman that who did not attend college, a college-educated woman with all other predictors fixed has fitted odds of working about 2.24 times higher, with a 95% confidence interval [1.43, 3.54].  The exponents of the coefficient estimates are called *risk factors* or *odds ratios*. The confidence intervals for the GLM are based on profiling the log-likelihood. The confidence intervals may not be symmetric.
 
 ## Volunteering for a Psychological Experiment
 
@@ -187,4 +187,28 @@ plot(predictorEffects(cowles.mod, ~ neuroticism + extraversion,
         extraversion=seq(0, 24, by=8))), 
     lines=list(multiline=TRUE))
 ```
+
+## Analysis of Deviance and Hypotesis Test for Logistic Regression
+
+### Model Comparisons
+
+```{r}
+mroz.mod.2 <- update(mroz.mod, . ~ . - k5 - k618)
+anova(mroz.mod.2, mroz.mod, test="Chisq")
+
+brief(cowles.mod.0 <- update(cowles.mod, 
+    . ~ . - neuroticism:extraversion))
+anova(cowles.mod.0, cowles.mod, test="Chisq")
+
+# Type II Tests 
+Anova(mroz.mod)
+
+Anova(cowles.mod)
+
+# Other Hypotesis Tests
+linearHypothesis(mroz.mod, c("k5", "k618"))
+
+linearHypothesis(mroz.mod, "k5 = k618")
+```
+
 
