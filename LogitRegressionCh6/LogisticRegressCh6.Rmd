@@ -5,6 +5,7 @@ date: "`r Sys.Date()`"
 output:
   rmdformats::material:
     highlight: kate
+  pdf_document: default
 ---
 
 
