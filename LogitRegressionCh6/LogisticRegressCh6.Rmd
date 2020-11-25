@@ -179,7 +179,7 @@ brief(cowles.mod, pvalues=TRUE)
 
 ## Predictor Effect Plots for Logistic Regression
 
-The **effects** package, can draw predictor effect plots for generalized linear models, including logisic regression.
+The **effects** package, can draw predictor effect plots for generalized linear models, including logistic regression.
 ```{r}
 plot(predictorEffects(mroz.mod))
 
