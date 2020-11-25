@@ -102,7 +102,7 @@
 
 \title{Logistic Regression Ch5}
 \author{F.A. BarriosInstituto de Neurobiología UNAM}
-\date{2020-11-23}
+\date{2020-11-24}
 
 \begin{document}
 \maketitle
@@ -110,12 +110,11 @@
 \begin{Shaded}
 \begin{Highlighting}[]
 \KeywordTok{library}\NormalTok{(tidyverse)}
-\KeywordTok{library}\NormalTok{(here)}
-\KeywordTok{library}\NormalTok{(wesanderson)}
+\KeywordTok{library}\NormalTok{(emmeans)}
 \KeywordTok{library}\NormalTok{(rstatix)}
 \KeywordTok{library}\NormalTok{(HSAUR2)}
 \KeywordTok{library}\NormalTok{(car)}
-\KeywordTok{library}\NormalTok{(multcomp)}
+\KeywordTok{library}\NormalTok{(effects)}
 
 \KeywordTok{setwd}\NormalTok{(}\StringTok{"~/Dropbox/GitHub/Class2020"}\NormalTok{)}
 \NormalTok{wcgs <-}\StringTok{ }\KeywordTok{read_csv}\NormalTok{(}\StringTok{"DataRegressBook/Chap2/wcgs.csv"}\NormalTok{)}
@@ -169,18 +168,12 @@ a logistic model.
 \CommentTok{# glm general linear model default is logistic for binomial distribution}
 
 \NormalTok{plasma_glm01 <-}\StringTok{ }\KeywordTok{glm}\NormalTok{(ESR }\OperatorTok{~}\StringTok{ }\NormalTok{fibrinogen, }\DataTypeTok{data =}\NormalTok{ plasma, }\DataTypeTok{family =} \KeywordTok{binomial}\NormalTok{())}
-\KeywordTok{summary}\NormalTok{(plasma_glm01)}
+\KeywordTok{S}\NormalTok{(plasma_glm01)}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-
-Call:
-glm(formula = ESR ~ fibrinogen, family = binomial(), data = plasma)
-
-Deviance Residuals: 
-    Min       1Q   Median       3Q      Max  
--0.9298  -0.5399  -0.4382  -0.3356   2.4794  
+Call: glm(formula = ESR ~ fibrinogen, family = binomial(), data = plasma)
 
 Coefficients:
             Estimate Std. Error z value Pr(>|z|)  
@@ -193,9 +186,16 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
     Null deviance: 30.885  on 31  degrees of freedom
 Residual deviance: 24.840  on 30  degrees of freedom
-AIC: 28.84
+
+logLik     df    AIC    BIC 
+-12.42      2  28.84  31.77 
 
 Number of Fisher Scoring iterations: 5
+
+Exponentiated Coefficients and Confidence Bounds
+               Estimate        2.5 %      97.5 %
+(Intercept) 0.001064686 1.172299e-06  0.09755943
+fibrinogen  6.215715449 1.403209e+00 54.51588384
 \end{verbatim}
 
 From these results we see that the regression coefficients for
@@ -207,13 +207,14 @@ then 20 by estimated 1.83 with 95\% confidence interval:
 \begin{Highlighting}[]
 \CommentTok{# coeff fibrinogen is sifnificative 5%}
 \CommentTok{# one unit change in this variable increases the log-odds in favor of ESR > 20mm/hr by 1.83}
-\KeywordTok{confint}\NormalTok{(plasma_glm01, }\DataTypeTok{parm =} \StringTok{"fibrinogen"}\NormalTok{)}
+\KeywordTok{Confint}\NormalTok{(plasma_glm01, }\DataTypeTok{parm =} \StringTok{"fibrinogen"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-    2.5 %    97.5 % 
-0.3387619 3.9984921 
+             Estimate    result
+(Intercept) -6.845075 0.3387619
+fibrinogen   1.827081 3.9984921
 \end{verbatim}
 
 \begin{Shaded}
