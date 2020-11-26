@@ -3,9 +3,17 @@ title: "Logistic Regession"
 author: "F.A. Barrios"
 date: "`r Sys.Date()`"
 output:
-  rmdformats::material:
-    highlight: kate
-  pdf_document: default
+  pdf_document:
+  html_document:
+    toc: yes
+    toc_depth: 3
+    number_sections: true
+    toc_float:
+      collapsed: false
+    cod_folding: hide
+    center: true
+    theme: united
+description: "to prepare Class2020 presentations"
 ---
 
 
@@ -102,7 +110,8 @@ Considering data in which each case provides a *binary response*, say "success" 
 When the response is binary, we think of the mean function $\mu({\bf x})$ as the conditional probability that response is success given the values **x** of the regressors. The most common link funtction used with binary response data is the ligit link, for which
 $$\log[\frac{\mu({\bf x})}{1-\mu({\bf x})}] = \eta({\bf x})$$
 
-The left side of the equation is called the *logit* of the *log-odds*, where the *odds* are the probability of success divided bythe probability of failure. Solving for $\mu({\bf x}) gives the mean function,
+The left side of the equation is called the *logit* of the *log-odds*, where the *odds* are the probability of success divided by the probability of failure. Solving for 
+$\mu({\bf x})$ gives the mean function,
 $$\mu({\bf x}) = \frac{1}{1+\exp[-\eta{\bf x})]}$$
 
 Plot of the comparison of the logit, probit, and complementary log-log links
@@ -206,10 +215,81 @@ Anova(mroz.mod)
 
 Anova(cowles.mod)
 
-# Other Hypotesis Tests
+# Other Hypothesis Tests
 linearHypothesis(mroz.mod, c("k5", "k618"))
 
 linearHypothesis(mroz.mod, "k5 = k618")
 ```
 
+## Fitted and Predicted Values
 
+The function $\verb+predict()+$ returns the estimated linear predictor values for each observation. And to get the fitted probabilities we use the argument type="response". The $\verb+fitted()+$ function can also be used.
+
+```{r}
+opts <- options(digits=5)
+head(predict(mroz.mod)) # first few values
+
+head(predict(mroz.mod, type="response"))
+
+```
+
+And the $\verb+predict()+$ can be used to compute predicted values for arbitrary combinations of predictor values. For example we can estimate the probability of volunteering at neuroticism and extraversion at 12.
+
+```{r}
+options(opts)
+
+predict.data <- data.frame(sex=c("female", "male"), 
+    neuroticism=rep(12, 2), extraversion=rep(12, 2))
+predict.data$p.volunteer <- predict(cowles.mod, 
+    newdata=predict.data, type="response")
+predict.data
+```
+
+
+# Binomial Data
+
+In binomial response data, the response variable $y_i$ for each case $i$ is the number of successes in a fixed number $N_i$ of independent trials, each with the same probability of success.
+Binary regression is a limiting case of binomial regression with all the $N_i = 1$
+
+$$\begin{array}{llccc}
+  \bf{\verb+Perceived Closeness+} & {\bf \verb+Intensity of Preference+} & {\bf \verb+Voted+} & {\bf \verb+ Did Not Voted+} & {\bf logit}\\
+  One-sided & \verb+Weak+ & 91 & 39 & 0.847 \\
+  One-sided & \verb+Medium+ & 121 & 49 & 0.904 \\
+  One-sided & \verb+Strong+ & 64 & 24 & 0.981 \\
+  Close & \verb+Weak+ & 214 & 87 & 0.900 \\
+  Close & \verb+Medium+ & 284 & 76 & 1.318 \\
+  Close & \verb+Strong+ & 201 & 25 & 2.084
+\end{array} $$
+
+```{r}
+Campbell <- data.frame(
+    closeness = factor(rep(c("one.sided", "close"), c(3, 3)),
+        levels=c("one.sided", "close")),
+    preference = factor(rep(c("weak", "medium", "strong"), 2),
+        levels=c("weak", "medium", "strong")),
+    voted = c(91, 121, 64, 214, 284, 201),
+    did.not.vote = c(39, 49, 24, 87, 76, 25)
+)
+Campbell
+```
+
+For binomial data, the response can be the *proportion* of successes for each observation, or the proportion of successes for failures. For example the logit for the One-sided, weak case 91 voted, and 39 did not voted, $\log(\verb+Voted/Did not Voted+) = \log(91/39)$ -> *0.847*
+
+```{r}
+campbell.mod <- glm(cbind(voted, did.not.vote) ~
+    closeness*preference, family=binomial, data=Campbell)
+# the estimated responses are exact and the residuals are zero
+predict(campbell.mod)
+residuals(campbell.mod)
+
+plot(predictorEffects(campbell.mod, ~ preference),  
+     main="", confint=list(style="bars"), lines=list(multiline=TRUE),
+     xlab="Intensity of Preference", ylab="Probability of Voting",
+     lattice=list(key.args = list(x =0.1, y = 0.95, corner=c(0, 1))))
+```
+
+The emmeans function can be used to test differences between the two levels of closeness fo each level of preference:
+
+```{r}
+emmeans(campbell.mod, pairwise ~ closeness | preference)$contrasts
+```
