@@ -1,10 +1,12 @@
 ---
-title: ""
+title: "Logistic Regression Homework"
+author: "F.A. Barrios"
 date: "`r Sys.Date()`"
 output:
   rmdformats::material:
     highlight: kate
   pdf_document:
+description: "to prepare Class2020 presentations"
 ---
 
 
@@ -23,7 +25,7 @@ opts_chunk$set(echo=FALSE,
                warning=FALSE)
 opts_knit$set(width=75)
 ```
-# Logistic Regression Homework
+# Logistic Regression Homework, Vittinghoff's Book Chap 5.
 
 1. Use the regression coefficients from the logistic model presented in Table 5.2 in the logistic formula (5.2) to estimate the quantities in Table 5.3 for a 65-year-old individual. Use additional calculations to add a new section to Table 5.3 for an age increment of five years.
 
