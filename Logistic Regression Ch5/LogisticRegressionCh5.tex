@@ -102,7 +102,7 @@
 
 \title{Logistic Regression Ch5}
 \author{F.A. BarriosInstituto de Neurobiología UNAM}
-\date{2020-11-24}
+\date{2020-11-26}
 
 \begin{document}
 \maketitle
@@ -247,19 +247,13 @@ probability of an ESR value greater than 20}.
 \begin{Highlighting}[]
 \CommentTok{# full model with two variables}
 \NormalTok{plasma_glm02 <-}\StringTok{ }\KeywordTok{glm}\NormalTok{(ESR }\OperatorTok{~}\StringTok{ }\NormalTok{fibrinogen }\OperatorTok{+}\StringTok{ }\NormalTok{globulin, }\DataTypeTok{data =}\NormalTok{ plasma, }\DataTypeTok{family =} \KeywordTok{binomial}\NormalTok{())}
-\KeywordTok{summary}\NormalTok{(plasma_glm02)}
+\KeywordTok{S}\NormalTok{(plasma_glm02)}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-
-Call:
-glm(formula = ESR ~ fibrinogen + globulin, family = binomial(), 
-    data = plasma)
-
-Deviance Residuals: 
-    Min       1Q   Median       3Q      Max  
--0.9683  -0.6122  -0.3458  -0.2116   2.2636  
+Call: glm(formula = ESR ~ fibrinogen + globulin, family = binomial(), data =
+          plasma)
 
 Coefficients:
             Estimate Std. Error z value Pr(>|z|)  
@@ -273,9 +267,17 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
     Null deviance: 30.885  on 31  degrees of freedom
 Residual deviance: 22.971  on 29  degrees of freedom
-AIC: 28.971
+
+logLik     df    AIC    BIC 
+-11.49      3  28.97  33.37 
 
 Number of Fisher Scoring iterations: 5
+
+Exponentiated Coefficients and Confidence Bounds
+                Estimate        2.5 %      97.5 %
+(Intercept) 2.782735e-06 1.420825e-12  0.04286868
+fibrinogen  6.755579e+00 1.404131e+00 73.00083593
+globulin    1.168567e+00 9.359678e-01  1.53212986
 \end{verbatim}
 
 Comparing the residual deviance of the models: residual deviance 01:
@@ -303,6 +305,22 @@ Model 2: ESR ~ fibrinogen + globulin
 
 \begin{Shaded}
 \begin{Highlighting}[]
+\KeywordTok{Anova}\NormalTok{(plasma_glm01)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Analysis of Deviance Table (Type II tests)
+
+Response: ESR
+           LR Chisq Df Pr(>Chisq)  
+fibrinogen   6.0446  1    0.01395 *
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
 \CommentTok{# Estimates conditional probability of a ESR > 20 for all observations}
 
 \NormalTok{prob <-}\StringTok{ }\KeywordTok{predict}\NormalTok{(plasma_glm02, }\DataTypeTok{type =} \StringTok{"response"}\NormalTok{)}
@@ -314,88 +332,14 @@ Model 2: ESR ~ fibrinogen + globulin
 \end{Shaded}
 
 \includegraphics{LogisticRegressionCh5_files/figure-latex/unnamed-chunk-6-1.pdf}
-\#\# Single predictor models
-
-In the linear model the ``expected value'' of the \(Y|x\) is estimated
-with a simple linear model \[E[y|x]=\beta_0 + \beta_1\] And to model a
-function that has a binary outcome, in particular if we assign the
-expected value \(E[y|x]\) to the observed proportion (\(P(x)\)) of a
-variable given \(x\) that take the fomr of a simple linear model in x
-\[P(x) = E[y|x] = \beta_0 + \beta_1 x\] At this equation if x is a
-binary predictor taking on the values 0 or 1,
-\(P(0) = \beta_0 + \beta_1 (0)\) and \(P(1) = \beta_0 + \beta_1(1)\),
-then \(P(0)-P(1) = \beta_1\) therefore the effect of increasing x one
-unit is to add an increment \(\beta_1\) to the outcome. This is the risk
-difference associated with a unit increase in \(x\). Models with this
-property are often referred to as \emph{additive risk models}.
-
-The statistical machinery which allowed us to use this linear model to
-make inferences about the strength of relationship in expected value
-\(E[y|x]\) linear model,required that the outcome variable follow an
-approximate normal distribution. For binary outcome, this assumption is
-incorret. And, the outcome in the model that we are studing now
-represents a probability or risk. Thus, any estimates of the regression
-coefficients must constrain the estimated probability to lie between
-zero and one for the model to make sense. \(P(x) = E[y|x]\).
-
-The smooth S-shaped curve in the following plot is known as the logistic
-model. The exponential model is also known as log linear because it
-specifies that the logarithm of the outcome risk is linear in x
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{# generate fake data}
-\KeywordTok{set.seed}\NormalTok{(}\DecValTok{42}\NormalTok{)}
-\NormalTok{n <-}\StringTok{ }\DecValTok{1000}
-\NormalTok{x <-}\StringTok{ }\NormalTok{(}\KeywordTok{runif}\NormalTok{(n) }\OperatorTok{*}\StringTok{ }\DecValTok{10}\NormalTok{) }\OperatorTok{-}\StringTok{ }\DecValTok{5} 
-\NormalTok{y <-}\StringTok{ }\NormalTok{(}\KeywordTok{exp}\NormalTok{(x) }\OperatorTok{/}\StringTok{ }\NormalTok{(}\DecValTok{1} \OperatorTok{+}\StringTok{ }\KeywordTok{exp}\NormalTok{(x)))}
-\NormalTok{df <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ x, }\DataTypeTok{y =}\NormalTok{ y)}
-
-\CommentTok{# Logistic plot}
-\NormalTok{p1 <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(df, }\KeywordTok{aes}\NormalTok{(x, y)) }\OperatorTok{+}
-\StringTok{    }\KeywordTok{geom_point}\NormalTok{(}\DataTypeTok{alpha =} \FloatTok{0.1}\NormalTok{) }\OperatorTok{+}
-\StringTok{    }\KeywordTok{geom_smooth}\NormalTok{(}\DataTypeTok{se =} \OtherTok{FALSE}\NormalTok{) }\OperatorTok{+}
-\StringTok{    }\KeywordTok{theme_bw}\NormalTok{()}
-\NormalTok{p1}
+\KeywordTok{plot}\NormalTok{(}\KeywordTok{predictorEffects}\NormalTok{(plasma_glm02))}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{LogisticRegressionCh5_files/figure-latex/unnamed-chunk-7-1.pdf}
-
-The logistic model allows for a smooth change in risk throughout the
-range of x, and has the property that risk increases slowly up to a
-``threshold'' range of x. The mathematical model is the folowing for a
-simple linear model
-\[P(x) = \frac{e^{(\beta_0 + \beta_1x)}}{1+e^{(\beta_0 + \beta_1 x)}}\]
-
-in terms of the odds of the outcome associated with the predictor x, the
-model can also be expressed as
-\[\frac{P(x)}{1-P(x)} = e^{(\beta_0 + \beta_1 x)}\]
-
-If x takes the values 0 or 1 (binary predictor), the ratio of the odds
-for these two values are
-\[\frac{\frac{P(1)}{1-P(1)}}{\frac{P(0)}{1-P(x)}} = \frac{e^{(\beta_0 + \beta_1)}}{e^{\beta_0}} = e^{\beta_1}\]
-Therefore the logit model ia a ``multiplicative risk model''. The most
-widely used model for binary outcomes in clinical and epidemiological
-applications, and forms the basis of logistic regression modeling. The
-random part of the model specifies the distribution of the outcome
-variable \(y_i\), conditional on the observed value \(x_i\) of the
-predictor (where the subscript i denotes the value for a particular
-subject). For binary outcomes, this distribution is called the binomial
-distribution and is completely specified by the mean of yi conditional
-on the value \(x_i\). To summarize, the logistic model makes the
-following assumptions about the outcome \(y_i\):
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  \(y_i\) follows a Binomial distribution
-\item
-  The mean \(E[y|x] = P(x)\) is given by the logistic function
-\item
-  Values of the outcome are statistically independent
-\end{enumerate}
+\includegraphics{LogisticRegressionCh5_files/figure-latex/unnamed-chunk-6-2.pdf}
 
 \hypertarget{interpretation-of-regression-coefficients}{%
 \subsection{Interpretation of Regression
