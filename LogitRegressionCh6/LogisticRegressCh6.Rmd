@@ -3,17 +3,18 @@ title: "Logistic Regession"
 author: "F.A. Barrios"
 date: "`r Sys.Date()`"
 output:
-  pdf_document:
+  rmdformats::material: default
   html_document:
     toc: yes
     toc_depth: 3
-    number_sections: true
+    number_sections: yes
     toc_float:
-      collapsed: false
+      collapsed: no
     cod_folding: hide
-    center: true
+    center: yes
     theme: united
-description: "to prepare Class2020 presentations"
+  pdf_document: null
+description: to prepare Class2020 presentations
 ---
 
 
