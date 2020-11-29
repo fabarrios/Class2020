@@ -3,18 +3,10 @@ title: "Logistic Regession"
 author: "F.A. Barrios"
 date: "`r Sys.Date()`"
 output:
-  rmdformats::material: default
-  html_document:
-    toc: yes
-    toc_depth: 3
-    number_sections: yes
-    toc_float:
-      collapsed: no
-    cod_folding: hide
-    center: yes
-    theme: united
-  pdf_document: null
-description: to prepare Class2020 presentations
+  pdf_document:
+  rmdformats::material:
+    highlight: kate
+description: "to prepare Class2020 presentations"
 ---
 
 
@@ -23,8 +15,13 @@ library(knitr)
 library(rmdformats)
 
 ## Global options
+library(knitr)
+library(rmdformats)
+
+## Global options
 options(max.print="75")
-opts_chunk$set(echo=TRUE,
+opts_chunk$set(fig.width=12, 
+               fig.height=10,
 	             cache=TRUE,
                prompt=FALSE,
                tidy=TRUE,
