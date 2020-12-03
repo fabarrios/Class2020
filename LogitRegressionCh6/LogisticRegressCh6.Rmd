@@ -3,10 +3,12 @@ title: "Logistic Regession"
 author: "F.A. Barrios"
 date: "`r Sys.Date()`"
 output:
-  pdf_document:
+  html_document:
+    df_print: paged
   rmdformats::material:
     highlight: kate
-description: "to prepare Class2020 presentations"
+  pdf_document: null
+description: to prepare Class2020 presentations
 ---
 
 
