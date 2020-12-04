@@ -1,12 +1,12 @@
 ---
-title: "MultipredictorInter.Rmd"
+title: "Multipredictor Regrgession with Interaction"
 author: "F.A. Barrios"
 date: "<small>`r Sys.Date()`</small>"
 output:
-  rmdformats::readthedown:
+  rmdformats::material:
     highlight: kate
   pdf_document: default
-description: "to prepare homewor"
+description: "to prepare classes 20202 and homework"
 ---
 
 ```{r setup, echo=FALSE, cache=FALSE}
@@ -40,7 +40,8 @@ setwd("~/Dropbox/GitHub/Class2020")
 hers <- read_csv("DataRegressBook/Chap3/hersdata.csv")
 ```
 
-# Interaction
+# Interaction[^1]
+[^1]: All notes are taken from the Regression methods in biostatistics: linear, logistic, survival, and repeated measures models, Chap 4, Vitinghoff et al.
 
 So far, we have made the assumption that causal effect of the primary predictor was the same within strata defined by the covariates. However, this may not hold. In this section,
 we show how to use regression to model the resulting interaction, so that we can estimate causal effects that differ according to the level of a covariate. Interaction is also referred to as effect modification or moderation, and must be distinguished from both confounding and mediation
