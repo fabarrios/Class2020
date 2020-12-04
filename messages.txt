@@ -8,8 +8,9 @@
 ## The following objects are masked from 'package:base':
 ## 
 ##     format.pval, units
+Loading required package: RColorBrewer
 
--- Column specification --------------------------------------------------------
+── Column specification ────────────────────────────────────────────────────────
 cols(
   .default = col_double(),
   HT = col_character(),
@@ -27,4 +28,4 @@ cols(
   dmpills = col_character(),
   insulin = col_character()
 )
-i Use `spec()` for the full column specifications.
+ℹ Use `spec()` for the full column specifications.

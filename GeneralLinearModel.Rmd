@@ -1,58 +1,50 @@
 ---
 title: "General Linear Model"
-author: "F.A. Barrios<br><small>Instituto de Neurobiología UNAM<br></small>"
-date: "<small>`r Sys.Date()`</small>"
+author: "F.A. Barrios<br>Instituto de Neurobiología UNAM<br>"
+date: "`r Sys.Date()`"
 output:
-  html_document:
-    toc: yes
-    toc_depth: 3
-    number_sections: true
-    toc_float:
-      collapsed: false
-    cod_folding: hide
-    theme: cerulean
+  rmdformats::material:
+    highlight: kate
   pdf_document: default
 description: "to prepare Class2020 presentations"
 ---
-```{r}
-library(tidyverse)
-library(tools)
-library(here)
 
+```{r setup, include=FALSE}
+library(knitr)
+library(rmdformats)
+
+## Global options
+options(max.print="75")
+opts_chunk$set(echo=TRUE,
+	             cache=TRUE,
+               prompt=FALSE,
+               tidy=TRUE,
+               comment=NA,
+               message=FALSE,
+               warning=FALSE)
+opts_knit$set(width=75)
 ```
----
-
-```{r setup, echo=FALSE}
-require(Hmisc)
-knitrSet(lang='markdown', fig.path='png/', fig.align='left', w=6.5, h=4.5, cache=TRUE)
-# If using blogdown: knitrSet(lang='blogdown')
-# knitr::opts_chunk$set(echo = TRUE)
-```
-
-`r hidingTOC(buttonLabel="Outline")`
 
 ```{r}
-setwd("~/Dropbox/Fdo/ClaseStats/RegressionClass/RegressionR_code")
-# To set the working directory at the user dir
 library(tidyverse)
 library(multcomp)
 library(car)
 library(emmeans)
+library(HSAUR2)
+library(wordcloud)
 
+setwd("~/Dropbox/Fdo/ClaseStats/RegressionClass/RegressionR_code")
+# To set the working directory at the user dir
 hers <- read_csv("DataRegressBook/Chap3/hersdata.csv")
 ```
 # General Linear Model GLM (Modelo lineal General)
+
 ## Linear Regression
+
 The term "regression" was introduced by Francis Galton (Darwin's nephew) during the XIX century to describe a biological phenomenon.  The heights of the descendants of tall ancestors have the tendency to "return", come back, to the normal average high in the population, known as the regression to the media. (Mr. Galton was an Eugenics supporter)
 
 ## Examples for "simple" linear regression
-The general equation for the straight line is $y = mx + b_0$, this form is the "slope, intersection form". The slope is the rate of change the gives the change in $y$ for a unit change in $x$. Remember that the slope formula for two pair of points $(x_1, y_1)$ and $(x_2, y_2)$ is:
-$$ m = \frac{(y_2 - y_1)}{(x_2 - x_1)}$$
-# General Linear Model GLM (Modelo lineal General)
-## Linear Regression
-The term "regression" was introduced by Francis Galton (Darwin's nephew) during the XIX century to describe a biological phenomenon.  The heights of the descendants of tall ancestors have the tendency to "return", come back, to the normal average high in the population, known as the regression to the media. (Mr. Galton was an Eugenics supporter)
 
-## Examples for "simple" linear regression
 The general equation for the straight line is $y = mx + b_0$, this form is the "slope, intersection form". The slope is the rate of change the gives the change in $y$ for a unit change in $x$. Remember that the slope formula for two pair of points $(x_1, y_1)$ and $(x_2, y_2)$ is:
 $$ m = \frac{(y_2 - y_1)}{(x_2 - x_1)}$$
 
@@ -72,6 +64,7 @@ abline(Lin9.3, col=2)
 ```
 
 Following with more examples from Daniel's book.
+
 ```{r}
 setwd("~/Dropbox/Fdo/ClaseStats/RegressionClass/RegressionR_code")
 # Changing wd to load the data file
@@ -87,6 +80,7 @@ abline(LinExr3.3, col=2)
 ```
 
 ## GLM
+
 Response variable $Y$ is a random variable that is measured and has a distribution with expected value $E(Y|x)$ given a set of independent variables $x$.
 $$Y_j (j=1, . . . , J)$$
 for a set of $x_jl$ predictor variables (or independent variables) defined as vectors for each $j$
@@ -111,6 +105,7 @@ summary(hers_nodi_Fit)
 Simple linear regression model shows coefficient estimate ($\beta_1$) for exercise shows that average baseline glucose levels were about 1.7mg/dL lower among women who exercised at least three times a week than among women who exercised less.
 
 ## For a multiple linear model
+
 There are models to regress several predictor variables to relate several random independent variables.
 
 $$y_i = E[y_i|x_i] + \epsilon_i$$
@@ -125,6 +120,7 @@ hers_nodi_multFit <- lm(glucose ~ exercise + age + drinkany + BMI, data = hers_n
 summary(hers_nodi_multFit)
 ```
 ## Multiple linear model, with interactions
+
 In general in R we can write the interaction term as the product of the regressors that we are studying the interaction:$variable_1:varible_2$ for a multiple linear model with two regressors and interaction the equation looks like:
 
 $$Y=\beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_1 x_2$$
@@ -135,8 +131,6 @@ $$Y=\beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_1 x_2$$
 This are only additive linear terms to explain a random response variable $Y$ and the adjusted parameters are the $\beta_i$ of the independent variables or predictors. These variables are random too. They can be numbers and factors. Example of multiple linear regression using the clouds data clouds from HSAUR
 
 ```{r}
-library(HSAUR2)
-
 data(clouds)
 head(clouds)
 
