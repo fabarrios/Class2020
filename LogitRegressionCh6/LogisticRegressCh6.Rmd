@@ -1,10 +1,8 @@
 ---
-title: "Logistic Regession"
+title: "Logistic Regession III"
 author: "F.A. Barrios"
 date: "`r Sys.Date()`"
 output:
-  html_document:
-    df_print: paged
   rmdformats::material:
     highlight: kate
   pdf_document: null
@@ -46,9 +44,9 @@ library(effects)
 setwd("~/Dropbox/GitHub/Class2020")
 wcgs <- read_csv("DataRegressBook/Chap2/wcgs.csv")
 ```
-# Examples from the CAR book (Fox & Weisberg) [^1]
+# Examples from CAR[^1]
 
-[^1]: All notes are taken form the "Companion to Applied Regression", 3rd Ed. Fox & Weisberg
+[^1]: All notes are taken form the "Companion to Applied Regression" Chap 6, 3rd Ed. Fox & Weisberg
 
 ## Review of the Structure of GLMs
 
