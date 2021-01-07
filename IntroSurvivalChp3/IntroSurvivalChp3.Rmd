@@ -1,17 +1,11 @@
 ---
-title: "IntroSurvival"
-author: "F.A. Barrios<br><small>Instituto de Neurobiología UNAM<br></small>"
-date: "<small>`r Sys.Date()`</small>"
+title: "Introduction to Survival Analysis"
+author: "F.A. Barrios<br>Instituto de Neurobiología UNAM<br>"
+date: "`r Sys.Date()`"
 output:
-  rmdformats::html_clean:
-    toc: yes
-    toc_depth: 3
-    number_sections: true
-    toc_float:
-      collapsed: false
-    cod_folding: hide
-    center: true
-  pdf_document:
+  rmdformats::material:
+    highlight: kate
+  pdf_document: default
 description: "to prepare Class2020 presentations"
 ---
 
