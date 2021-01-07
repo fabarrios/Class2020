@@ -1,0 +1,95 @@
+---
+title: "IntroSurvival"
+author: "F.A. Barrios<br><small>Instituto de Neurobiología UNAM<br></small>"
+date: "<small>`r Sys.Date()`</small>"
+output:
+  rmdformats::html_clean:
+    toc: yes
+    toc_depth: 3
+    number_sections: true
+    toc_float:
+      collapsed: false
+    cod_folding: hide
+    center: true
+  pdf_document:
+description: "to prepare Class2020 presentations"
+---
+
+
+```{r setup, include=FALSE}
+library(knitr)
+library(rmdformats)
+
+## Global options
+options(max.print="80")
+opts_chunk$set(echo=TRUE,
+	             cache=TRUE,
+               prompt=FALSE,
+               tidy=TRUE,
+               comment=NA,
+               message=FALSE,
+               warning=FALSE)
+opts_knit$set(width=80)
+```
+
+```{r}
+library(tidyverse)
+library(survival)
+library(survminer)
+
+setwd("~/Dropbox/GitHub/Class2020")
+leuk <- read_csv(file="DataRegressBook/Chap3/leuk.csv")
+# wcgs <- read_csv("DataRegressBook/Chap2/wcgs.csv")
+```
+
+# Introduction to Survival Analysis
+
+Survival analysis is used to analyze data in which the time until the event is of interest. The response variable is the time until that event and is often called a *failure time*, *survival time*, or *event time*. The response, event time, is usually continuous, but survival analysis allows the response to be incompletely determined for some subjects. Then we say that the survival time is *censored* on the right.  
+
+There are several reasons for studying failure time using the specialized methods of survival analysis.  
+1. Time to failure can have an unusual distribution. Failure time is restricted to be positive so it has a skewed distribution and will never be normally distributed.  
+2. The probability of surviving past a certain time is often more relevant than the expected survival time (and expected survival time may be difficult to estimate if the amount of censoring is large).  
+3. A function used in survival analysis, the hazard function, helps one to understand the mechanism of failure  
+
+## Right Censoring
+
+To illustrate the special characteristics of survival data, we consider a study of *6-mercaptopurine* (6-MP) as maintenance therapy for children in remission from *acute lymphoblastic leukemia* (ALL) Forty-two patients achieved remission from induction therapy and were then randomized in equal numbers to 6-MP or placebo. The survival time studied was from randomization until relapse. At the time of the analysis, all 21 patients in the placebo group had relapsed, whereas only 9 of 21 patients in the 6-MP group had. One crucial characteristic of these survival times is that for the 12 patients in the 6-MP group who remained in remission at the time of the analysis, the exact time to relapse was unobserved; it was only known to exceed the follow-up time. For example, one patient had only been under observation for six weeks, so we only know that the relapse time is longer than that. Such a survival time is said to be *right-censored*.  
+
+Definition: A survival time is said to be right-censored at time t if it is only known to be greater than t.  
+
+```{r}
+plot(survfit(Surv(time, cens) ~ group, data = leuk), main = "Acute Lymphoblastic Leukemia", lty = c(1,2), ylab = "Probability", xlab = "Time weeks")
+survdiff(Surv(time, cens) ~ group, data=leuk)
+```
+
+Definition: The survival function at time t, denoted S(t) is the probability of being eventfree at t; equivalently, the probability that the survival time is greater than t.
+
+## Interpretarion of Kaplan-Meier Curves
+
+Plots of the Kaplan–Meier estimates of S(t), we can infer periods of high risk, when the survival curve descends rapidly, as well as periods of lower risk, when it remains relatively flat.
+
+
+# Fitting a survival model.
+fit <- survfit(Surv(time, cens) ~ group, data = leuk)
+ggsurvplot(fit, data = leuk, censor.shape="|", censor.size = 4, linetype = c(1,2))
+
+# With ggplot using 
+ggsurvplot(
+  fit, 
+  data = leuk, 
+  size = 0.5,                 # change line size
+  linetype = c("solid", "dashed"), # different line type
+  palette = c("lancet"), # color red, blue or custom palettes lancet
+  title    = "Acute Lymphoblastic Leukemia", # plot main title
+  xlab = "Time in weeks",   # customize X axis label.
+  conf.int = TRUE,          # Add confidence interval
+  pval = TRUE,              # Add p-value from log-rank test
+  risk.table = TRUE,        # Add risk table
+  risk.table.col = "strata",# Risk table color by groups
+  legend.labs = c("6-MP", "Control"),    # Change legend labels
+  risk.table.height = 0.25, # Useful to change when you have multiple groups
+  surv.median.line = "hv",  # add the median survival pointer.
+  ggtheme = theme_bw()      # Change ggplot2 theme
+)
+```
+
