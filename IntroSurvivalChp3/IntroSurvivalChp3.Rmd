@@ -70,6 +70,9 @@ Plots of the Kaplan–Meier estimates of S(t), we can infer periods of high risk
 
 
 # Fitting a survival model.
+
+
+```{r}
 fit <- survfit(Surv(time, cens) ~ group, data = leuk)
 ggsurvplot(fit, data = leuk, censor.shape="|", censor.size = 4, linetype = c(1,2))
 
