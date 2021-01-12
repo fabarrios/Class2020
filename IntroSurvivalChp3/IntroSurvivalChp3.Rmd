@@ -15,7 +15,7 @@ library(knitr)
 library(rmdformats)
 
 ## Global options
-options(max.print="80")
+options(max.print="85")
 opts_chunk$set(echo=TRUE,
 	             cache=TRUE,
                prompt=FALSE,
@@ -23,13 +23,14 @@ opts_chunk$set(echo=TRUE,
                comment=NA,
                message=FALSE,
                warning=FALSE)
-opts_knit$set(width=80)
+opts_knit$set(width=85)
 ```
 
 ```{r}
 library(tidyverse)
 library(survival)
 library(survminer)
+library(car)
 
 setwd("~/Dropbox/GitHub/Class2020")
 leuk <- read_csv(file="DataRegressBook/Chap3/leuk.csv")
@@ -88,5 +89,111 @@ ggsurvplot(
   surv.median.line = "hv",  # add the median survival pointer.
   ggtheme = theme_bw()      # Change ggplot2 theme
 )
+```
+
+How is tha data organized for hese kind of problems?
+
+```{r}
+leuk$group
+leuk$time
+leuk$cens
+
+```
+
+## Recidivism (the tendency of a convicted criminal to reoffend)
+
+The Rossi data set in the CarData. Is a study of recidivism of 432 male prisoners, who were observed for a year after being released from prison. The following variables are included in the data:  
+*`week`: week of the first arrest after release, or censoring time.  
+*`arrest`: the event indicator, equal to 1 for those arrested during the period of the study and 0 for those who were not arrested.  
+*`fin`: a factor, levels yes or no in the individual received finantial aid after release from prison.  
+*`age`: in years at the time of release.  
+*`race`: a factor with leves "black" and "other".  
+*`wexp`: a factor "yes" if the individual had full-time work experience prior to incarceration or "no".  
+*`mar`: a factor with leves "married" if te individual was married at the time of release and "not married" if he was not.  
+*`paro`: a factor coded "yes" if the individual was released on parol and "no" if he was not.  
+*`prio`: number of prior convictions.  
+*`educ`: education, categorical variable coded numerically, with codes 2 (grade 6 or less), 3 (grades 6 through 9), 4 (grades 10 and 11), 5 (grade 12), or 6(some post-secondary).  
+*`emp1-emp52`: factors coded "yes" if the individual was employed in the corresponding week of the study.  
+
+
+
+```{r}
+# Cox proportional-hazards regression
+# data("Rossi", package = "carData")
+args(coxph)
+#
+Rossi[1:5, 1:10]
+# Cox model and estimation of model tests
+mod.allison <- coxph(Surv(week, arrest) ~ fin + age + race + wexp + mar + paro + prio, data = Rossi)
+summary(mod.allison)
+```
+
+# The Anova function (car)
+
+The Anova function of car package  has a method for "coxph" objects, by default estimates Type-II likelihood-ratio test for the terms of the Cox model
+
+
+```{r}
+Anova(mod.allison)
+
+# Plots of the Cox model
+plot(survfit(mod.allison), xlab="Weeks", ylab="Proportion Not Rearrested")
+# now with better scale
+plot(survfit(mod.allison), ylim = c(0.7, 1), xlab="Weeks", ylab="Proportion Not Rearrested")
+
+# With ggplot using ggsurvplot
+#
+ggsurvplot(
+survfit(mod.allison), 
+data = Rossi, 
+size = 0.5,                      # change line size
+linetype = c("solid","dashed"), # different line type
+palette = "simpsons",              # color palette
+title   = "Rossi data",          # plot main title
+xlab = "Weeks",                  # customize X axis label.
+ylab = "Proportion Not Rearrested", # customize Y axis label
+ylim = c(0.7, 1),             # customize Y limits
+conf.int = TRUE,             # Add confidence interval
+pval = FALSE,                 # Add p-value from log-rank test
+risk.table = FALSE,           # Add risk table
+risk.table.col = "strata",   # Risk table color by groups
+surv.median.line = "none",
+legend = "none",
+risk.table.height = 0.25,    # Useful to change when you have multiple groups
+ggtheme = theme_bw()         # Change ggplot2 theme
+)
+
+```
+
+
+```{r}
+# To study the fin help variable
+Rossi.fin <- with (Rossi, data.frame(fin=c(0, 1), age=rep(mean(age), 2), race=rep(mean(race == "other"), 2),
+                                     wexp=rep(mean(wexp == "yes"), 2), mar=rep(mean(mar == "not married"), 2),
+                                     paro=rep(mean(paro == "yes"), 2), prio=rep(mean(prio), 2)))
+
+# plot(survfit(mod.allison, newdata=Rossi.fin), conf.int=TRUE, lty=c(1,2), ylim=c(0.6, 1), xlab="Weeks", ylab="Proportion Not Rearrested")
+# legend("bottomleft", legend=c("fin = no", "fin = yes"), lty=c(1, 2), insert=0.02)
+
+ggsurvplot(
+  survfit(mod.allison, newdata=Rossi.fin), 
+  data = Rossi, 
+  size = 0.5,                     # change line size
+  linetype = c("solid","dashed"), # different line type
+  palette = "lancet",             # color palette
+  title   = "Rossi data",         # plot main title
+  xlab = "Weeks",                 # customize X axis label.
+  ylab = "Proportion Not Rearrested", # customize Y axis label
+  ylim = c(0.65, 1),           # customize Y limits
+  conf.int = TRUE,            # Add confidence interval
+  pval = FALSE,               # Add p-value from log-rank test
+  risk.table = FALSE,         # Add risk table
+  risk.table.col = "strata",  # Risk table color by groups
+  surv.median.line = "none",
+  legend = "none",
+  risk.table.height = 0.25,   # Useful to change when you have multiple groups
+  ggtheme = theme_bw()        # Change ggplot2 theme
+  )
+
 ```
 
