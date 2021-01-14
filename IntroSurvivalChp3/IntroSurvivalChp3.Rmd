@@ -6,8 +6,12 @@ output:
   html_document:
     rmdformats::material:
     highlight: kate
-    df_print: paged
-  pdf_document: default
+    self_contained: true
+    code_folding: show
+    thumbnails: true
+    gallery: true
+    fig_width: 7
+    fig_height: 7
 description: to prepare Class2020 presentations
 ---
 
@@ -198,4 +202,5 @@ ggsurvplot(
   )
 
 ```
+
 
