@@ -3,10 +3,12 @@ title: "Introduction to Survival Analysis"
 author: "F.A. Barrios<br>Instituto de Neurobiología UNAM<br>"
 date: "`r Sys.Date()`"
 output:
-  pdf_document: default
-  rmdformats::material:
+  html_document:
+    rmdformats::material:
     highlight: kate
-description: "to prepare Class2020 presentations"
+    df_print: paged
+  pdf_document: default
+description: to prepare Class2020 presentations
 ---
 
 
