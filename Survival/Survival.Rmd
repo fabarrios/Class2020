@@ -162,7 +162,7 @@ plot(res ~ log(progrec), data = GBSG2, ylim = c(-2.5, 1.5), pch = ".", ylab = ""
 abline(h = 0, lty = 2)
 ```
 
-In R tree-structure regression models are applicable to censored responses in survival analysis. The ctree function from package `partykit`.  In the tree-structure regression the most important variable is the pnodes, number of possitive lymph nodes, corresponding to the p-value associated with the variable in the Cox regression.  
+In R tree-structure regression models are applicable to censored responses in survival analysis. The ctree function from package `partykit`.  In the tree-structure regression the most important variable is the `pnodes`, number of positive lymph nodes, corresponding to the p-value associated with the variable in the Cox regression.  
 ```{r}
 GBSG2_ctree <- ctree(Surv(time, cens) ~ ., data = GBSG2)
 plot(GBSG2_ctree)

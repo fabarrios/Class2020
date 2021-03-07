@@ -3,12 +3,11 @@ title: "Maximum Likelihood Estimation"
 author: "F.A. Barrios"
 date: "`r Sys.Date()`"
 output:
-  rmdformats::material:
+  rmdformats::readthedown:
     highlight: kate
   pdf_document:
 description: "to prepare Class2020 presentations"
 ---
-
 
 ```{r setup, include=FALSE}
 library(knitr)
@@ -29,8 +28,6 @@ opts_knit$set(width=75)
 ```{r}
 # All the needed libraries
 library(tidyverse)
-library(emmeans)
-library(car)
 library(effects)
 ```
 # Maximum Likelihood Estimation (MLE) 
@@ -39,9 +36,9 @@ Que es la Estimación por Máxima Posibilidad --Maximum Likelihood Estimation (M
 
 [^1]: Entrada en el blog the Jorge Cimentada (https://cimentadaj.github.io/blog/2020-11-26-maximum-likelihood-distilled/maximum-likelihood-distilled/)
 
-Como muchas ideas padres, esta la copié del blog de Jorge Cimentada, y es una explicación muy fácil de seguir para entender que el "Maximum Likelihood Estimation", como lo dije al inicio vamos a llamar a "likelihood" la posibilidad, y la idea es calcular valores "posibles" de una funcion y correr un optimizador en varias iteraciones para obtener el valor más probable de dicha función.
+Como muchas ideas padres, esta la copié del blog de Jorge Cimentada, y es una explicación muy fácil de seguir para entender que el "Maximum Likelihood Estimation", como lo dije al inicio vamos a llamar a "likelihood" la posibilidad, y la idea es calcular valores "posibles" de una funcion y correr un optimizador en varias iterasiones para obtener el valor más probable de dicha función. 
 
-Primero se define una función llamada loglikelihood (la posibilidad logarítmica), dicha funciona tiene el valor inicial de los parámetros a optimizar, y estima un valor probable de el predictor haciendo una llamada a la distribución normal de densidad probable (dnorm de R, regresa la altura de la campana en el valor x).
+Primero se define una función llamada loglikelihood (la posibilidad logarítmica), dicha funciona tiene el valor inicial de los parámetros a optimizar, y estima un valor probable de el predictor haciendo una llamada a la distribución normal de densidad probable (`dnorm` de R, regresa la "altura" de la campana en el valor x).
 
 ```{r}
 loglikelihood <- function(parameters, predictor, outcome) {
@@ -90,9 +87,9 @@ mle$par[1:2]
 coef(lm(mpg ~ disp, data = mtcars))
 ```
 
-La funcion loglikelihood estima que tan compatible es el valor de Y con la estimación probable de la respuesta lineal a + b * x, ( en logaritmo), y despues esta funcion usa el optimizador de R para estimar los valores que optimizan a la funcion
+La función `loglikelihood` estima que tan compatible es el valor de Y con la estimación probable de la respuesta lineal `a + b * x`, (en logaritmo), y después esta función usa el optimizador de R para estimar los valores que optimizan a la función
 
-Del paquete original de stats de R se tiene una funcion para optimizar:
+Del paquete original de `stats` de R se tiene una función para optimizar:
 
 `optim(par, fn, gr = NULL, ..., `  
 `     method = c("Nelder-Mead", "BFGS", "CG", "L-BFGS-B", "SANN", "Brent"), `  
