@@ -211,14 +211,12 @@
 <div id="main">
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># All the needed libraries</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(emmeans)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(car)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(effects)</span></code></pre></div>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(effects)</span></code></pre></div>
 <div id="maximum-likelihood-estimation-mle" class="section level1">
 <h1>Maximum Likelihood Estimation (MLE)</h1>
 <p>Que es la Estimación por Máxima Posibilidad –Maximum Likelihood Estimation (MLE)– ? (en este comentario vamos a usar likelihood –probabilidad, posibilidad– como posibilidad). Este comentario surgió del comentario en R-Loggers y de la entrada en el blog llamada “Maximum likelihood distilled” <a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
-<p>Como muchas ideas padres, esta la copié del blog de Jorge Cimentada, y es una explicación muy fácil de seguir para entender que el “Maximum Likelihood Estimation”, como lo dije al inicio vamos a llamar a “likelihood” la posibilidad, y la idea es calcular valores “posibles” de una funcion y correr un optimizador en varias iteraciones para obtener el valor más probable de dicha función.</p>
-<p>Primero se define una función llamada loglikelihood (la posibilidad logarítmica), dicha funciona tiene el valor inicial de los parámetros a optimizar, y estima un valor probable de el predictor haciendo una llamada a la distribución normal de densidad probable (dnorm de R, regresa la altura de la campana en el valor x).</p>
+<p>Como muchas ideas padres, esta la copié del blog de Jorge Cimentada, y es una explicación muy fácil de seguir para entender que el “Maximum Likelihood Estimation”, como lo dije al inicio vamos a llamar a “likelihood” la posibilidad, y la idea es calcular valores “posibles” de una funcion y correr un optimizador en varias iterasiones para obtener el valor más probable de dicha función.</p>
+<p>Primero se define una función llamada loglikelihood (la posibilidad logarítmica), dicha funciona tiene el valor inicial de los parámetros a optimizar, y estima un valor probable de el predictor haciendo una llamada a la distribución normal de densidad probable (<code>dnorm</code> de R, regresa la “altura” de la campana en el valor x).</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>loglikelihood <span class="ot">&lt;-</span> <span class="cf">function</span>(parameters, predictor, outcome) {</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># intercept</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  a <span class="ot">&lt;-</span> parameters[<span class="dv">1</span>]</span>
@@ -262,8 +260,8 @@
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(<span class="fu">lm</span>(mpg <span class="sc">~</span> disp, <span class="at">data =</span> mtcars))</span></code></pre></div>
 <pre><code>(Intercept)        disp 
 29.59985476 -0.04121512 </code></pre>
-<p>La funcion loglikelihood estima que tan compatible es el valor de Y con la estimación probable de la respuesta lineal a + b * x, ( en logaritmo), y despues esta funcion usa el optimizador de R para estimar los valores que optimizan a la funcion</p>
-<p>Del paquete original de stats de R se tiene una funcion para optimizar:</p>
+<p>La función <code>loglikelihood</code> estima que tan compatible es el valor de Y con la estimación probable de la respuesta lineal <code>a + b * x</code>, (en logaritmo), y después esta función usa el optimizador de R para estimar los valores que optimizan a la función</p>
+<p>Del paquete original de <code>stats</code> de R se tiene una función para optimizar:</p>
 <p><code>optim(par, fn, gr = NULL, ...,</code><br />
 <code>method = c(&quot;Nelder-Mead&quot;, &quot;BFGS&quot;, &quot;CG&quot;, &quot;L-BFGS-B&quot;, &quot;SANN&quot;, &quot;Brent&quot;),</code><br />
 <code>lower = -Inf, upper = Inf,</code><br />
