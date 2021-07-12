@@ -1,0 +1,264 @@
+---
+title: "TareaANOVA.Rmd"
+author: "F. A. Barrios<br><small>Instituto de Neurobiología, UNAM<br></small>"
+date: "<small>`r Sys.Date()`</small>"
+output:
+  html_document:
+    toc: yes
+    toc_depth: 3
+    number_sections: true
+    toc_float:
+      collapsed: false
+    cod_folding: hide
+    theme: cerulean
+  pdf_document: default
+description: "to prepare homeworks"
+---
+
+```{r setup, echo=FALSE}
+require(Hmisc)
+knitrSet(lang='markdown', fig.path='png/', fig.align='left', w=6.5, h=4.5, cache=TRUE)
+# If using blogdown: knitrSet(lang='blogdown')
+# knitr::opts_chunk$set(echo = TRUE)
+```
+`r hidingTOC(buttonLabel="Outline")`
+
+# Examples Chapter 8 Daniel ANOVA
+
+Solution of some examples and exercises from Daniel's book, the ANOVA chapter. As part of the Homework we include R code in the document, and the R code will be included too.
+
+## Example 8.2.1
+Game meats, including those from white-tailed deer and eastern gray squirrels, are used as food by families, hunters and other individuals for health, cultural, or personal reasons. A study by D Holben assessed the selenium content of the meat from free-roaming white-tailed deer (venison) and gray squirrel (squirrel) obtained from a low selenium region of the United States. These selenium content values were also compared to those of beef produced whithin and outside the same region. We want to know if the selenium levels are different in the four meat groups.
+```{r}
+setwd("~/Dropbox/Fdo/ClaseStats/RegressionClass/RegressionR_code")
+# Example Chap 8, One-Way ANOVA
+Exa8_2=read.csv(file="DataOther/EXA_C08_S02_01.csv", header=TRUE)
+summary(Exa8_2)
+boxplot(Exa8_2)
+Exa8_2.dat = stack(Exa8_2)
+names(Exa8_2.dat)
+Exa8_2.aov=aov(values~ind, data=Exa8_2.dat)
+summary(Exa8_2.aov)
+# # # # # # # # # # # # # # # # # 
+plot(values~ind, data=Exa8_2.dat)
+TukeyHSD(Exa8_2.aov, ordered=TRUE)
+plot(TukeyHSD(Exa8_2.aov), las=2)
+abline(v=0, col=2)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+You can also plot on different quadrants, for example:
+
+```{r, echo=FALSE}
+# Advanced graph.
+layout(matrix(c(1, 2, 3, 4), nrow=2, ncol=2, byrow=TRUE))
+plot(Exa8_2.aov)
+```
+
+## Example 8.3.1
+
+A physical therapist wishe to compare three methods for patients to use a certain prosthetic device. He felt that the rate of learing would be different for patients of different ages and wished to design an experiment in which the ifluence of age could be taken into account.
+Data. Three patients in each of the five age groups were selected to partipate in the experiment, and one patient in each age group was randomly assigned to each of the teaching methods. The methods of instruction constitute our three treatments, and the five gorups are the blocks.
+(The section 2 of the ANOVA chapter in Daniel's book is for a two-way ANOVA. The data for this example is not loadable from a data file provided by the site of the book. Nevertheless, we will make a table copying the data directly, which is not large, form the text.
+
+```{r}
+# Build a table, index by index since
+# Two-Way ANOVA EXAMPLE 8.3.1 has NO-data file
+# Therefore we make the example table.
+#
+Age=factor(rep(c(1,2,3,4,5), 3))
+Age
+Method=factor(rep(1:3,c(5,5,5)))
+Method
+levels(Method)=letters[1:3]
+Method
+t = c(7,8,9,10,11,9,9,9,9,12,10,10,12,12,14)
+#
+plot(t ~ Age + Method)
+# now the ANOVA model
+t_aov = aov(t ~ Method + Age)
+summary(t_aov)
+layout(matrix(c(1,2), nrow=2, ncol=1, byrow=TRUE))
+TukeyHSD(t_aov)
+plot(TukeyHSD(t_aov))
+abline(v=0, col=2)
+```
+
+Layout instruction divides the graphical screen in four sections, square diff and QQ-plot graphs.
+
+```{r}
+layout(matrix(c(1, 2, 3, 4), nrow=2, ncol=2, byrow=TRUE))
+plot(t_aov)
+```
+
+## Example 8.4.1
+
+Licciardone et al. examined subjects with chronic, nonspecific low back pain. In this study, 18 of the subjects completed a survey questionnaire assessing physical functioning at baseline, and after 1, 3, and 6 months. The file has data for these subjects which received a sham treatment thet appeared to be genuine osteopathic manipulations. Higher values indicate better physical functioning. Higher values indicate better physical functioning. The goal of the experiment was to determine if subjects would report improvement over time even though the treatment they received would provide minimal improvement. We wish to know if there is a difference in the mean survey values among the four points in time.
+
+```{r}
+setwd("~/Dropbox/Fdo/ClaseStats/RegressionClass/RegressionR_code")
+# Example 8.4.1 ANOVA Single factor repeated measures
+# 
+Exa4.1=read.csv(file="DataOther/EXA_C08_S04_01mod.csv", header=TRUE)
+names(Exa4.1)
+# FUNC we want to estimate if depends on SUBJ with
+# repeated measurements for SUBJ.
+# factor is used to force the numbers as factors !
+# And were grouped in time to measure effect
+# model FUNC ~ factor(TIME) + factor(SUBJ)
+# layout(matrix(c(1,2), nrow=2, ncol=1, byrow=TRUE))
+plot(Assessment ~ factor(Time) + factor(Subject), data=Exa4.1)
+Exa4.1.aov = aov(Assessment ~ factor(Time) + factor(Subject), data=Exa4.1)
+summary(Exa4.1.aov)
+TukeyHSD(Exa4.1.aov)
+plot(TukeyHSD(Exa4.1.aov), las=2)
+```
+
+```{r}
+layout(matrix(c(1,2,3,4), nrow=2, ncol=2, byrow=TRUE))
+plot(Exa4.1.aov)
+```
+
+# Exercises chapter 8 Daniel
+
+In the following exercises estimate an ANOVA model. Let $\alpha = 0.05$ for each tes. Use Tukey's HSD procedure to test for significant differences among individual pairs of means (if appropriate). Construct box-plots of the data.
+
+## EXERCISE 8.2.1
+
+Reseachers at CWRU wanted to develop and implement a transducer, manageable in a clinical detting, for quialifying isometric moment produced at the elbow joint by individuals with tetraplegia (paralysis or paresis of all four limbs). The apparatus, called an elbow moment transducer (EMT), measures the force the elbow can exert when flexing. The output variable is voltage. The machine was tested at four different elbow extension angles, 30, 60, 90, 102 degrees, on a mock elbow consisting of two hinged aluminum beams. The data is at file.
+
+```{r}
+setwd("~/Dropbox/Fdo/ClaseStats/RegressionClass/RegressionR_code")
+# Problem 8.2.1
+Exr8.2.1=read.csv(file="DataOther/EXR_C08_S02_01.csv", header=TRUE)
+names(Exr8.2.1)
+boxplot(Exr8.2.1)
+is.factor(Exr8.2.1$ANGLE)
+# boxplot does not work . . .
+# ANGLE are numbers and no lavels, so the factor command
+# is needed to force the ANGLE numbers as factors !
+plot(EMT ~ factor(ANGLE), data=Exr8.2.1)
+Exr2_1.aov = aov(EMT ~ factor(ANGLE), data=Exr8.2.1)
+summary(Exr2_1.aov)
+TukeyHSD(Exr2_1.aov)
+plot(TukeyHSD(Exr2_1.aov), las=2)
+abline(v=0., lty=3, col=2)
+```
+
+## EXERCISE 8.2.3
+
+Ilich-Ernst et al. investigated dietary intake of calcium among a cross section of 113 healthy women ages 20-88. The researchers formed four age groupings as follows: Group A, 20.0 - 45.9 years; Group B, 46.0 - 55.9 years; Group C, 56.0 - 65.9 years; and Group D, over 66 years. Calcium from food intake was measured in mg/day. The data is at the file.
+
+```{r}
+setwd("~/Dropbox/Fdo/ClaseStats/RegressionClass/RegressionR_code")
+# Problem 8.2.3 Consumo de Calcio en dieta de 113 mujeres
+# cuatro grupos por edad 20-45, 46-55, 56-65, 66-88
+Er8.2.3=read.csv(file="DataOther/EXR_C08_S02_03.csv", header=TRUE)
+names(Er8.2.3)
+plot(calcium ~ factor(Group), data=Er8.2.3)
+aovEr8.2.3 = aov(calcium ~ factor(Group), data=Er8.2.3)
+summary(aovEr8.2.3)
+# 
+TukeyHSD(aovEr8.2.3)
+plot(TukeyHSD(aovEr8.2.3), las=2)
+abline(v=0, col=2, lty=2)
+# For Q-Q test and square diff.
+layout(matrix(c(1,2,3,4), nrow=2, ncol=2, byrow=TRUE))
+plot(aovEr8.2.3)
+```
+## EXERCISE 8.3.1
+
+The objective of a study by Brooks et al. was to evaluate the efficacy of using a virtual kitchen for vocational training of people with learning disabilities. Twenty-four students participated in the study. Each participant performed four food preparations tasks and they were scored on the quality of the preparation. Then each participant received regular vocational training in food preparation (real training), visual training using a TV and computer screen of a typical kitchen, work-book training with specialized reading materilas, and no training (to serve as control). After eah of these trainigs, the subjects were tested on food preparation. Improvement scores for each of the four training methods are presented in the file.  Afetr eliminating subject effects, can we conclude that the improvement scores differ among mathods of training? Let $\alpha = .05$.
+
+```{r}
+setwd("~/Dropbox/Fdo/ClaseStats/RegressionClass/RegressionR_code")
+# Problem 8.3.1 two-way ANOVA exercise
+Exr8.3.1=read.csv(file="DataOther/EXR_C08_S03_01.csv", header=TRUE)
+names(Exr8.3.1)
+# TYPE are numbers and the factor command is needed to
+# force the numbers as factors !
+# levels(Exr8.3.1$type)=letters[1:4]
+layout(matrix(c(1,2), nrow=2, ncol=1, byrow=TRUE))
+plot(score ~ factor(type) + factor(subject), data=Exr8.3.1)
+Exr3_1.aov = aov(score ~ factor(type) + factor(subject), data=Exr8.3.1)
+summary(Exr3_1.aov)
+TukeyHSD(Exr3_1.aov)
+layout(matrix(c(1,2), nrow=2, ncol=1))
+plot(TukeyHSD(Exr3_1.aov), las=2)
+# with a linear model
+res.add = lm(score ~ factor(type) + factor(subject), data= Exr8.3.1)
+res.notype = lm(score ~ factor(subject), data= Exr8.3.1)
+anova(res.add, res.notype)
+```
+## EXERCISE 8.3.2
+
+McConville et al. report the effects of chewing one piece of nicotine gum (containing 2 mg nicotine) on tic frecuency in patients whose Tourette's disorder was inadequately controlled by haloperidol. The frecuencies under four conditions are in the table in the file. After eliminating patient effects, can we conclude that the mean number of tics differs among the four condifions? let $\alpha = .01$.
+
+```{r}
+setwd("~/Dropbox/Fdo/ClaseStats/RegressionClass/RegressionR_code")
+# Problem 8.3.2 two-way ANOVA exercise
+Exr3.2=read.csv(file="DataOther/EXR_C08_S03_02.mod.csv", header=TRUE)
+names(Exr3.2)
+# PATIENT are numbers and the factor command is needed to force the 
+# numbers as factors !
+layout(matrix(c(1,2),nrow=1, ncol=2))
+plot(Resp ~ factor(PATIENT) + factor(Time), data=Exr3.2)
+Exr3_2.aov = aov(Resp ~ factor(PATIENT) + factor(Time), data=Exr3.2)
+summary(Exr3_2.aov)
+TukeyHSD(Exr3_2.aov, conf.level=0.99)
+layout(matrix(c(1,2,3,4), nrow=2, ncol=2, byrow=TRUE))
+plot(Resp ~ factor(PATIENT) + factor(Time), data=Exr3.2)
+plot(TukeyHSD(Exr3_2.aov, conf.level=0.99), las=2)
+# with a linear model
+res.add = lm(Resp ~ factor(PATIENT) + factor(Time), data=Exr3.2)
+res.nocond = lm(Resp ~ factor(PATIENT), data= Exr3.2)
+anova(res.add, res.nocond)
+(Exr3_2.aov_int = aov(Resp ~ factor(PATIENT) + factor(Time) + factor(PATIENT):factor(Time), data=Exr3.2))
+summary(Exr3_2.aov_int)
+```
+
+## EXERCISE 8.3.3
+
+A remotivation team in a psychiatric hospital concluded am expereiment to compare five methods for remotivating patients. Patients were grouped accordig to level of initial motivation. Patients in each group were randomly assigned to the five methods. At the end of the experimental period the patients were evaluated by a team composed of a psychiatrist, a psychologist, a nurse, and a social worker, none of whom was aware of the method to which patients had been assigned. THe results are in the file. Do these data provide sufficient evidence to indicate a difference in mean scores among methods? Let $\alpha = .05$.
+
+```{r}
+setwd("~/Dropbox/Fdo/ClaseStats/RegressionClass/RegressionR_code")
+# Problem 8.3.3 two-way ANOVA exercise
+Exr3.3=read.csv(file="DataOther/EXR_C08_S03_03.csv", header=TRUE)
+names(Exr3.3)
+# SCORE is function of METHOD factor command is needed to
+# force the numbers as factors !
+# And were grouped in motivation level 
+# model SCORE ~ factor(METHOD) + factor(MOTIV)
+layout(matrix(c(1,2), nrow=2, ncol=1, byrow=TRUE))
+plot(SCORE ~ factor(METHOD) + factor(MOTIV), data=Exr3.3)
+Exr3_3.aov = aov(SCORE ~ factor(METHOD) + factor(MOTIV), data=Exr3.3)
+summary(Exr3_3.aov)
+TukeyHSD(Exr3_3.aov)
+plot(TukeyHSD(Exr3_3.aov), las=2)
+```
+
+## EXERCISE 8.4.1
+
+One of the purposes of a study by Liu et al. was to determine the effects of MRZ 2/579 on neurological deficit in Sprague-Dawley rats. In this study, 10 rats measured at four time periods following occlusion of the middle carotid artery and subsequent treatment with the uncompetitive N-metyl-D-aspartate antagonist MRZ 2/579, which previous studies had suggested provides neuroprotecive activity. The outcom varible was a neurological function variable measured on a scale of 0-12. A higher number indicates a higher degree of neurological imparement. Let $\alpha = .05$.
+
+```{r}
+setwd("~/Dropbox/Fdo/ClaseStats/RegressionClass/RegressionR_code")
+# Exercise 8.4.1 ANOVA Single factor repeated measures
+# 
+Exr4.1=read.csv(file="DataOther/EXR_C08_S04_01.csv", header=TRUE)
+names(Exr4.1)
+# outcome we want to estimate if depends on subj with
+# repeated measurements in time for subj.
+# factor is used to force the numbers as factors !
+# And were grouped in time to measure effect
+# model outcome ~ factor(subj) + factor(time)
+layout(matrix(c(1,2), nrow=2, ncol=1, byrow=TRUE))
+plot(outcome ~ factor(time) + factor(subj), data=Exr4.1)
+Exr4.1.aov = aov(outcome ~ factor(time) + factor(subj), data=Exr4.1)
+summary(Exr4.1.aov)
+#
+TukeyHSD(Exr4.1.aov)
+plot(TukeyHSD(Exr4.1.aov), las=2)
+```
+

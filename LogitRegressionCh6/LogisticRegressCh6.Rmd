@@ -1,0 +1,293 @@
+---
+title: "Logistic Regession III"
+author: "F.A. Barrios"
+date: "`r Sys.Date()`"
+output:
+  rmdformats::material:
+    highlight: kate
+  pdf_document: null
+description: to prepare Class2020 presentations
+---
+
+
+```{r setup, echo=FALSE, cache=FALSE}
+library(knitr)
+library(rmdformats)
+
+## Global options
+library(knitr)
+library(rmdformats)
+
+## Global options
+options(max.print="75")
+opts_chunk$set(fig.width=12, 
+               fig.height=10,
+	             cache=TRUE,
+               prompt=FALSE,
+               tidy=TRUE,
+               comment=NA,
+               message=FALSE,
+               warning=FALSE)
+opts_knit$set(width=75)
+```
+
+```{r}
+# All the needed libraries
+library(tidyverse)
+library(emmeans)
+library(wesanderson)
+library(rstatix)
+library(HSAUR2)
+library(car)
+library(effects)
+
+setwd("~/Dropbox/GitHub/Class2020")
+wcgs <- read_csv("DataRegressBook/Chap2/wcgs.csv")
+```
+# Examples from CAR[^1]
+
+[^1]: All notes are taken form the "Companion to Applied Regression" Chap 6, 3rd Ed. Fox & Weisberg
+
+## Review of the Structure of GLMs
+
+The structure of a GLM is very similar to that of the linear model. In particular we have a response variable *y* and *k* predictors, and we are interested in understanding how the mean of *y* varies as the values of the predictors change.
+
+
+A GLM consists of three components
+
+1. Random component, specifying the conditional or "error" distribution of the response variable, $y$, given the predictors from an *exponential family*.  Both the binomial and Poisson distributions ae in the class of explonential families, and so problems with categorical or discrete responses can be studied with GLMs.
+
+2. As in linear models, the $m$ predictors in a GLM are translated into a vector of $k + 1$ regresor variables, ${\bf x} = (x_0, x_1, \dots , x_k)$, possibly using contrast regressors for factors, polynomials, regression splines, transformations, and interactions. The response depends on the predictors only through a linear function of the regressors, called the *linear predictor*, $\eta({\bf x}) = \beta_0 + \beta_1 x_1 + \cdots + \beta_k x_k$.
+
+3. The connection between the conditional mean $E[y|{\bf x}]$ of the response and the predictor $\eta({\bf x})$ in a linear model is direct,
+$$E[y|{\bf x}] = \eta({\bf x}) = \beta_0 + \beta_1 x_1 + \cdots + \beta_k x_k$$
+and so the mean is equal to a linear combination of the regressors. This direct relation is not appropriate for all GLM because $\eta({\bf x})$ can take any value, whereas the mean of a binary response variable must be in the interval (0,1). Therefore we introduce an invertible *link function g* that translates from the scale of the mean response to the scale of the linear predictor. $\eta({\bf x}) = E[y|{\bf x}]$ is standard in the GLM for the conditional mean of the response, therefore $g[\mu({\bf x})] = \eta({\bf x})$
+Reversing this relationship produces the *inverse-link function*, $g^{-1}[\eta(\bf {x})] = \mu(\bf {x})$. The inverse of the link function is sometimes is sometimes called the *mean link funcion*
+
+
+Standard link functions and their inverses table: $\mu = E[y|\bf x]$ is the expected value of the response; $\eta = \beta_0 + \beta_1 x_1 + \cdots + \beta_k x_k$ is the linear predictor.
+$$\begin{array}{cccc}
+  \bf Link & {\bf  \eta = g(\mu)} & {\bf \mu = g^{-1}(\eta)} & \bf Inverse Link \\
+  identity & \mu & \eta & identity \\
+  log  & \log(\mu) & e^\eta & exponential  \\
+  inverse & \mu^{-1} & \eta^{-1} & inverse  \\
+  inverse square & \mu^{-2} & \eta^{-1/2} & inverse square root  \\
+  square root & \sqrt{\mu} & \eta^{2} & square \\
+  logit & \log\frac{\mu}{1-\mu} & \frac{1}{1+e^{-\eta}} & logistic \\
+  probit & \Phi(\mu) & \Phi^{-1}(\eta) & normal quantile \\
+  comp. log-log & \log[-\log(-\mu)] & 1- \exp[-\exp(\eta)] & -
+\end{array} $$
+
+
+And the table for canonical or default link, response range, and conditional variance function for GLM families.
+$$\begin{array}{cccc}
+  \bf{Family} & {\bf Default Link} & {\bf Range of y}  & {\bf Var}(y|{\bf x}) \\
+  gaussian & identity & (-\infty, +\infty) & \phi \\
+  binomial & logit & \frac{0,1,\dots, N}{N} & \frac{\mu(1-\mu)}{N} \\
+  poisson & log & 0,1,\dots & \mu \\
+  Gamma & inverse & (0,\infty) & \phi \mu^2 \\
+  Inverse.gaussian & \frac{1}{\mu^2} & (0,\infty) & \phi \mu^3
+\end{array} $$
+
+The variance distributions of an exponential family is a product of a positive *disperssion (scale)* parameter $\phi$ and a function of the mean given the linear predictor:
+$$Var(y|{\bf x}) = \phi \times V[\mu({\bf x})]$$
+The variances for several exponential families are listed in the table above.
+
+The *deviance*, based on the maximized value of the log-likelihood, provides a measure of the fit of a GLM to the data, much as the residual sum of squares does for a linear model. The value of the log-likelihood evaluated at the maximum likelihood estimates the regression coefficients for fixed dispersion is
+$$ \log L_0 = \sum \log p[y_i;\hat \mu({\bf x_i}), \phi] $$
+An fitting to a saturated model, with one parameter for each of the *n* observations, with the mean response for each observation just the observed value 
+$$ \log L_1 = \sum \log p[y_i; y_i , \phi] $$
+THe resudual deviance is defined as twice the difference of the log-likelihoods,
+$$D({\bf y; \hat \mu}) = 2(\log L_1 - \log L_0) $$
+the larger the diviance, the less well the the model of interest matches the data.
+
+## GLMs for Binary Responce Data
+
+Considering data in which each case provides a *binary response*, say "success" or "failure", the cases are independent, and the probability of success $\mu({\bf x})$ is the same for all cases with the same values **x** of the regressors.
+
+When the response is binary, we think of the mean function $\mu({\bf x})$ as the conditional probability that response is success given the values **x** of the regressors. The most common link funtction used with binary response data is the ligit link, for which
+$$\log[\frac{\mu({\bf x})}{1-\mu({\bf x})}] = \eta({\bf x})$$
+
+The left side of the equation is called the *logit* of the *log-odds*, where the *odds* are the probability of success divided by the probability of failure. Solving for 
+$\mu({\bf x})$ gives the mean function,
+$$\mu({\bf x}) = \frac{1}{1+\exp[-\eta{\bf x})]}$$
+
+Plot of the comparison of the logit, probit, and complementary log-log links
+
+```{r}
+# Example from the car Book Chp 6
+Probit <- binomial(link=probit)
+Logit <- binomial(link=logit)
+Cloglog <- binomial(link=cloglog)
+range <- seq(-10,10,length=1000)
+plot(range,Logit$linkinv(range),type="l", xlim=c(-5,5), lty=1,
+       xlab=expression(eta(x)), ylab=expression(mu(x)))
+lines(sqrt(pi^2/3)*range, Probit$linkinv(range), lty=2)
+lines(range,Cloglog$linkinv(range), lty=4, lwd=2)
+legend("topleft",c("logit", "probit", "cloglog"), lty=c(1,2,4),
+       lwd=c(1,1,2), inset=0.02)
+```
+
+## Example: Women's Labor Force Participation
+
+To illustrate logistic regression, we turn to a study of the U.S. Panel Study of Income Dynamics of the response variable is married women's labor force participation. The data is in Mroz (carData).
+$$\begin{array}{llc}
+  \bf{Variable} & {\bf Description} & {\bf Remarcs} \\
+  lfp & \verb+labor force participation+ & factor: no, yes \\
+  k5 & \verb+number of children ages 5 and younger+ & 0-3 \\
+  k618 & \verb+number of children ages 6 to 18+ & 0-8\\
+  age & \verb+wife's age in yars+ & 30-60 \\
+  wc & \verb+wife's college attendance+ & factor: no, yes \\
+  hc & \verb+husband's college attendance+ & factor: no, yes \\
+  lwg & \verb+log of estimated wife's wage+ &  \\
+  inc & \verb+family income excluding wife's income+ & 1000s
+\end{array} $$
+
+So, the estimated logistic-regression model is given by
+
+$$log[\frac{\hat\mu(x)}{1-\hat\mu(x)}] = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \cdots + \beta_k x_k$$
+
+If exponentiate both sides of the equation, we get
+$$\frac{\hat\mu(x)}{1-\hat\mu(x)} = exp(\beta_0) \times exp(\beta_1 x_1) \times exp(\beta_2 x_2) \times \cdots \times exp(beta_k x_k)$$
+
+where the left hand of the equation, $\frac{\hat\mu(x)}{1-\hat\mu(x)}$, gives the *fitted odds* of success, **the fitted probability of success divided by the fitted probability of failure**. Exponentiating the model removes the logarithms and changes the model in the log-odds scale to one that is multiplicative, in this log odds scale. 
+
+```{r}
+##################### From car
+# carData Mroz
+summary(Mroz)
+# logistic model family= binomial's default link is logit
+mroz.mod <- glm(lfp ~ k5 + k618 + age + wc + hc + lwg + inc, family=binomial, data=Mroz)
+S(mroz.mod)
+```
+
+Exponentiating the model removes the logarithms (S function shows the exponents of the betas).  For example increasing the age of a woman by one year, holding the other predictors constant, from $odds = \exp(c_0) \times \exp(c_1) \times \exp(c_2) \times \exp(\beta_3) \times \exp(c_4) \dots$ therefore multiplies the fitted odds of her being in the workforce by $\exp(\beta_3) = \exp(-0.06287) = 0.9391$. That is, reduces the odds of working by $100(1-0.9391) \approx 6\%$.
+Compared to a woman that who did not attend college, a college-educated woman with all other predictors fixed has fitted odds of working about 2.24 times higher, with a 95% confidence interval [1.43, 3.54].  The exponents of the coefficient estimates are called *risk factors* or *odds ratios*. The confidence intervals for the GLM are based on profiling the log-likelihood. The confidence intervals may not be symmetric.
+
+## Volunteering for a Psychological Experiment
+
+Cowles collected data on the willingness of students in an introductory psychology class to volunteer for a psychological experiment.
+The data set contains several variables:
+1. The personality dimension *neuroticism*, a numeric variable with integer scores on a scale from zero to 24
+2. The personality dimension *extraversion*, also a numeric variable with a potential range of zero to 24.
+3. The factor sex, with levels "female" and "male".
+4. Tha factor volunteer, with levels "no" and "yes".
+
+Researchers expected volunteering to depend on the sex variable and on the interaction of the personality dimensions, so included the linear-by-linear interaction between nuroticism and extraversion:
+
+```{r}
+brief(Cowles)
+sum(Cowles$volunteer == "yes") # number yes
+
+cowles.mod <- glm(volunteer ~ sex + neuroticism*extraversion,
+    data=Cowles, family=binomial)
+brief(cowles.mod, pvalues=TRUE)
+```
+
+## Predictor Effect Plots for Logistic Regression
+
+The **effects** package, can draw predictor effect plots for generalized linear models, including logistic regression.
+```{r}
+plot(predictorEffects(mroz.mod))
+
+plot(predictorEffects(cowles.mod, ~ neuroticism + extraversion,
+    xlevels=list(neuroticism=seq(0, 24, by=8), 
+        extraversion=seq(0, 24, by=8))), 
+    lines=list(multiline=TRUE))
+```
+
+## Analysis of Deviance and Hypotesis Test for Logistic Regression
+
+### Model Comparisons
+
+```{r}
+mroz.mod.2 <- update(mroz.mod, . ~ . - k5 - k618)
+anova(mroz.mod.2, mroz.mod, test="Chisq")
+
+brief(cowles.mod.0 <- update(cowles.mod, 
+    . ~ . - neuroticism:extraversion))
+anova(cowles.mod.0, cowles.mod, test="Chisq")
+
+# Type II Tests 
+Anova(mroz.mod)
+
+Anova(cowles.mod)
+
+# Other Hypothesis Tests
+linearHypothesis(mroz.mod, c("k5", "k618"))
+
+linearHypothesis(mroz.mod, "k5 = k618")
+```
+
+## Fitted and Predicted Values
+
+The function $\verb+predict()+$ returns the estimated linear predictor values for each observation. And to get the fitted probabilities we use the argument type="response". The $\verb+fitted()+$ function can also be used.
+
+```{r}
+opts <- options(digits=5)
+head(predict(mroz.mod)) # first few values
+
+head(predict(mroz.mod, type="response"))
+
+```
+
+And the $\verb+predict()+$ can be used to compute predicted values for arbitrary combinations of predictor values. For example we can estimate the probability of volunteering at neuroticism and extraversion at 12.
+
+```{r}
+options(opts)
+
+predict.data <- data.frame(sex=c("female", "male"), 
+    neuroticism=rep(12, 2), extraversion=rep(12, 2))
+predict.data$p.volunteer <- predict(cowles.mod, 
+    newdata=predict.data, type="response")
+predict.data
+```
+
+
+# Binomial Data
+
+In binomial response data, the response variable $y_i$ for each case $i$ is the number of successes in a fixed number $N_i$ of independent trials, each with the same probability of success.
+Binary regression is a limiting case of binomial regression with all the $N_i = 1$
+
+$$\begin{array}{llccc}
+  \bf{\verb+Perceived Closeness+} & {\bf \verb+Intensity of Preference+} & {\bf \verb+Voted+} & {\bf \verb+ Did Not Voted+} & {\bf logit}\\
+  One-sided & \verb+Weak+ & 91 & 39 & 0.847 \\
+  One-sided & \verb+Medium+ & 121 & 49 & 0.904 \\
+  One-sided & \verb+Strong+ & 64 & 24 & 0.981 \\
+  Close & \verb+Weak+ & 214 & 87 & 0.900 \\
+  Close & \verb+Medium+ & 284 & 76 & 1.318 \\
+  Close & \verb+Strong+ & 201 & 25 & 2.084
+\end{array} $$
+
+```{r}
+Campbell <- data.frame(
+    closeness = factor(rep(c("one.sided", "close"), c(3, 3)),
+        levels=c("one.sided", "close")),
+    preference = factor(rep(c("weak", "medium", "strong"), 2),
+        levels=c("weak", "medium", "strong")),
+    voted = c(91, 121, 64, 214, 284, 201),
+    did.not.vote = c(39, 49, 24, 87, 76, 25)
+)
+Campbell
+```
+
+For binomial data, the response can be the *proportion* of successes for each observation, or the proportion of successes for failures. For example the logit for the One-sided, weak case 91 voted, and 39 did not voted, $\log(\verb+Voted/Did not Voted+) = \log(91/39)$ -> *0.847*
+
+```{r}
+campbell.mod <- glm(cbind(voted, did.not.vote) ~
+    closeness*preference, family=binomial, data=Campbell)
+# the estimated responses are exact and the residuals are zero
+predict(campbell.mod)
+residuals(campbell.mod)
+
+plot(predictorEffects(campbell.mod, ~ preference),  
+     main="", confint=list(style="bars"), lines=list(multiline=TRUE),
+     xlab="Intensity of Preference", ylab="Probability of Voting",
+     lattice=list(key.args = list(x =0.1, y = 0.95, corner=c(0, 1))))
+```
+
+The emmeans function can be used to test differences between the two levels of closeness fo each level of preference:
+
+```{r}
+emmeans(campbell.mod, pairwise ~ closeness | preference)$contrasts
+```

@@ -1,0 +1,172 @@
+---
+title: "Splines for Estimating Shape of Regression Functions"
+author: "F.A. Barrios"
+date: "`r Sys.Date()`"
+output:
+  rmdformats::readthedown:
+    highlight: kate
+---
+
+
+```{r setup, echo=FALSE, cache=FALSE}
+library(knitr)
+library(rmdformats)
+
+## Global options
+options(max.print="75")
+opts_chunk$set(echo=TRUE,
+	             cache=TRUE,
+               prompt=FALSE,
+               tidy=TRUE,
+               comment=NA,
+               message=FALSE,
+               warning=FALSE)
+opts_knit$set(width=75)
+```
+
+```{r}
+library(tidyverse)
+library(Hmisc)
+library(rms)
+library(splines)
+library(car)
+library(MASS)
+library(olsrr)
+#
+setwd("~/Dropbox/GitHub/Class2020")
+# loading the HERS data set from Vittinghoff's data
+hers <- read_csv("DataRegressBook/Chap3/hersdata.csv")
+```
+
+## Linear Splines
+
+The simplest spline function is the linear spline function, a piecewise linear function. The assumption is that the $x$ axis is divided into intervals wit hend points at $a, b,$ and $c$, called knots. The linear spine function is defined by
+$$ f(X) = \beta_0 + \beta_1 X + \beta_2 (X-a)_+ + \beta_3 (X-b)_+ + \beta_4 (X-c)_+ $$
+where
+$$ (u)_+  =  u, u>0,$$
+$$ = 0, u \leq 0 $$
+The general linear model can be written assuming only piecewise linearity in X
+
+$$ X \beta = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \beta_3 X_3 + \beta_4 X_4 $$
+and
+$$ X_1 = X , X_2 = (X-a)_+ , X_3 = (X-b)_+ , X_4 =(X-c)_+ $$
+
+## Cubic Spline Functions
+
+Cubic polinomials have been found tohave nice properties with good ability to fit sharply curving shapes.  Cubic splines can be made to be smooth at the joint points(knots), by forcing the first and second derivatives of the function to agree at the knots:
+$$ f(X) = \beta_0 + \beta_1 X + \beta_2 X^2 + \beta_3 X^3 + \beta_4 (X-a)^{3}_+ + \beta_5 (X-b)^{3}_+ + \beta_6 (X-c)^{3}_+ $$
+
+## Restricted Cubic Splines
+
+Cubic splines behave poorly at the tails, that is before the first knot and after the last knot. Natural splines $ns$ or restricted cubic spline function constrain the function to be linear at the tails
+
+$$f(X) = \beta+0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_{k-1} X_{k-1}$$
+
+
+where $X_1 = X$ and for $j= 1, \dots ,k-2$,
+
+
+$$ X_{j+1} = (X - t_j)^{3}_+ - (X - t_{k-1})^{3}_+(t_k - t_j)/(t_k - t_{k-1}) + (X - t_k)^{3}_+(t_{k-1} - t_j)/(t_k - t_{k-1}) $$
+in the Hmisc and rms functions the terme in the last equation are scaled divided by $\tau = (t_k - t_1)^2$
+
+For the HERS data plotting the LDL and HDL variables vs. BMI we get
+
+```{r}
+# to prepare the HERS data adding variables
+hers <- mutate(hers, statins = factor(statins))
+hers <- mutate(hers, nonwhite = factor(nonwhite))
+hers <- mutate(hers, smoking = factor(smoking))
+hers <- mutate(hers, drinkany = factor(drinkany))
+# centering and other manipulations
+hers <- mutate(hers, BMIc = BMI - mean(BMI, na.rm=TRUE))
+hers <- mutate(hers, BMIc2 = BMIc^2)
+hers <- mutate(hers, agec = age - mean(age, na.rm= TRUE))
+#
+hers_no_statins <- mutate(hers, statins = "no", na.rm=TRUE)
+hers_statins <- mutate(hers, statins = "yes", na.rm=TRUE)
+#
+```
+
+For a 67-year old, white nonsmoker abstainer (nonwhite=0, smoking=0, drinkany=0) with $BMI = 28.6 kg/m^2$, the base HDL value is $47.87 mg/dL$ in a model centered and corrected to quadratic centered BMI, the BMIc coefficient of -0.53 estimates the decrease in average HDL per unit inclease in BMI, at the point where $BMI = 28.6 kg/m^2$, while the coefficient for BMIc2 captures the (upward) curvature of the regression line.
+
+```{r}
+# Table 4.20 and the model check
+HDL_model_BMIc2 <- lm(HDL ~ BMIc + BMIc2 + agec + nonwhite + smoking + drinkany, data=hers)
+S(HDL_model_BMIc2)
+confint(HDL_model_BMIc2)
+
+# Table 4.21
+HDL_model_BMIns <- lm(HDL ~ ns(BMI, df=5) + age10 + nonwhite + smoking + drinkany, data = hers)
+S(HDL_model_BMIns)
+confint(HDL_model_BMIns)
+```
+
+## Checking Model Assumptions and Fit
+
+Departures from linearity could be carried out using LOESS. If the linear fit were satisfactory, the LOESS curve would be close to the model regression line.
+
+```{r}
+## Comparing simpler models of the same data.
+LDL_simpModel <- lm(LDL ~ BMI, data= hers)
+HDL_simpModel <- lm(HDL ~ BMI, data= hers)
+
+plot(HDL ~ BMI, pch= 20, col= "blue", data=hers)
+abline(coef=coef(HDL_simpModel), col="red")
+#
+plot(LDL ~ BMI, pch= 20, col= "blue", data=hers)
+abline(LDL_simpModel, col="red")
+#
+
+# FIGURE 4.5
+ggplot(data = hers, mapping=aes(y=HDL, x=BMI, color=agec)) +
+  labs(x="BodyMassIndex", y= "HDL", title = "LOESS and lm") + 
+  geom_point(shape=20, na.rm=TRUE) +
+  geom_smooth(method="loess", color= 3, na.rm=TRUE) +
+  geom_smooth(method="lm", color= 2, linetype=2, na.rm=TRUE, se=FALSE)
+```
+
+```{r}
+# And the plots are here
+ggplot(data = hers, mapping=aes(y=LDL, x=BMI, color=agec)) +
+  labs(x="BodyMassIndex", y= "LDL", title = "LOESS and lm") + 
+  geom_point(shape=20, na.rm=TRUE) + 
+  geom_smooth(method = "loess", color= 3, na.rm=TRUE) +
+  geom_smooth(method="lm", formula=y~x, color= 2, linetype= 2, na.rm=TRUE, se=FALSE)
+```
+
+### Linearity
+
+The most precise evaluation is isong the residuals $r_i = y_i - \hat{y_i}$. Te basic idea is plot the residuals versus each of the continuous predictors in the model; then a non-parametric smoother is used to detect departures from a linear trend in the average (zero, if centered) value of the residuals across the values of the predictor. **This is a residual versus predictor (RVP) plot**.
+
+
+### Normality
+
+Confidence intervals for regression coefficients and related hypothesis tests are based on the assumption that the coefficient estimates have a normal distribution. The residuals are $r_j = y_j - \hat{y_j}$, the $\epsilon$ is assumed mormally distributed, it is important to apply the diagnostic tool to the residuals rather than to the outcome variable. Graphical tools for assessing the normality of the residuals in R we can estimate the Q-Q plot.
+
+### Constant Variance
+
+An additional assumption concerning the normality of $\epsilon$ is homoscedasticity, meaning that its variance $\sigma_{\epsilon}^2$ is constant across observations. Violations of the constant variance assumption also use the residuals versus fitted plots RVP. If the constant variance assumption is met, then the vertical spread of the residuals should be similar across the ranges of the predictors and fitted values.
+
+
+### Outliers, High Leverage and Influential Points
+
+Large residuals can cause trouble. *high leverage* points, which could be described as x-outliers, since they tend to have extreme values of one of more predictors. This points can also be *influential* in the sense that one or more of the coefficients estimates can change by an unduly large amount. This can happen when a high-leverage point also has lage residual.
+*Definition: High leverage points are x-outliers with the potential to exert undue influence on regression coefficient estimates. Influential points are points that have exerted undue influence on the regression coefficient estimates.
+
+DFBETAS (standardized difference of the beta) is a measure that standardizes the absolute difference in parameter estimates between a (mixed effects) regression model based on a full set of data, and a model from which a (potentially influential) subset of data is removed.
+
+```{r}
+plot(HDL_model_BMIc2)
+# DFBETAS (standardized difference of the beta) is a measure that standardizes the absolute difference in parameter estimates
+dfbetasPlots(HDL_model_BMIc2)
+
+# Ordinary Least Squires (OLS) From the olsrr package, there is a full set of lm tools and a lm tool itself.
+ols_plot_cooksd_bar(HDL_model_BMIc2)
+ols_plot_resid_stand(HDL_model_BMIc2)
+ols_plot_dfbetas(HDL_model_BMIc2)
+```
+
+
+
+
+

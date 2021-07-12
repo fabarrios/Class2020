@@ -1,0 +1,98 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Logistic Regression Homework},
+  pdfauthor={F.A. Barrios},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+
+\title{Logistic Regression Homework}
+\author{F.A. Barrios}
+\date{2020-11-26}
+
+\begin{document}
+\maketitle
+
+\hypertarget{logistic-regression-homework-vittinghoffs-book-chap-5.}{%
+\section{Logistic Regression Homework, Vittinghoff's Book Chap
+5.}\label{logistic-regression-homework-vittinghoffs-book-chap-5.}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Use the regression coefficients from the logistic model presented in
+  Table 5.2 in the logistic formula (5.2) to estimate the quantities in
+  Table 5.3 for a 65-year-old individual. Use additional calculations to
+  add a new section to Table 5.3 for an age increment of five years.
+\item
+  For the fitted logistic regression model in Table 5.6, calculate the
+  log odds for a 60-year-old smoker with cholesterol, SBP, and BMI
+  values of 250 mg/dL, 150 mmHg, and 20, respectively. Now calculate the
+  log odds for an individual with a cholesterol level of 200 mg/dL,
+  holding the values of the other predictors fixed. Use these two
+  calculations to estimate an odds ratio associated with a 50 mg/dL
+  increase in cholesterol. Repeat the above calculations for a
+  70-year-old individual with identical values of the other predictors.
+  Comment on any differences between the two estimated odds ratios.
+\item
+  Use the regression output in Table 5.16 and a calculation similar to
+  that presented in (5.11) to compute the odds ratio comparing the odds
+  of CHD in a 55-year-old individual with arcus to the corresponding
+  odds for a 40-year-old who also has arcus.
+\end{enumerate}
+
+\end{document}
